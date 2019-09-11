@@ -59,13 +59,13 @@ class CARRETA:
 		return pack('BiiHf', self.rand_id, self.date, self.sensor_id, self.type, self.data)
 
 	def unpack_byte_array(self, byte_array):
-		data = unpack('BiiHf', byte_array)
+		datos = unpack('BiiHf', byte_array)
 
-		self.rand_id = data[0]
-		self.date = data[1]
-		self.sensor_id = data[2]
-		self.type = data[3]
-		self.data = data[4]
+		self.rand_id = datos[0]
+		self.date = datos[1]
+		self.sensor_id = datos[2]
+		self.type = datos[3]
+		self.data = datos[4]
 
 	rand_id = property(get_rand_id, set_rand_id)
 	date = property(get_date, set_date)

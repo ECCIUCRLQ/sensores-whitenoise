@@ -11,7 +11,7 @@ class Cliente:
 		# Crea el socket UDP
 		sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-		server_address = ('localhost', 5050)
+		server_address = ('localhost', 10000)
 
 		try:
 			dato_enviar = carreta_enviar.pack_byte_array()
@@ -24,6 +24,8 @@ class Cliente:
 
 			buey_recibido = BUEY()
 			buey_recibido.unpack_byte_array(dato_recibido)
+
+			print(buey_recibido)
 
 		finally:
 			sock.close()

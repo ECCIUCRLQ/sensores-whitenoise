@@ -1,23 +1,30 @@
 from CARRETA import CARRETA
 from BUEY import BUEY
 from Cliente import Cliente
+from Servidor import Servidor
 
 def main():
-	print("Hola")
+	opcion = 0
+	while not (opcion == 1 or opcion == 2):
+		opcion = int(input("Para enviar: 1 \nPara recibir: 2\n"))
 
-	carreta = CARRETA()
-	carreta.date = 12;
+	if opcion == 1:
+		carreta = CARRETA()
+		carreta.date = 112
+		carreta.sensor_id = 123
+		carreta.rand_id = 111
 
-	ba = carreta.pack_byte_array()
+		print(carreta)
 
-	ab = carreta.unpack_byte_array(ba);
+		ba = carreta.pack_byte_array()
 
-	cliente = Cliente()
+		ab = carreta.unpack_byte_array(ba)
 
-	cliente.enviar_paquete(carreta)
+		cliente = Cliente()
 
-	print(ba)
+		cliente.enviar_paquete(carreta)
 
-	print(ab)
+	elif opcion == 2:
+		Servidor.recibir()
 
 main()

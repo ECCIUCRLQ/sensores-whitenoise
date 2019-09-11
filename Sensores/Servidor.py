@@ -7,13 +7,13 @@ from BUEY import BUEY
 class Servidor:
 
 	@classmethod
-	def recibir():
+	def recibir(cls):
 
 		# Crea el socket UDP.
 		sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 		# Configura el puerto y la direccion donde estaran esperando datos.
-		server_address = ('localhost', 5050)
+		server_address = ('localhost', 10000)
 		sock.bind(server_address)
 
 		while True:
