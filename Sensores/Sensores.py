@@ -1,5 +1,6 @@
 from CARRETA import CARRETA
 from BUEY import BUEY
+from Cliente import Cliente
 
 def main():
 	print("Hola")
@@ -7,8 +8,16 @@ def main():
 	carreta = CARRETA()
 	carreta.date = 12;
 
-	carreta
+	ba = carreta.pack_byte_array()
 
-	print(carreta)
+	ab = carreta.unpack_byte_array(ba);
+
+	cliente = Cliente()
+
+	cliente.enviar_paquete(carreta)
+
+	print(ba)
+
+	print(ab)
 
 main()

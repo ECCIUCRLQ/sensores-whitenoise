@@ -1,4 +1,6 @@
-#Contiene la estructura del paquete BUEY para la confirmación de la recepción.
+from struct import *
+
+#Contiene la estructura del paquete BUEY para la confirmaciï¿½n de la recepciï¿½n.
 class BUEY:
 
 	# Constructor
@@ -27,6 +29,15 @@ class BUEY:
 		if not isinstance(value, int):
 			raise TypeError("")
 		self.__sensor_id = value
+
+	def pack_byte_array(self):
+		return pack('Bi', self.rand_id, self.sensor_id)
+
+	def unpack_byte_array(self, byte_array):
+		data = unpack('Bi', byte_array)
+
+		self.rand_id = data[0]
+		self.sensor_id = data[1]
 
 	rand_id = property(get_rand_id, set_rand_id)
 	sensor_id = property(get_sensor_id, set_sensor_id)

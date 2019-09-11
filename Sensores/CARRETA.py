@@ -1,4 +1,6 @@
-#Contiene la estructura del paquete CARRETA para el envío de información.
+from struct import *
+
+#Contiene la estructura del paquete CARRETA para el envï¿½o de informaciï¿½n.
 class CARRETA:
 	
 	# Constructor
@@ -51,9 +53,19 @@ class CARRETA:
 		return self.__data
 
 	def set_data(self, value):
-		if not isinstance(value, int):
-			raise TypeError("")
 		self.__data = value
+
+	def pack_byte_array(self):
+		return pack('BiiHf', self.rand_id, self.date, self.sensor_id, self.type, self.data)
+
+	def unpack_byte_array(self, byte_array):
+		data = unpack('BiiHf', byte_array)
+
+		self.rand_id = data[0]
+		self.date = data[1]
+		self.sensor_id = data[2]
+		self.type = data[3]
+		self.data = data[4]
 
 	rand_id = property(get_rand_id, set_rand_id)
 	date = property(get_date, set_date)
