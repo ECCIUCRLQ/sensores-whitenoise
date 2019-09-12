@@ -2,6 +2,8 @@ from CARRETA import CARRETA
 from BUEY import BUEY
 from Cliente import Cliente
 from Servidor import Servidor
+import Utilidades
+import random
 
 def main():
 	opcion = 0
@@ -10,9 +12,10 @@ def main():
 
 	if opcion == 1:
 		carreta = CARRETA()
-		carreta.date = 112
+		carreta.date = Utilidades.getUnixTime()
 		carreta.sensor_id = 123
-		carreta.rand_id = 111
+		carreta.rand_id = random.getrandbits(8)
+		carreta.type = 2
 
 		print(carreta)
 
