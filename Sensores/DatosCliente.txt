@@ -1,34 +1,48 @@
 Paquete CARRETA: 
-	rand_id -> 133 
-	date -> 11-Sep-2019 17:00:18 
+	rand_id -> 211 
+	date -> 12-Sep-2019 10:41:05 
 	sensor_id -> 123 
-	type -> 1 
+	type -> 2 
 	data -> 0.0
 
 Paquete CARRETA: 
-	rand_id -> 73 
-	date -> 11-Sep-2019 17:00:20 
+	rand_id -> 244 
+	date -> 12-Sep-2019 10:41:40 
 	sensor_id -> 123 
-	type -> 1 
+	type -> 2 
 	data -> 0.0
 
 Paquete CARRETA: 
-	rand_id -> 180 
-	date -> 11-Sep-2019 17:00:23 
+	rand_id -> 208 
+	date -> 12-Sep-2019 10:42:04 
 	sensor_id -> 123 
-	type -> 1 
+	type -> 2 
 	data -> 0.0
 
 Paquete CARRETA: 
-	rand_id -> 102 
-	date -> 11-Sep-2019 17:00:26 
+	rand_id -> 55 
+	date -> 12-Sep-2019 10:42:15 
 	sensor_id -> 123 
-	type -> 1 
+	type -> 2 
 	data -> 0.0
 
 Paquete CARRETA: 
-	rand_id -> 6 
-	date -> 11-Sep-2019 17:00:36 
+	rand_id -> 113 
+	date -> 12-Sep-2019 10:43:48 
+	sensor_id -> 123 
+	type -> 2 
+	data -> 0.0
+
+Paquete CARRETA: 
+	rand_id -> 173 
+	date -> 12-Sep-2019 10:46:15 
+	sensor_id -> 123 
+	type -> 2 
+	data -> 0.0
+
+Paquete CARRETA: 
+	rand_id -> 225 
+	date -> 12-Sep-2019 10:47:43 
 	sensor_id -> 123 
 	type -> 2 
 	data -> 0.0

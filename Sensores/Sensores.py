@@ -18,6 +18,12 @@ def main():
 		carreta.rand_id = random.getrandbits(8)
 		carreta.type = 2
 
+		carreta2 = CARRETA()
+		carreta2.date = utilidades.get_unix_time()
+		carreta2.sensor_id = 345
+		carreta2.rand_id = random.getrandbits(8)
+		carreta2.type = 2
+
 		print(carreta)
 
 		ba = carreta.pack_byte_array()
@@ -27,6 +33,7 @@ def main():
 		cliente = Cliente()
 
 		cliente.enviar_paquete(carreta)
+		cliente.enviar_paquete(carreta2)
 
 	elif opcion == 2:
 		Servidor.recibir()
