@@ -11,7 +11,7 @@ class SensorId:
 		return "SensorId()"
 
 	def __str__(self):
-    		return "\n\tgroup -> %s \n\tsensor_id -> %s %s %s" % (Sensor_Id.group_id, Sensor_Id.pos1, Sensor_Id.pos2, Sensor_Id.pos3)
+		return "\n\tgroup -> %s \n\tsensor_id -> %s %s %s" % (self.group_id, self.pos1, self.pos2, self.pos3)
 
 	def set_group_id(self, x):
 		if (x < 0 or x > 255):
@@ -19,31 +19,31 @@ class SensorId:
 		self.__group_id = x
 
 	def get_group_id(self):
-		return self.group_id
+		return self.__group_id
 
 	def set_pos1(self, x):
 		if (x < 0 or x > 255):
 			raise TypeError("Value esta fuera del rango")
-		self.pos1 = x
+		self.__pos1 = x
 
 	def get_pos1(self):
-		return self.pos1
+		return self.__pos1
 
 	def set_pos2(self, x):
 		if (x < 0 or x > 255):
 			raise TypeError("Value esta fuera del rango")
-		self.pos2 = x
+		self.__pos2 = x
 
 	def get_pos2(self):
-		return self.pos2
+		return self.__pos2
 
 	def set_pos3(self, x):
 		if (x < 0 or x > 255):
 			raise TypeError("Value esta fuera del rango")
-		self.pos3 = x
+		self.__pos3 = x
 
 	def get_pos3(self):
-		return self.pos3
+		return self.__pos3
 
 	group_id = property(get_group_id, set_group_id)
 	pos1 = property(get_pos1, set_pos1)

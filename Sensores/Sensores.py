@@ -3,6 +3,7 @@ from BUEY import BUEY
 from Cliente import Cliente
 from Servidor import Servidor
 from Utilidades import Utilidades
+from SensorId import SensorId
 import random
 
 def main():
@@ -14,7 +15,7 @@ def main():
 		utilidades = Utilidades()
 		carreta = CARRETA()
 		carreta.date = utilidades.get_unix_time()
-		carreta.sensor_id = 123
+		carreta.sensor_id = SensorId([1,0,0,1])
 		carreta.rand_id = random.getrandbits(8)
 		carreta.type = 2
 
