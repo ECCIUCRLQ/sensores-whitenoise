@@ -1,5 +1,5 @@
 from struct import *
-import Utilidades
+from Utilidades import Utilidades
 
 #Contiene la estructura del paquete CARRETA para el env�o de informaci�n.
 class CARRETA:
@@ -13,10 +13,11 @@ class CARRETA:
 		self.data = data
 
 	def __repr__(self):
-	   return "CARRETA()"
+		return "CARRETA()"
 
 	def __str__(self):
-	   return "Paquete CARRETA: \n\trand_id -> %s \n\tdate -> %s \n\tsensor_id -> %s \n\ttype -> %s \n\tdata -> %s" % (self.rand_id, Utilidades.getDate(self.date), self.sensor_id, self.type, self.data)
+		utilidades = Utilidades()
+		return "Paquete CARRETA: \n\trand_id -> %s \n\tdate -> %s \n\tsensor_id -> %s \n\ttype -> %s \n\tdata -> %s" % (self.rand_id, utilidades.get_date(self.date), self.sensor_id, self.type, self.data)
 
 	def get_rand_id(self):
 		return self.__rand_id

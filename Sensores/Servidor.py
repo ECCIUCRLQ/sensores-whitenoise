@@ -13,7 +13,7 @@ class Servidor:
 		sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 		# Configura el puerto y la direccion donde estaran esperando datos.
-		server_address = ('localhost', 10000)
+		server_address = ('', 10000)
 		sock.bind(server_address)
 
 		# Archivo para guardar los datos que recibe
