@@ -13,9 +13,14 @@ class Cliente:
 
 		server_address = ('localhost', 10000)
 
+		# Archivo para guardar los datos generados por el sensor
+		file = open("DatosCliente.txt", "a")
+
 		try:
+			file.write("%s\n\n" % carreta_enviar.__str__())
+
 			dato_enviar = carreta_enviar.pack_byte_array()
-			
+
 			# Envia los datos
 			sent = sock.sendto(dato_enviar, server_address)
 
@@ -28,4 +33,5 @@ class Cliente:
 			print(buey_recibido)
 
 		finally:
+			file.close()
 			sock.close()

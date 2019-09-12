@@ -1,0 +1,35 @@
+Paquete CARRETA: 
+	rand_id -> 133 
+	date -> 11-Sep-2019 17:00:18 
+	sensor_id -> 123 
+	type -> 1 
+	data -> 0.0
+
+Paquete CARRETA: 
+	rand_id -> 73 
+	date -> 11-Sep-2019 17:00:20 
+	sensor_id -> 123 
+	type -> 1 
+	data -> 0.0
+
+Paquete CARRETA: 
+	rand_id -> 180 
+	date -> 11-Sep-2019 17:00:23 
+	sensor_id -> 123 
+	type -> 1 
+	data -> 0.0
+
+Paquete CARRETA: 
+	rand_id -> 102 
+	date -> 11-Sep-2019 17:00:26 
+	sensor_id -> 123 
+	type -> 1 
+	data -> 0.0
+
+Paquete CARRETA: 
+	rand_id -> 6 
+	date -> 11-Sep-2019 17:00:36 
+	sensor_id -> 123 
+	type -> 2 
+	data -> 0.0
+
