@@ -13,7 +13,7 @@ class BUEY:
 	   return "BUEY()"
 
 	def __str__(self):
-	   return "Paquete BUEY: \n\trand_id -> %s \n\tsensor_id -> %s" % (self.rand_id, self.sensor_id)
+	   return "Paquete BUEY: \n\trand_id -> %s \n\t%s" % (self.rand_id, self.sensor_id)
 
 	def get_rand_id(self):
 		return self.__rand_id
@@ -30,7 +30,7 @@ class BUEY:
 		data = unpack('BBBBB', byte_array)
 
 		self.rand_id = data[0]
-		self.sensor_id = SensorId([datos[1], datos[2], datos[3], datos[4]])
+		self.sensor_id = SensorId([data[1], data[2], data[3], data[4]])
 
 	rand_id = property(get_rand_id, set_rand_id)
 	sensor_id = SensorId()
