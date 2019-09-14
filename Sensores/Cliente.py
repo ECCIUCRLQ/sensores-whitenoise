@@ -8,7 +8,7 @@ from CARRETA import CARRETA
 from BUEY import BUEY
 
 HOST = 'localhost'
-PORT = 10002
+PORT = 10003
 
 class Cliente:
 

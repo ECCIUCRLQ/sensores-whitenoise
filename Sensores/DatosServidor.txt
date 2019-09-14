@@ -89,3 +89,17 @@ Paquete CARRETA:
 	type -> 5 
 	data -> 0.0
 
+Paquete CARRETA: 
+	rand_id -> 213 
+	date -> 14-Sep-2019 15:13:20 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0.0
+
+Paquete CARRETA: 
+	rand_id -> 49 
+	date -> 14-Sep-2019 15:13:20 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0.0
+
