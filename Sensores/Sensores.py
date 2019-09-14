@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
+
 from CARRETA import CARRETA
 from BUEY import BUEY
 from Cliente import Cliente
@@ -11,30 +14,23 @@ def main():
 		opcion = int(input("Para enviar: 1 \nPara recibir: 2\n"))
 
 	if opcion == 1:
-		utilidades = Utilidades()
-		carreta = CARRETA()
-		carreta.date = utilidades.get_unix_time()
-		carreta.sensor_id = 123
-		carreta.rand_id = random.getrandbits(8)
-		carreta.type = 2
 
-		carreta2 = CARRETA()
-		carreta2.date = utilidades.get_unix_time()
-		carreta2.sensor_id = 345
-		carreta2.rand_id = random.getrandbits(8)
-		carreta2.type = 2
-
-		print(carreta)
-
-		ba = carreta.pack_byte_array()
-
-		ab = carreta.unpack_byte_array(ba)
-
+		utilidades = Utilidades()	
 		cliente = Cliente()
+		carretas = []
 
-		cliente.enviar_paquete(carreta)
-		cliente.enviar_paquete(carreta2)
-
+		for i in range(11):
+			carreta = CARRETA()
+   			carreta.date = utilidades.get_unix_time()
+			carreta.sensor_id = 123
+			carreta.rand_id = random.getrandbits(8)
+			carreta.type = 5
+			carretas.append(carreta)
+			print(carreta)
+   
+		while carretas.count > 0:
+			carreta = carretas.pop()
+			cliente.enviar_paquete(carreta)
 	elif opcion == 2:
 		Servidor.recibir()
 

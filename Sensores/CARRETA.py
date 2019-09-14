@@ -1,7 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
+
 from struct import *
 from Utilidades import Utilidades
 
-#Contiene la estructura del paquete CARRETA para el env�o de informaci�n.
+# Contiene la estructura del paquete CARRETA para el envío de información.
 class CARRETA:
 
 	# Constructor

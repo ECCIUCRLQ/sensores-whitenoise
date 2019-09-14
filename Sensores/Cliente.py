@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
+
 import socket
 import sys
 
@@ -31,7 +34,7 @@ class Cliente:
 			rid_carreta_enviada = carreta_enviar.rand_id
 			buey_recibido = BUEY()
 			
-			# Resuelve la ambiguedad de ACK no numerado(pérdidad de paquetes). Figura 5.10, Página 275, Libro León García.
+			# Resuelve la ambiguedad de ACK no numerado(pérdida de paquetes). Figura 5.10, Página 275, Libro León García.
 			# Reenvía el paquete carreta hasta que reciba la confirmación por parte de un paquete buey.
 			while not haya_confirmado_buey:
 				
