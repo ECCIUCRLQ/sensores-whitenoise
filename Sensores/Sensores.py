@@ -19,16 +19,16 @@ def main():
 		cliente = Cliente()
 		carretas = []
 
-		for i in range(11):
+		for i in range(10):
 			carreta = CARRETA()
-   			carreta.date = utilidades.get_unix_time()
 			carreta.sensor_id = 123
+			carreta.date = utilidades.get_unix_time()
 			carreta.rand_id = random.getrandbits(8)
 			carreta.type = 5
 			carretas.append(carreta)
 			print(carreta)
    
-		while carretas.count > 0:
+		while len(carretas) > 0:
 			carreta = carretas.pop()
 			cliente.enviar_paquete(carreta)
 	elif opcion == 2:

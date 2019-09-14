@@ -8,7 +8,7 @@ from CARRETA import CARRETA
 from BUEY import BUEY
 
 HOST = 'localhost'
-PORT = 10000
+PORT = 10001
 
 class Cliente:
 
@@ -51,10 +51,10 @@ class Cliente:
 					if rid_carreta_enviada == rid_buey_recibido:
 						haya_confirmado_buey = True
 					else:
-						print("Error: Rid carreta = %s, Rid buey = %s.\n" % (rid_carreta_enviada, rid_buey_recibido))
+						print("CLIENTE -  Error: Rid carreta = %s, Rid buey = %s.\n" % (rid_carreta_enviada, rid_buey_recibido))
 						
 				except socket.timeout: 
-					print ("Buey no recibido en el intervalo definido, reenviando carreta con Rid = %s.\n")
+					print ("CLIENTE - Buey no recibido en el intervalo definido, reenviando carreta con Rid = %s.\n" % rid_carreta_enviada)
 		finally:
 			file.close()
 			sock.close()

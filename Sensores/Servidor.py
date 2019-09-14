@@ -9,7 +9,7 @@ from CARRETA import CARRETA
 from BUEY import BUEY
 
 HOST = ''
-PORT = 10000
+PORT = 10001
 
 class Servidor:
 
@@ -50,12 +50,12 @@ class Servidor:
 			if rid_ultima_carreta_procesada != rid_carreta_recibda:
 
 				# Escribe el dato recibido en el archivo
-				print("Rid carreta = %s escrito en el archivo." % carreta_recibida.rand_id)
+				print("SERVIDOR - Rid carreta = %s escrito en el archivo." % carreta_recibida.rand_id)
 				file.write("%s\n\n" % carreta_recibida.__str__())
 				rid_ultima_carreta_procesada = rid_carreta_recibda
 				
 			else:
-				print("La carreta con rid = %s, ya fue recibida anteriormente." % carreta_recibida.rand_id)
+				print("SERVIDOR - La carreta con rid = %s, ya fue recibida anteriormente." % carreta_recibida.rand_id)
 				
 			buey_confirmacion = BUEY()
 			buey_confirmacion.rand_id = carreta_recibida.rand_id
@@ -64,7 +64,7 @@ class Servidor:
 			buey_enviar = buey_confirmacion.pack_byte_array()
 
 			if buey_enviar:
-				time.sleep(5)
+				#time.sleep(5)
 				sent = sock.sendto(buey_enviar, address)
 				
 		sock.close()
