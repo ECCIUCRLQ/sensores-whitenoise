@@ -9,7 +9,7 @@ from CARRETA import CARRETA
 from BUEY import BUEY
 
 HOST = ''
-PORT = 10001
+PORT = 10002
 
 class Servidor:
 
@@ -58,13 +58,13 @@ class Servidor:
 				print("SERVIDOR - La carreta con rid = %s, ya fue recibida anteriormente." % carreta_recibida.rand_id)
 				
 			buey_confirmacion = BUEY()
-			buey_confirmacion.rand_id = carreta_recibida.rand_id
+			buey_confirmacion.rand_id = carreta_recibida.rand_id + 1
 			buey_confirmacion.sensor_id = carreta_recibida.sensor_id
 
 			buey_enviar = buey_confirmacion.pack_byte_array()
 
 			if buey_enviar:
-				#time.sleep(5)
+				time.sleep(1)
 				sent = sock.sendto(buey_enviar, address)
 				
 		sock.close()
