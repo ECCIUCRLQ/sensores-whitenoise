@@ -509,3 +509,171 @@ Paquete CARRETA:
 	type -> 5 
 	data -> 0
 
+Paquete CARRETA: 
+	rand_id -> 64 
+	date -> 14-Sep-2019 15:15:09 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 7 
+	date -> 14-Sep-2019 15:15:09 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 200 
+	date -> 14-Sep-2019 15:15:09 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 52 
+	date -> 14-Sep-2019 15:15:09 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 210 
+	date -> 14-Sep-2019 15:15:09 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 183 
+	date -> 14-Sep-2019 15:15:09 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 234 
+	date -> 14-Sep-2019 15:15:09 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 158 
+	date -> 14-Sep-2019 15:15:09 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 203 
+	date -> 14-Sep-2019 15:15:09 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 181 
+	date -> 14-Sep-2019 15:15:09 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 40 
+	date -> 14-Sep-2019 15:16:50 
+	sensor_id -> 123 
+	type -> 2 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 182 
+	date -> 14-Sep-2019 15:16:50 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 100 
+	date -> 14-Sep-2019 15:17:16 
+	sensor_id -> 123 
+	type -> 2 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 104 
+	date -> 14-Sep-2019 15:17:16 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 247 
+	date -> 14-Sep-2019 15:18:38 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 136 
+	date -> 14-Sep-2019 15:18:38 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 194 
+	date -> 14-Sep-2019 15:18:38 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 3 
+	date -> 14-Sep-2019 15:18:38 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 151 
+	date -> 14-Sep-2019 15:18:38 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 152 
+	date -> 14-Sep-2019 15:18:38 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 169 
+	date -> 14-Sep-2019 15:18:38 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 72 
+	date -> 14-Sep-2019 15:18:38 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 199 
+	date -> 14-Sep-2019 15:18:38 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+
+Paquete CARRETA: 
+	rand_id -> 255 
+	date -> 14-Sep-2019 15:18:38 
+	sensor_id -> 123 
+	type -> 5 
+	data -> 0
+

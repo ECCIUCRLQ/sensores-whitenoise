@@ -9,7 +9,7 @@ from CARRETA import CARRETA
 from BUEY import BUEY
 
 HOST = ''
-PORT = 10003
+PORT = 10005
 
 class Servidor:
 
@@ -64,7 +64,6 @@ class Servidor:
 			buey_enviar = buey_confirmacion.pack_byte_array()
 
 			if buey_enviar:
-				time.sleep(3)
 				sent = sock.sendto(buey_enviar, address)
 				
 		sock.close()
