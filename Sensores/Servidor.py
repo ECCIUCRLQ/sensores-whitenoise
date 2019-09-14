@@ -5,6 +5,9 @@ import time
 from CARRETA import CARRETA
 from BUEY import BUEY
 
+HOST = ''
+PORT = 10000
+
 class Servidor:
 
 	@classmethod
@@ -14,16 +17,16 @@ class Servidor:
 		sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 		# Configura el puerto y la direccion donde estaran esperando datos.
-		server_address = ('', 10001)
+		server_address = (HOST, PORT)
 		sock.bind(server_address)
 
-		# Archivo para guardar los datos que recibe
+		# Archivo para guardar los datos que recibe.
 		file = open("DatosServidor.txt", "a")
 
-		# Se asegura que la conexión con el cliente aún está abierta
+		# Se asegura que la conexión con el cliente aún está abierta.
 		connected = True
 
-		ultimo_random_id_recibido = -1
+		rid_ultima_carreta_procesada = -1
 
 		while connected:
 
@@ -34,23 +37,22 @@ class Servidor:
 			carreta_recibida = CARRETA()
 			carreta_recibida.unpack_byte_array(dato_recibido)
 
-
 			# Cierra la conexión si en el paquete CARRETA viene la señal end_connection
-			#if carreta_recibida.type == 2:
-			#	connected = False
+			if carreta_recibida.type == 2:
+				connected = False
 
-			actual_random_id_recibido = carreta_recibida.rand_id
+			rid_carreta_recibda = carreta_recibida.rand_id
 
-			# Control de duplicación de paquetes.
-			if ultimo_random_id_recibido != actual_random_id_recibido:
+			# Resuelve la ambiguedad ACk perdido (duplicación de paquetes).Figura 5.9b, Página 275, Libro León García.
+			if rid_ultima_carreta_procesada != rid_carreta_recibda:
 
 				# Escribe el dato recibido en el archivo
-				print("Paquete con rid = %s escrito en el archivo." % carreta_recibida.rand_id)
+				print("Rid carreta = %s escrito en el archivo." % carreta_recibida.rand_id)
 				file.write("%s\n\n" % carreta_recibida.__str__())
-				ultimo_random_id_recibido = actual_random_id_recibido
+				rid_ultima_carreta_procesada = rid_carreta_recibda
 				
 			else:
-				print("Paquete con rid = %s descartado." % carreta_recibida.rand_id)
+				print("La carreta con rid = %s, ya fue recibida anteriormente." % carreta_recibida.rand_id)
 				
 			buey_confirmacion = BUEY()
 			buey_confirmacion.rand_id = carreta_recibida.rand_id
@@ -61,8 +63,7 @@ class Servidor:
 			if buey_enviar:
 				time.sleep(5)
 				sent = sock.sendto(buey_enviar, address)
-
-
+				
 		sock.close()
 		print("Socket closed due to 'end_connection' signal, server no longer listening")
 		file.close()
