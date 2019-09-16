@@ -22,7 +22,7 @@ def main():
 
 		for i in range(10):
 			carreta = CARRETA()
-			carreta.sensor_id = 123
+			carreta.sensor_id = SensorId([1,0,0,1])
 			carreta.date = utilidades.get_unix_time()
 			carreta.rand_id = random.getrandbits(8)
 			carreta.type = 5
