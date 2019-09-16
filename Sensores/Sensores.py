@@ -6,6 +6,7 @@ from BUEY import BUEY
 from Cliente import Cliente
 from Servidor import Servidor
 from Utilidades import Utilidades
+from SensorId import SensorId
 import random
 
 def main():
