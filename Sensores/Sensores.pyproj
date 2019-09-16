@@ -25,9 +25,18 @@
     <Compile Include="BUEY.py" />
     <Compile Include="CARRETA.py" />
     <Compile Include="Cliente.py" />
+    <Compile Include="Equipo.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sensor.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Sensores.py" />
     <Compile Include="SensorId.py" />
     <Compile Include="Servidor.py" />
+    <Compile Include="Tipo.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utilidades.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
