@@ -1,7 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
+
 from struct import *
 from SensorId import SensorId
 
-#Contiene la estructura del paquete BUEY para la confirmaci�n de la recepci�n.
+#Contiene la estructura del paquete BUEY para la confirmación de la recepción.
 class BUEY:
 
 	# Constructor
