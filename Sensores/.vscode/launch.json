@@ -9,14 +9,24 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "args": 
+            [
+                "localhost",
+                "10001"
+            ]
         },
         {
             "name": "Cliente",
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "args": 
+            [
+                "localhost",
+                "10001"
+            ]
         },
     ]
 }

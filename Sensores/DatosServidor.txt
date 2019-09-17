@@ -1,54 +1,10 @@
 Paquete CARRETA: 
-	rand_id -> 133 
-	date -> 11-Sep-2019 17:00:18 
-	sensor_id -> 123 
-	type -> 1 
-	data -> 0.0
-
-Paquete CARRETA: 
-	rand_id -> 73 
-	date -> 11-Sep-2019 17:00:20 
-	sensor_id -> 123 
-	type -> 1 
-	data -> 0.0
-
-Paquete CARRETA: 
-	rand_id -> 180 
-	date -> 11-Sep-2019 17:00:23 
-	sensor_id -> 123 
-	type -> 1 
-	data -> 0.0
-
-Paquete CARRETA: 
-	rand_id -> 102 
-	date -> 11-Sep-2019 17:00:26 
-	sensor_id -> 123 
-	type -> 1 
-	data -> 0.0
-
-Paquete CARRETA: 
-	rand_id -> 6 
-	date -> 11-Sep-2019 17:00:36 
-	sensor_id -> 123 
-	type -> 2 
-	data -> 0.0
-
-Paquete CARRETA: 
-	rand_id -> 123 
-	date -> 12-Sep-2019 15:19:39 
-	sensor_id -> 
-	group -> 1 
-	sensor_id -> 0 0 1 
-	type -> 2 
-	data -> 0.0
-
-Paquete CARRETA: 
 	rand_id -> 57 
 	date -> 16-Sep-2019 14:53:34 
 	group -> 1 
 	sensor_id -> 0 0 1 
 	type -> 5 
-	data -> 0
+	data -> 0.0
 
 Paquete CARRETA: 
 	rand_id -> 215 
@@ -56,7 +12,7 @@ Paquete CARRETA:
 	group -> 1 
 	sensor_id -> 0 0 1 
 	type -> 5 
-	data -> 0
+	data -> 0.0
 
 Paquete CARRETA: 
 	rand_id -> 195 
@@ -64,7 +20,7 @@ Paquete CARRETA:
 	group -> 1 
 	sensor_id -> 0 0 1 
 	type -> 5 
-	data -> 0
+	data -> 0.0
 
 Paquete CARRETA: 
 	rand_id -> 130 
@@ -72,7 +28,7 @@ Paquete CARRETA:
 	group -> 1 
 	sensor_id -> 0 0 1 
 	type -> 5 
-	data -> 0
+	data -> 0.0
 
 Paquete CARRETA: 
 	rand_id -> 168 
@@ -80,7 +36,7 @@ Paquete CARRETA:
 	group -> 1 
 	sensor_id -> 0 0 1 
 	type -> 5 
-	data -> 0
+	data -> 0.0
 
 Paquete CARRETA: 
 	rand_id -> 44 
@@ -88,7 +44,7 @@ Paquete CARRETA:
 	group -> 1 
 	sensor_id -> 0 0 1 
 	type -> 5 
-	data -> 0
+	data -> 0.0
 
 Paquete CARRETA: 
 	rand_id -> 1 
@@ -96,7 +52,7 @@ Paquete CARRETA:
 	group -> 1 
 	sensor_id -> 0 0 1 
 	type -> 5 
-	data -> 0
+	data -> 0.0
 
 Paquete CARRETA: 
 	rand_id -> 111 
@@ -104,7 +60,7 @@ Paquete CARRETA:
 	group -> 1 
 	sensor_id -> 0 0 1 
 	type -> 5 
-	data -> 0
+	data -> 0.0
 
 Paquete CARRETA: 
 	rand_id -> 137 
@@ -112,7 +68,7 @@ Paquete CARRETA:
 	group -> 1 
 	sensor_id -> 0 0 1 
 	type -> 5 
-	data -> 0
+	data -> 0.0
 
 Paquete CARRETA: 
 	rand_id -> 49 
@@ -120,5 +76,5 @@ Paquete CARRETA:
 	group -> 1 
 	sensor_id -> 0 0 1 
 	type -> 5 
-	data -> 0
+	data -> 0.0
 
