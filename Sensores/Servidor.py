@@ -1,8 +1,8 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*- 
+#!/usr/bin/env python 
 import socket
 import sys
 import time
+import sysv_ipc
 from CARRETA import CARRETA
 from BUEY import BUEY
 
@@ -12,6 +12,7 @@ class Servidor:
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		self.my_address = (ip_adress, port_number)
 		self.client_address = 0
+		self.mq = sysv_ipc.MessageQueue(2424, sysv_ipc.IPC_CREAT, int("0600", 8), 2048)
 
 	def recibir(self):
 		connected = True
@@ -26,15 +27,12 @@ class Servidor:
 			carreta_recibida = CARRETA()
 			carreta_recibida.unpack_byte_array(dato_recibido)
 
-			# Cierra la conexión si en el paquete CARRETA viene la señal end_connection
-			#if carreta_recibida.type == 2:
-			#	connected = False
 			# Resuelve la ambiguedad ACk perdido (duplicación de paquetes).Figura 5.9b, Página 275, Libro León García.
 			if rid_ultima_carreta_procesada != carreta_recibida.rand_id:
 
-				# Escribe el dato recibido en el archivo
-				print("SERVIDOR - Rid carreta = %s escrito en el archivo." % carreta_recibida.rand_id)
-				#file.write("%s\n\n" % carreta_recibida.__str__())
+				# Escribe el dato recibido en el buzón.
+				print("SERVIDOR - Rid carreta = %s escrito en buzón." % carreta_recibida.rand_id)
+				self.mq.send(dato_recibido)
 				rid_ultima_carreta_procesada = carreta_recibida.rand_id
 				
 			else:

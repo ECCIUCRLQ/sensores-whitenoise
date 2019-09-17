@@ -1,3 +1,4 @@
+from Equipo import Equipo
 class SensorId:
 
 	# Constructor

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*- 
 import socket
 import time
 import sys
@@ -25,7 +24,6 @@ class Cliente:
 		dato_recibido, server = self.sock.recvfrom(4096)
 		buey_recibido = BUEY()
 		buey_recibido.unpack_byte_array(dato_recibido)
-		print(buey_recibido)
 		return buey_recibido
 
 	def send_recv_loop(self):
@@ -33,7 +31,6 @@ class Cliente:
 		# Reenvía el paquete carreta hasta que reciba la confirmación por parte de un paquete buey.
 		# ToDo: Carreta se crea con datos del archivo si hay datos si no se queda esperando
 		carreta = CARRETA(random.getrandbits(8), Utilidades.get_unix_time(), SensorId([1,0,0,1]), 2, 0)
-		
 		# Envia datos todo el tiempo!
 		while True:
 			# Envia los datos.
@@ -42,10 +39,11 @@ class Cliente:
 				# Recibe un paquete BUEY
 				buey = 	self.recibir_paquete()
 				if carreta.rand_id == buey.rand_id:
-					# ToDo: Carreta se crea con datos del archivo si hay datos si no se queda esperando
+					# ToDo: Carreta se crea con datos del archivo. Si hay datos, si no se queda esperando.
+					print("CLIENTE - Buey de confirmación recibido para la carreta con rid = %s" % (carreta.rand_id))
 					carreta = CARRETA(random.getrandbits(8), Utilidades.get_unix_time(), SensorId([1,0,0,1]), 2, 0)
 				else:
-					print("CLIENTE -  Error: Rid carreta = %s, Rid buey = %s.\n" % (carreta.rand_id, buey.rand_id))	
+					print("CLIENTE -  Error: Rid carreta = %s, Rid buey = %s.\n" % (carreta.rand_id, buey.rand_id))
 			except socket.timeout:
 				print("CLIENTE - Buey no recibido en el intervalo definido, reenviando carreta con Rid = %s.\n" % carreta.rand_id)
 			time.sleep(self.frecuencia)
@@ -53,7 +51,7 @@ class Cliente:
 def iniciar_cliente():
 	# Se crea un cliente que se conecta al socket(address) indicado por linea de comandos
 	cliente = Cliente(sys.argv[1], (int)(sys.argv[2]))
-	cliente.sock.settimeout(3)
+	cliente.sock.settimeout(1)
 	cliente.send_recv_loop()
 
 iniciar_cliente()

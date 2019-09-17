@@ -4,7 +4,7 @@
 from struct import *
 from SensorId import SensorId
 from Utilidades import Utilidades
-
+from Equipo import Equipo
 # Contiene la estructura del paquete CARRETA para el envío de información.
 class CARRETA:
 
