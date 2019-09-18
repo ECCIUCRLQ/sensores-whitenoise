@@ -21,12 +21,12 @@ class Sensor:
 		GPIO.setwarnings(False)
 		GPIO.setmode(GPIO.BCM)
 		GPIO.setup(self.pin, GPIO.IN)
-        
+
 	def __repr__(self):
 		return "Sensor()"
 
 	def __str__(self):
-		return "Sensor: \n\tSensor Id -> %s \n\tTipo -> %s \n\tPin -> %s" % (self.sensor_id.__str__(), self.tipo, self.pin)
+		return "Sensor: \n\tSensor Id -> %s \n\tTipo -> %s \n\tPin -> %s" % (self.sensor_id, self.tipo, self.pin)
 
 	def evento(self, canal):
 		#Falta archivo para persistencia.
@@ -40,6 +40,14 @@ class Sensor:
 		GPIO.add_event_callback(self.pin, self.evento)
 		print("Iniciando el sensor %s de tipo %s" % (self.sensor_id, self.tipo))
 
+	def get_sensor_id(self):
+		return self.__sensor_id
+
+	def set_sensor_id(self, value):
+		if not isinstance(value, SensorId):
+			raise TypeError("El tipo esperado para sensor_id es SensorId")
+		self.__sensor_id =  value
+
 	def get_tipo(self):
 		return self.__tipo
 
@@ -52,6 +60,7 @@ class Sensor:
 	def set_pin(self, value):
 		self.__pin = value
 
+	sensor_id = property(get_sensor_id, set_sensor_id)
 	tipo = property(get_tipo, set_tipo)
 	pin = property(get_pin, set_pin)
 
