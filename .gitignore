@@ -1,2 +1,3 @@
 *.pyc
 *.suo
+/Sensores/__pycache__/*.pyc
