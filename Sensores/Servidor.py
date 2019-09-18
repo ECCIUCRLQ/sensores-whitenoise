@@ -1,4 +1,5 @@
 #!/usr/bin/env python 
+# -*- coding: utf-8 -*- 
 import socket
 import sys
 import time
@@ -27,7 +28,7 @@ class Servidor:
 			carreta_recibida = CARRETA()
 			carreta_recibida.unpack_byte_array(dato_recibido)
 
-			# Resuelve la ambiguedad ACk perdido (duplicación de paquetes).Figura 5.9b, Página 275, Libro León García.
+			# Resuelve la ambiguedad ACk perdido (duplicacion de paquetes).Figura 5.9b, Pagina 275, Libro Leon Garcia.
 			if rid_ultima_carreta_procesada != carreta_recibida.rand_id:
 
 				# Escribe el dato recibido en el buzón.

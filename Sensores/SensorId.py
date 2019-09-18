@@ -12,7 +12,7 @@ class SensorId:
 		return "SensorId()"
 
 	def __str__(self):
-		return "group -> %s \n\tsensor_id -> %s %s %s" % (self.group_id, self.pos1, self.pos2, self.pos3)
+		return "Grupo -> %s Id -> %s %s %s" % (self.group_id, self.pos1, self.pos2, self.pos3)
 
 	def set_group_id(self, x):
 		if (x < 0 or x > 255):

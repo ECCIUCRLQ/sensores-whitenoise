@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import socket
-import time
 import sys
+import time
+import sysv_ipc
 import random
 from CARRETA import CARRETA
 from BUEY import BUEY
@@ -15,6 +16,7 @@ class Cliente:
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		self.server_address = (ip_adress, port_number)
 		self.frecuencia = 1
+		self.mq = sysv_ipc.MessageQueue(2525, sysv_ipc.IPC_CREAT, int("0600", 8), 2048)
 
 	def enviar_paquete(self, carreta_enviar):
 		dato_enviar = carreta_enviar.pack_byte_array()
@@ -27,10 +29,12 @@ class Cliente:
 		return buey_recibido
 
 	def send_recv_loop(self):
-		# Resuelve la ambiguedad de ACK no numerado(pérdida de paquetes). Figura 5.10, Página 275, Libro León García.
-		# Reenvía el paquete carreta hasta que reciba la confirmación por parte de un paquete buey.
-		# ToDo: Carreta se crea con datos del archivo si hay datos si no se queda esperando
-		carreta = CARRETA(random.getrandbits(8), Utilidades.get_unix_time(), SensorId([1,0,0,1]), 2, 0)
+		# Resuelve la ambiguedad de ACK no numerado(perdida de paquetes). Figura 5.10, Pagina 275, Libro Leon Garcia.
+		# Reenvia el paquete carreta hasta que reciba la confirmacion por parte de un paquete buey.
+		message, type = self.mq.receive()
+		carreta = CARRETA()
+		carreta.unpack_byte_array(message)
+		carreta.rand_id = random.getrandbits(8)
 		# Envia datos todo el tiempo!
 		while True:
 			# Envia los datos.
@@ -39,9 +43,11 @@ class Cliente:
 				# Recibe un paquete BUEY
 				buey = 	self.recibir_paquete()
 				if carreta.rand_id == buey.rand_id:
-					# ToDo: Carreta se crea con datos del archivo. Si hay datos, si no se queda esperando.
-					print("CLIENTE - Buey de confirmación recibido para la carreta con rid = %s" % (carreta.rand_id))
-					carreta = CARRETA(random.getrandbits(8), Utilidades.get_unix_time(), SensorId([1,0,0,1]), 2, 0)
+					print("CLIENTE - Buey de confirmacion recibido para la carreta con rid = %s" % (carreta.rand_id))
+					message, type = self.mq.receive()
+					carreta = CARRETA()
+					carreta.unpack_byte_array(message)
+					carreta.rand_id = random.getrandbits(8)
 				else:
 					print("CLIENTE -  Error: Rid carreta = %s, Rid buey = %s.\n" % (carreta.rand_id, buey.rand_id))
 			except socket.timeout:
