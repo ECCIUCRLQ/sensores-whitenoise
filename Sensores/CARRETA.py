@@ -23,7 +23,7 @@ class CARRETA:
 
 	def __str__(self):
 		utilidades = Utilidades()
-		return "Paquete CARRETA: \n\trand_id -> %s \n\tdate -> %s \n\t%s \n\ttype -> %s (%s) \n\tdata -> %s" % (self.rand_id, utilidades.get_date(self.date), self.sensor_id, self.type.name, self.type.value, self.data)
+		return "Paquete CARRETA: \n\trand_id -> %s \n\tdate -> %s \n\t%s \n\ttype -> %s (%s) \n\tdata -> %s\n\n" % (self.rand_id, utilidades.get_date(self.date), self.sensor_id, self.type.name, self.type.value, self.data)
 
 	def get_rand_id(self):
 		return self.__rand_id

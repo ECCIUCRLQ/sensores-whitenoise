@@ -18,7 +18,7 @@ class Aplicacion:
 				message, type = self.mq.receive()
 				carreta = CARRETA()
 				carreta.unpack_byte_array(message)
-				Archivos.adjuntar_linea(carreta)
+				Archivos.adjuntar_linea(carreta.__str__())
 				print(carreta)
 		except KeyboardInterrupt:
 				print ("Aplicacion Finalizada...")

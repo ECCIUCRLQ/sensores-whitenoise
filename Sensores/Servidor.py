@@ -54,11 +54,11 @@ class Servidor:
 
 def iniciar_servidor():
     try:
-		servidor = Servidor(sys.argv[1], (int)(sys.argv[2]));
-		servidor.sock.bind(servidor.my_address)
-		servidor.recibir()
-	except KeyboardInterrupt:
+        servidor = Servidor(sys.argv[1], (int)(sys.argv[2]));
+        servidor.sock.bind(servidor.my_address)
+        servidor.recibir()
+    except KeyboardInterrupt:
         servidor.sock.close()
-		print ("Servidor Finalizado...")
+        print ("Servidor Finalizado...")
 
 iniciar_servidor()

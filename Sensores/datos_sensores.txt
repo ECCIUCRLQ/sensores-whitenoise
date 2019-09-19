@@ -1,0 +1,70 @@
+Paquete CARRETA: 
+	rand_id -> 82 
+	date -> 18-Sep-2019 19:25:35 
+	grupo -> whitenoise (1) id -> 0 0 1 
+	type -> keep_alive (0) 
+	data -> 0.0
+
+Paquete CARRETA: 
+	rand_id -> 197 
+	date -> 18-Sep-2019 19:25:35 
+	grupo -> whitenoise (1) id -> 0 0 2 
+	type -> keep_alive (0) 
+	data -> 0.0
+
+Paquete CARRETA: 
+	rand_id -> 215 
+	date -> 18-Sep-2019 19:25:43 
+	grupo -> whitenoise (1) id -> 0 0 2 
+	type -> big_sound (2) 
+	data -> 1.0
+
+Paquete CARRETA: 
+	rand_id -> 47 
+	date -> 18-Sep-2019 19:25:46 
+	grupo -> whitenoise (1) id -> 0 0 1 
+	type -> movimiento (1) 
+	data -> 1.0
+
+Paquete CARRETA: 
+	rand_id -> 218 
+	date -> 18-Sep-2019 19:25:48 
+	grupo -> whitenoise (1) id -> 0 0 1 
+	type -> movimiento (1) 
+	data -> 1.0
+
+Paquete CARRETA: 
+	rand_id -> 100 
+	date -> 18-Sep-2019 19:25:50 
+	grupo -> whitenoise (1) id -> 0 0 2 
+	type -> big_sound (2) 
+	data -> 1.0
+
+Paquete CARRETA: 
+	rand_id -> 147 
+	date -> 18-Sep-2019 19:26:19 
+	grupo -> whitenoise (1) id -> 0 0 1 
+	type -> movimiento (1) 
+	data -> 1.0
+
+Paquete CARRETA: 
+	rand_id -> 157 
+	date -> 18-Sep-2019 19:26:20 
+	grupo -> whitenoise (1) id -> 0 0 1 
+	type -> movimiento (1) 
+	data -> 1.0
+
+Paquete CARRETA: 
+	rand_id -> 216 
+	date -> 18-Sep-2019 19:26:35 
+	grupo -> whitenoise (1) id -> 0 0 2 
+	type -> keep_alive (0) 
+	data -> 0.0
+
+Paquete CARRETA: 
+	rand_id -> 211 
+	date -> 18-Sep-2019 19:26:35 
+	grupo -> whitenoise (1) id -> 0 0 1 
+	type -> keep_alive (0) 
+	data -> 0.0
+
