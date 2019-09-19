@@ -22,6 +22,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Aplicacion.py" />
+    <Compile Include="Archivos.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="BUEY.py" />
     <Compile Include="CARRETA.py" />
     <Compile Include="Cliente.py" />

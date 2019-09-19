@@ -3,6 +3,7 @@ import RPi.GPIO as GPIO
 import sys
 import time
 import sysv_ipc
+import threading
 
 from CARRETA import CARRETA
 from SensorId import SensorId
@@ -39,6 +40,16 @@ class Sensor:
 		GPIO.add_event_detect(self.pin, GPIO.BOTH, bouncetime=300)
 		GPIO.add_event_callback(self.pin, self.evento)
 		print("Iniciando el sensor %s de tipo %s" % (self.sensor_id, self.tipo))
+
+		#Inicia el keep alive
+		ka = threading.Thread(target=keep_alive)
+		ka.start()
+
+	def keep_alive(self):
+		while(True):
+			pre_paquete = CARRETA(0, Utilidades.get_unix_time(), self.sensor_id, Tipo.keep_alive.value, 0)
+			self.mq.send(pre_paquete.pack_byte_array())
+			time.sleep(60)
 
 	def get_sensor_id(self):
 		return self.__sensor_id

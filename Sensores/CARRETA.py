@@ -75,6 +75,12 @@ class CARRETA:
 		self.type = Tipo(datos[6])
 		self.data = datos[7]
 
+	def to_string(self):
+		return "%s;%s;%s;%s;%s;%s;%s;%s" % (self.rand_id, self.date, self.sensor_id.group_id.value, self.sensor_id.pos1, self.sensor_id.pos2, self.sensor_id.pos3, self.type.value, self.data)
+
+	def from_string(self, linea):
+		return 0
+
 	rand_id = property(get_rand_id, set_rand_id)
 	date = property(get_date, set_date)
 	sensor_id = property(get_sensor_id, set_sensor_id)
