@@ -55,9 +55,12 @@ class Cliente:
 			time.sleep(self.frecuencia)
 
 def iniciar_cliente():
+    try:
 	# Se crea un cliente que se conecta al socket(address) indicado por linea de comandos
 	cliente = Cliente(sys.argv[1], (int)(sys.argv[2]))
 	cliente.sock.settimeout(1)
 	cliente.send_recv_loop()
+    except KeyboardInterrupt:
+	print ("Cliente Finalizado...")
 
 iniciar_cliente()
