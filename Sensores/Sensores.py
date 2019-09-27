@@ -6,9 +6,9 @@ from Sensor import Sensor
 import time
 
 def main():
-		
+
 	pin_movimiento = 23 #PIR 23
-	pin_big_sound = 17 
+	pin_big_sound = 17
 
 	sensor_id_movimiento = SensorId([Equipo.whitenoise,0,0,1])
 	sensor_id_big_sound = SensorId([Equipo.whitenoise,0,0,2])
@@ -23,6 +23,6 @@ def main():
 	    while True:
 	        time.sleep(100)
 	except KeyboardInterrupt:
-	    print ("Sensores Recepcion Finalizado...")
+	    print ("\nSensores Recepcion Finalizado...")
 
 main()

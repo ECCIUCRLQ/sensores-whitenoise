@@ -1,5 +1,5 @@
-#!/usr/bin/env python 
-# -*- coding: utf-8 -*- 
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import socket
 import sys
 import time
@@ -35,10 +35,10 @@ class Servidor:
 				print("SERVIDOR - Rid carreta = %s escrito en buzón." % carreta_recibida.rand_id)
 				self.mq.send(dato_recibido)
 				rid_ultima_carreta_procesada = carreta_recibida.rand_id
-				
+
 			else:
 				print("SERVIDOR - La carreta con rid = %s, ya fue recibida anteriormente." % carreta_recibida.rand_id)
-				
+
 			buey_confirmacion = BUEY()
 			buey_confirmacion.rand_id = carreta_recibida.rand_id
 			buey_confirmacion.sensor_id = carreta_recibida.sensor_id
@@ -47,7 +47,7 @@ class Servidor:
 
 			if datos_enviar:
 				self.sock.sendto(datos_enviar, self.client_address)
-				
+
 		self.sock.close()
 		print("Socket closed due to 'end_connection' signal, server no longer listening")
 		return
@@ -59,6 +59,6 @@ def iniciar_servidor():
         servidor.recibir()
     except KeyboardInterrupt:
         servidor.sock.close()
-        print ("Servidor Finalizado...")
+        print ("\nServidor Finalizado...")
 
 iniciar_servidor()

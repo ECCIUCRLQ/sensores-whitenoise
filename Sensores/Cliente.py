@@ -61,6 +61,6 @@ def iniciar_cliente():
         cliente.sock.settimeout(1)
         cliente.send_recv_loop()
     except KeyboardInterrupt:
-        print ("Cliente Finalizado...")
+        print ("\nCliente Finalizado...")
 
 iniciar_cliente()

@@ -21,7 +21,7 @@ class Aplicacion:
 				Archivos.adjuntar_linea(carreta.__str__())
 				print(carreta)
 		except KeyboardInterrupt:
-				print ("Aplicacion Finalizada...")
+				print ("\nAplicacion Finalizada...")
 
 app = Aplicacion()
 app.start()
