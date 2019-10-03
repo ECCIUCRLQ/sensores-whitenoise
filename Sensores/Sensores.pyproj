@@ -21,6 +21,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AdministradorMemoria.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Aplicacion.py" />
     <Compile Include="Archivos.py">
       <SubType>Code</SubType>
