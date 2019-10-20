@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>df04b357-9aea-420e-a874-589f4f85fc78</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Sensores.py</StartupFile>
+    <StartupFile>Test.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -34,12 +34,24 @@
     <Compile Include="Equipo.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Frame.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Nodo.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Pagina.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Sensor.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sensores.py" />
     <Compile Include="SensorId.py" />
     <Compile Include="Servidor.py" />
+    <Compile Include="Test.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Tipo.py">
       <SubType>Code</SubType>
     </Compile>
