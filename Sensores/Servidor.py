@@ -9,7 +9,7 @@ from BUEY import BUEY
 
 class Servidor:
 
-	def __init__(self, ip_adress, port_number): #Podria recibir el path del archivo de donde lee
+	def __init__(self, ip_adress, port_number):
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		self.my_address = (ip_adress, port_number)
 		self.client_address = 0

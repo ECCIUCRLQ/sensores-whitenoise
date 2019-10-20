@@ -1,4 +1,5 @@
 from Equipo import Equipo
+from struct import *
 class SensorId:
 
 	# Constructor
@@ -45,6 +46,9 @@ class SensorId:
 
 	def get_pos3(self):
 		return self.__pos3
+
+	def get_single_value(self):
+		return pack('BBBB', self.group_id.value, self.pos1, self.pos2, self.pos3)
 
 	group_id = property(get_group_id, set_group_id)
 	pos1 = property(get_pos1, set_pos1)

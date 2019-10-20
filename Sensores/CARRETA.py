@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
-
 from struct import *
 from SensorId import SensorId
 from Utilidades import Utilidades
