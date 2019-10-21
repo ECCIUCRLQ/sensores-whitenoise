@@ -1,7 +1,8 @@
+#from SensorId import SensorId
 
 class TablaControlConfig:
-
-    def __init__(self, sensor_id = SensorId(), paginas = [], tamano_dato = 0):
+    #sensor_id manejarlo como 4bytes corridos mejor y no como una referencia a objeto
+    def __init__(self, sensor_id = bytes(4), paginas = [], tamano_dato = 0):
         self.sensor_id = sensor_id
         self.paginas = paginas
         self.tamano_dato = tamano_dato

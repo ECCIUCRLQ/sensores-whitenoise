@@ -8,9 +8,14 @@ from CARRETA import CARRETA
 from Utilidades import Utilidades
 from SensorId import SensorId
 
+
 class Recolector:
 
-	mq = sysv_ipc.MessageQueue(2424, sysv_ipc.IPC_CREAT, int("0600", 8), 2048)
+	MALLOC_MARAVILLOSO = 1
+	DIR_LOGICA = 2
+
+	mq_Server = sysv_ipc.MessageQueue(2424, sysv_ipc.IPC_CREAT, int("0600", 8), 2048)
+	mq_Interfaz = sysv_ipc.MessageQueue(3333, sysv_ipc.IPC_CREAT, int("0600", 8), 2048)
 	log_dir = dict()
 
 	@classmethod
@@ -26,22 +31,21 @@ class Recolector:
 				return pack('I', date)
 
 	@classmethod
-	def malloc_maravilloso(cls, sendor_id_value, tamano_dato): # Simula el malloc_maravilloso de la interfaz
-		return 1
-
-	@classmethod
 	def start(cls):
 		carreta = CARRETA()
 		try:
 			while True:
-				data, type = cls.mq.receive()
+				data, tipo = cls.mq_Server.receive()
 				carreta.unpack_byte_array(data)
 				sensor_id_value = carreta.sensor_id.get_single_value()
 
-				if sensor_id_value not in cls.log_dir:
-					cls.log_dir[sensor_id_value] = cls.malloc_maravilloso(sensor_id_value, 4)
-					print("Nuevo Sensor Agregado: " + str(carreta.sensor_id))
 				data_extracted = cls.extract_data(carreta) # Extract data to be written in memory
+
+				if sensor_id_value not in cls.log_dir:
+					# Llamado por medio de la cola a Interfaz.malloc_maravilloso()
+					cls.mq_Interfaz.send(pack("4sI", sensor_id_value, len(data_extracted)), block = True, type = cls.MALLOC_MARAVILLOSO) # Ejecuta Interfaz.malloc() en la interfaz
+					cls.log_dir[sensor_id_value], tipo =  cls.mq_Interfaz.receive( block = True, type = cls.DIR_LOGICA)# Devuelve el resultado del Interfaz.Malloc()
+					print("Nuevo Sensor Agregado: " + str(carreta.sensor_id) + ", Dir_Logica: " + str(int.from_bytes(cls.log_dir[sensor_id_value], "little")))
 				# Interfaz.write(sensor_id_value, data_extracted)
 		except KeyboardInterrupt:
 				print ("\nRecolector Finalizado...")
