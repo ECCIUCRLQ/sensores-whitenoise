@@ -9,6 +9,7 @@ class Interfaz:
     PAGE_SIZE = 76800
     MALLOC_MARAVILLOSO = 1
     DIR_LOGICA = 2
+    WRITE = 3
 
     tabla_control = []
     tabla_offset = []
@@ -16,22 +17,23 @@ class Interfaz:
 
     @classmethod
     def guardar(cls, dirLog, message):
-        offset = str(cls.tabla_offset[dirLog])
+        offset = cls.tabla_offset[dirLog]
         if offset >= cls.PAGE_SIZE-1:
             paginaNueva = AdministradorMemoria.malloc(tamano_dato)
-            tabla_control[dirLog].paginas.append(paginaNueva)
+            cls.tabla_control[dirLog].paginas.append(paginaNueva)
             offset = '0'
             cls.tabla_offset[dirLog] = 0
-        dirFisica = str(max(tabla_control[dirLog].paginas))
-        direccion = dirFisica.zfill(5) + 'x' + offset.zfill(5)
+        dirFisica = str(max(cls.tabla_control[dirLog].paginas))
+        direccion = dirFisica.zfill(5) + 'x' + str(offset).zfill(5)
         AdministradorMemoria.write(direccion, message)
         cls.tabla_offset[dirLog] += cls.tabla_control[dirLog].tamano_dato
+        print(AdministradorMemoria.read(max(cls.tabla_control[dirLog].paginas)))
 
     @classmethod
     def leer(cls, dirLog):
         datos = []
         for pagina in cls.tabla_control[dirLog].paginas:
-            datos.append(AdministradorMemoria.read(paginas))
+            datos.append(AdministradorMemoria.read(pagina))
         return datos
 
     @classmethod
@@ -46,12 +48,19 @@ class Interfaz:
         try:
             while True:
                 msg, tipo = cls.mq.receive()
+                print("tipo: " + str(tipo))
                 if tipo == cls.MALLOC_MARAVILLOSO:
                     print("Malloc!")
                     sensor_id, tamano_dato  = unpack('4sI', msg)
                     dir_logica = cls.malloc_maravilloso(sensor_id, tamano_dato)
                     cls.mq.send(pack('I', dir_logica), block = True, type = cls.DIR_LOGICA)
+                
+                if tipo == cls.WRITE:
+                    print("Write!")
+                    dir_logica, data = unpack('I' + str(len(msg) - 4) + 's', msg)
+                    cls.guardar(dir_logica, data)
+
         except KeyboardInterrupt:
-            print ("\nRecolector Finalizado...")
+            print("\nRecolector Finalizado...")
 
 Interfaz.start()

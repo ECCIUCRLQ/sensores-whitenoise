@@ -13,6 +13,7 @@ class Recolector:
 
 	MALLOC_MARAVILLOSO = 1
 	DIR_LOGICA = 2
+	WRITE = 3
 
 	mq_Server = sysv_ipc.MessageQueue(2424, sysv_ipc.IPC_CREAT, int("0600", 8), 2048)
 	mq_Interfaz = sysv_ipc.MessageQueue(3333, sysv_ipc.IPC_CREAT, int("0600", 8), 2048)
@@ -46,8 +47,9 @@ class Recolector:
 					cls.mq_Interfaz.send(pack("4sI", sensor_id_value, len(data_extracted)), block = True, type = cls.MALLOC_MARAVILLOSO) # Ejecuta Interfaz.malloc() en la interfaz
 					cls.log_dir[sensor_id_value], tipo =  cls.mq_Interfaz.receive( block = True, type = cls.DIR_LOGICA)# Devuelve el resultado del Interfaz.Malloc()
 					print("Nuevo Sensor Agregado: " + str(carreta.sensor_id) + ", Dir_Logica: " + str(int.from_bytes(cls.log_dir[sensor_id_value], "little")))
-				# Interfaz.write(sensor_id_value, data_extracted)
+				
+				cls.mq_Interfaz.send(pack("4s" + str(len(data_extracted)) + "s", cls.log_dir[sensor_id_value], data_extracted), block = True, type = cls.WRITE)
 		except KeyboardInterrupt:
-				print ("\nRecolector Finalizado...")
+				print("\nRecolector Finalizado...")
 
 Recolector.start()
