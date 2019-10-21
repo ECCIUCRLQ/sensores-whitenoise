@@ -9,11 +9,16 @@ class Intefaz:
 
     @classmethod
     def guardar(cls, dirLog, message):
-        dirFisica = str(dirLog)
         offset = str(cls.tabla_offset[dirLog])
+        if offset >= PAGE_SIZE:
+            paginaNueva = Administrados.malloc(tamano_dato)
+            tabla_control[dirLog].paginas.append(paginaNueva)
+            offset = 0
+        dirFisica = str(max(tabla_control[dirLog].paginas))
         direccion = dirFisica.zfill(5) + 'x' + offset.zfill(5)
         AdministradorMemoria.write(direccion, message)
         cls.tabla_offset[dirLog] += cls.tabla_control[dirLog].tamano_dato
+
 
     @classmethod
     def leer(cls, dirLog):
@@ -27,4 +32,4 @@ class Intefaz:
         pagina = AdministradorMemoria.malloc(tamano_dato)
         cls.tabla_control.append(new TablaControlConfig(sensor_id, [paginas], tamano_dato))
         cls.tabla_offset.append(0)
-        return tabla_control
+        return len(tabla_control)-1
