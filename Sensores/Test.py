@@ -46,3 +46,5 @@ print(AdministradorMemoria.read(3))
 print(AdministradorMemoria.read(1))
 
 print(AdministradorMemoria.read(0))
+
+AdministradorMemoria.finalizar_memoria()

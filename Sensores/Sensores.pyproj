@@ -37,18 +37,26 @@
     <Compile Include="Frame.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Graficador.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interfaz.py" />
     <Compile Include="Nodo.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Pagina.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Prueba.py" />
+    <Compile Include="Recolector.py" />
     <Compile Include="Sensor.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sensores.py" />
     <Compile Include="SensorId.py" />
     <Compile Include="Servidor.py" />
+    <Compile Include="ServidorTest.py" />
+    <Compile Include="TablaControlConfig.py" />
     <Compile Include="Test.py">
       <SubType>Code</SubType>
     </Compile>
