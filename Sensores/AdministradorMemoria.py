@@ -6,6 +6,7 @@ from operator import attrgetter
 
 import datetime
 import os
+import shutil
 
 class AdministradorMemoria:
 
@@ -108,9 +109,20 @@ class AdministradorMemoria:
 		# Inicializa la memoria principal con todos los frames disponibles.
 		cls.memoria_principal = [Frame() for i in range(cls.tamanno_memoria_principal)]
 
+		# Comprueba si existe el directorio de memoria, y lo crea en caso de que no exista.
+		if not os.path.exists(cls.ruta_nodo_uno):
+			os.makedirs(cls.ruta_nodo_uno)
+
+		# Agrega el nodo por defecto a la tabla de nodos.
 		cls.tabla_nodos.append(Nodo(1, cls.ruta_nodo_uno))
 
+		# Pone la bandera de que la memoria fue inicializada.
 		cls.memoria_inicializada = True
+
+	@classmethod
+	def finalizar_memoria(cls):
+		# Borra la carpeta de memoria secundaria y todo su contenido.
+		shutil.rmtree(cls.ruta_nodo_uno)
 
 	@classmethod
 	def asignar_pagina_memoria(cls):
