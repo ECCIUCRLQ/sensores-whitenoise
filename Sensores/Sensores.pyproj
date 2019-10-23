@@ -4,13 +4,16 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>df04b357-9aea-420e-a874-589f4f85fc78</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Test.py</StartupFile>
+    <StartupFile>Graficador.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>Sensores</Name>
     <RootNamespace>Sensores</RootNamespace>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <CommandLineArguments>5.002</CommandLineArguments>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,6 +52,9 @@
     </Compile>
     <Compile Include="Prueba.py" />
     <Compile Include="Recolector.py" />
+    <Compile Include="RelacionSensorIdTipo.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Sensor.py">
       <SubType>Code</SubType>
     </Compile>
