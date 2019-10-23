@@ -19,7 +19,7 @@ class ServidorTest:
 		carreta = CARRETA(2, 0, SensorId([Equipo((int)(sys.argv[1])), 0, 0, 0]), Tipo((int)(sys.argv[2])), 0)
 		while True:
 			cls.mq.send(carreta.pack_byte_array())
-			time.sleep(5)
+			time.sleep(1)
 
 	@classmethod
 	def start(cls):
@@ -28,4 +28,5 @@ class ServidorTest:
 		except KeyboardInterrupt:
 			print ("\nServidorTest Finalizado...")
 
+#ServidorTest.mq.remove()
 ServidorTest.start()

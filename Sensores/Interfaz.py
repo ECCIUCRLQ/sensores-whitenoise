@@ -1,25 +1,42 @@
 from AdministradorMemoria import AdministradorMemoria
 from TablaControlConfig import TablaControlConfig
-#from SensorId import SensorId
 import sysv_ipc
+import os
+import signal
+import threading
 from struct import *
 
 class Interfaz:
 
-    PAGE_SIZE = 76800
+    PAGE_SIZE = 80
+    PIPE_MAX_SIZE = 16000
     MALLOC_MARAVILLOSO = 1
     DIR_LOGICA = 2
     WRITE = 3
-
+    READ = 4
     tabla_control = []
     tabla_offset = []
-    mq = sysv_ipc.MessageQueue(3333, sysv_ipc.IPC_CREAT, int("0600", 8), 2048)
+
+    try:
+        mq = sysv_ipc.MessageQueue(3333, sysv_ipc.IPC_CREX, int("0600", 8), 2048)
+    except:
+        mq = sysv_ipc.MessageQueue(3333, sysv_ipc.IPC_CREAT, int("0600", 8), 2048)
+        mq.remove()
+        mq = sysv_ipc.MessageQueue(3333, sysv_ipc.IPC_CREX, int("0600", 8), 2048)
+    pipe = 0
+
+    @classmethod
+    def init(cls):
+        FIFO_PATH = "interfaz_graficador"
+        if not os.path.exists(FIFO_PATH):
+            os.mkfifo(FIFO_PATH)
+        cls.pipe = os.open(FIFO_PATH, os.O_WRONLY)
 
     @classmethod
     def guardar(cls, dirLog, message):
         offset = cls.tabla_offset[dirLog]
         if offset >= cls.PAGE_SIZE-1:
-            paginaNueva = AdministradorMemoria.malloc(tamano_dato)
+            paginaNueva = AdministradorMemoria.malloc()
             cls.tabla_control[dirLog].paginas.append(paginaNueva)
             offset = '0'
             cls.tabla_offset[dirLog] = 0
@@ -27,14 +44,14 @@ class Interfaz:
         direccion = dirFisica.zfill(5) + 'x' + str(offset).zfill(5)
         AdministradorMemoria.write(direccion, message)
         cls.tabla_offset[dirLog] += cls.tabla_control[dirLog].tamano_dato
-        print(AdministradorMemoria.read(max(cls.tabla_control[dirLog].paginas)))
+        #print(AdministradorMemoria.read(max(cls.tabla_control[dirLog].paginas)))
 
     @classmethod
     def leer(cls, dirLog):
-        datos = []
+        paginas_raw = bytearray()
         for pagina in cls.tabla_control[dirLog].paginas:
-            datos.append(AdministradorMemoria.read(pagina))
-        return datos
+            paginas_raw += AdministradorMemoria.read(pagina)
+        return  paginas_raw
 
     @classmethod
     def malloc_maravilloso(cls, sensor_id, tamano_dato):
@@ -45,10 +62,13 @@ class Interfaz:
 
     @classmethod
     def start(cls):
+        print("Interfaz Inicializada!")
         try:
             while True:
-                msg, tipo = cls.mq.receive()
-                print("tipo: " + str(tipo))
+                try:
+                    msg, tipo = cls.mq.receive()
+                except sysv_ipc.Error:
+                    exit(0)
                 if tipo == cls.MALLOC_MARAVILLOSO:
                     print("Malloc!")
                     sensor_id, tamano_dato  = unpack('4sI', msg)
@@ -59,8 +79,20 @@ class Interfaz:
                     print("Write!")
                     dir_logica, data = unpack('I' + str(len(msg) - 4) + 's', msg)
                     cls.guardar(dir_logica, data)
+                if tipo == cls.READ:
+                    print("Read!")
+                    print(len(AdministradorMemoria.read(0)))
+                    if len(AdministradorMemoria.read(0)) != 0 :
+                        os.write(cls.pipe, bytes(1))
+                    else:
+                        os.write(cls.pipe, bytes(1))
 
         except KeyboardInterrupt:
-            print("\nRecolector Finalizado...")
+            cls.mq.remove()
+            #TODO: finalizar administrador de memoria
+            print("\nInterfaz Finalizada...")
 
+Interfaz.init()
 Interfaz.start()
+# interfaz_thread = threading.Thread(target=Interfaz.listen_recolector)
+# interfaz_thread.start()

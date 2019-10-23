@@ -8,15 +8,15 @@ from CARRETA import CARRETA
 from Utilidades import Utilidades
 from SensorId import SensorId
 
-
 class Recolector:
 
 	MALLOC_MARAVILLOSO = 1
 	DIR_LOGICA = 2
 	WRITE = 3
-
+	READ = 4
+	
 	mq_Server = sysv_ipc.MessageQueue(2424, sysv_ipc.IPC_CREAT, int("0600", 8), 2048)
-	mq_Interfaz = sysv_ipc.MessageQueue(3333, sysv_ipc.IPC_CREAT, int("0600", 8), 2048)
+	mq_Interfaz = 0
 	log_dir = dict()
 
 	@classmethod
@@ -33,6 +33,12 @@ class Recolector:
 
 	@classmethod
 	def start(cls):
+		print("Recolector Inicializado!")
+		try:
+			cls.mq_Interfaz = sysv_ipc.MessageQueue(key = 3333, flags = 0, mode =int("0600", 8),max_message_size = 2048)
+		except sysv_ipc.ExistentialError:
+			print("La Interfaz no ha sido inicializada!")
+			exit(0)
 		carreta = CARRETA()
 		try:
 			while True:

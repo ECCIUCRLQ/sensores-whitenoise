@@ -57,7 +57,6 @@ class AdministradorMemoria:
 	def read(cls, pagina_id):
 
 		datos = []
-
 		# Localiza la pagina en la tabla de paginas.
 		pagina = cls.tabla_paginas[pagina_id]
 
@@ -90,8 +89,10 @@ class AdministradorMemoria:
 
 		# Si no hay frame libre tiene que mover la pagina con la escritura mas antigua
 		# a memoria secundaria y cargar ahí la pagina solicitada.
-
-		return datos
+		#print(datos)
+		datos_raw = bytearray().join(datos)
+		
+		return datos_raw
 
 	@classmethod
 	def malloc(cls):
@@ -195,14 +196,14 @@ class AdministradorMemoria:
 		filename = nodo.localizacion + nombre_pagina + ".bin"
 
 		datos = []
-
 		# Obtiene los datos del archivo
-		with open(filename, "rb") as f:
-			datos.append(f.read())
+		file = os.open(filename, os.O_RDONLY)
+		datos.append(os.read(file, 1600))
 
 		# Borra el archivo
 		os.remove(filename)
 
+		#print(datos)
 		return datos
 
 	@classmethod
