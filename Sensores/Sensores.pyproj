@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>df04b357-9aea-420e-a874-589f4f85fc78</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Graficador.py</StartupFile>
+    <StartupFile>Test.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -34,6 +34,7 @@
     <Compile Include="BUEY.py" />
     <Compile Include="CARRETA.py" />
     <Compile Include="Cliente.py" />
+    <Compile Include="Demo.py" />
     <Compile Include="Equipo.py">
       <SubType>Code</SubType>
     </Compile>
@@ -43,6 +44,7 @@
     <Compile Include="Graficador.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GraficadorTest.py" />
     <Compile Include="Interfaz.py" />
     <Compile Include="Nodo.py">
       <SubType>Code</SubType>

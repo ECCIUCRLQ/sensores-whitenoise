@@ -47,7 +47,7 @@ class AdministradorMemoria:
 
 			frame = cls.memoria_principal[frame_libre]
 
-			frame.datos.append(datos_memoria_secundaria)
+			frame.datos.extend(datos_memoria_secundaria)
 			frame.fecha_ultimo_acceso = datetime.datetime.now()
 
 			# Actualiza la tabla de paginas
@@ -79,7 +79,7 @@ class AdministradorMemoria:
 
 			frame = cls.memoria_principal[frame_libre]
 
-			frame.datos.append(datos_memoria_secundaria)
+			frame.datos.extend(datos_memoria_secundaria)
 			frame.fecha_ultimo_acceso = datetime.datetime.now()
 
 			# Actualiza la tabla de paginas
@@ -201,6 +201,7 @@ class AdministradorMemoria:
 
 	@classmethod
 	def obtener_datos_nodo(cls, nombre_pagina, nodo_id):
+		print("Leyendo de memoria secundaria página: " + str(nombre_pagina))
 		# Obtiene el nodo que le corresponda (en esta etapa solo hay un nodo)
 		nodo = cls.obtener_nodo_correspondiente(nodo_id)
 
@@ -209,8 +210,8 @@ class AdministradorMemoria:
 
 		datos = []
 		# Obtiene los datos del archivo
-		file = os.open(filename, os.O_RDONLY)
-		datos.append(os.read(file, 1600))
+		with open(filename, "rb") as f:
+			datos.extend(f.read())
 
 		# Borra el archivo
 		os.remove(filename)
