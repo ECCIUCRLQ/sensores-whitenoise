@@ -1,28 +1,33 @@
 import sysv_ipc
 import time
 import os
+from struct import *
 
 class GraficadorTest:
 
     READ = 4
-    PIPE_MAX_SIZE = 16000
-    
+    DATOS_GRAFICADOR = 5
+    PIPE_MAX_SIZE = 4096
+
     try:
         mq = sysv_ipc.MessageQueue(key = 3333, flags = 0, mode =int("0600", 8),max_message_size = 2048)
     except sysv_ipc.ExistentialError:
         print("La Interfaz no ha sido inicializada!")
         exit(0)
 
-    pipe = os.open("interfaz_graficador", os.O_RDONLY)
     @classmethod
     def start(cls):
         try:
             while(True):
-                cls.mq.send(bytes(1), type = cls.READ)
-                data = os.read(cls.pipe, cls.PIPE_MAX_SIZE)
-                print(len(data))
-                time.sleep(3)
+                id_grupo = bytes([int(input("Inserte ID grupo: "))])
+                id_sensor = bytes([int(input("Inserte ID sensor: "))])
+                cls.mq.send(pack('ssss', id_grupo, b'\x00', b'\x00',id_sensor), type = cls.READ)
+                msg, tipo = cls.mq.receive(block = True, type = cls.DATOS_GRAFICADOR)
+                with open("datos_graficador.bin", "rb") as f:
+                    sensor_data = f.read()
+                print(sensor_data)
+
         except KeyboardInterrupt:
-            print("\nGraficador Finalizada...")
+            print("\nGraficador Finalizado...")
 
 GraficadorTest.start()

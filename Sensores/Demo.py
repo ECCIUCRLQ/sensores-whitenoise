@@ -15,15 +15,14 @@ if Recolector_pid == 0:
     os.execlp("python3.7", "python3.7", "/home/silvio/Desktop/U/PIRedesOperativos/Proyecto-pi/sensores-whitenoise/Sensores/Recolector.py")
 
 # Inicia proceso Graficador
-
 Graficador_pid = os.fork()
 if Graficador_pid == 0:
     os.execlp("gnome-terminal", "gnome-terminal", "-e" , "python3.7 GraficadorTest.py")
 
 input()
-os.kill(Recolector_pid, signal.SIGKILL)
+os.kill(Recolector_pid, signal.SIGTERM)
 print ("Recolector Finalizo")
-os.kill(Interfaz_pid, signal.SIGKILL)
+os.kill(Interfaz_pid, signal.SIGTERM)
 print ("Interfaz Finalizo")
 #os.kill(Graficador_pid, signal.SIGHUP)
 #print ("Graficador Finalizo")

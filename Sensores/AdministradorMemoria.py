@@ -90,7 +90,6 @@ class AdministradorMemoria:
 
 		# Si no hay frame libre tiene que mover la pagina con la escritura mas antigua
 		# a memoria secundaria y cargar ahí la pagina solicitada.
-		#print(datos)
 		datos_raw = bytearray().join(datos)
 		
 		return datos_raw
@@ -109,10 +108,11 @@ class AdministradorMemoria:
 		# Inicializa la memoria principal con todos los frames disponibles.
 		cls.memoria_principal = [Frame() for i in range(cls.tamanno_memoria_principal)]
 
-		# Comprueba si existe el directorio de memoria, y lo crea en caso de que no exista.
-		if not os.path.exists(cls.ruta_nodo_uno):
-			os.makedirs(cls.ruta_nodo_uno)
+		# Comprueba si existe el directorio de memoria, si existe lo elimina. Crea uno nuevo
+		if os.path.exists(cls.ruta_nodo_uno):
+			cls.finalizar_memoria()
 
+		os.makedirs(cls.ruta_nodo_uno)
 		# Agrega el nodo por defecto a la tabla de nodos.
 		cls.tabla_nodos.append(Nodo(1, cls.ruta_nodo_uno))
 
@@ -195,6 +195,7 @@ class AdministradorMemoria:
 
 		with open(filename, "wb") as f:
 			for dato in data:
+				#print("dato: " + str(dato) + "pagina: " + nombre_pagina)
 				f.write(dato)
 
 		return nodo.id
@@ -211,12 +212,12 @@ class AdministradorMemoria:
 		datos = []
 		# Obtiene los datos del archivo
 		with open(filename, "rb") as f:
-			datos.extend(f.read())
+			datos.append(f.read())
 
 		# Borra el archivo
 		os.remove(filename)
+		print("Archivo: " + filename + " borrado")
 
-		#print(datos)
 		return datos
 
 	@classmethod

@@ -2,6 +2,7 @@ from AdministradorMemoria import AdministradorMemoria
 from TablaControlConfig import TablaControlConfig
 import sysv_ipc
 import os
+import sys
 import signal
 import threading
 from struct import *
@@ -9,13 +10,16 @@ from struct import *
 class Interfaz:
 
     PAGE_SIZE = 80
-    PIPE_MAX_SIZE = 16000
+    PIPE_MAX_SIZE = 4096
     MALLOC_MARAVILLOSO = 1
     DIR_LOGICA = 2
     WRITE = 3
     READ = 4
+    DATOS_GRAFICADOR = 5
     tabla_control = []
     tabla_offset = []
+    
+    pipe = 0
 
     try:
         mq = sysv_ipc.MessageQueue(3333, sysv_ipc.IPC_CREX, int("0600", 8), 2048)
@@ -23,14 +27,6 @@ class Interfaz:
         mq = sysv_ipc.MessageQueue(3333, sysv_ipc.IPC_CREAT, int("0600", 8), 2048)
         mq.remove()
         mq = sysv_ipc.MessageQueue(3333, sysv_ipc.IPC_CREX, int("0600", 8), 2048)
-    pipe = 0
-
-    @classmethod
-    def init(cls):
-        FIFO_PATH = "interfaz_graficador"
-        if not os.path.exists(FIFO_PATH):
-            os.mkfifo(FIFO_PATH)
-        cls.pipe = os.open(FIFO_PATH, os.O_WRONLY)
 
     @classmethod
     def guardar(cls, dirLog, message):
@@ -47,9 +43,17 @@ class Interfaz:
         #print(AdministradorMemoria.read(max(cls.tabla_control[dirLog].paginas)))
 
     @classmethod
-    def leer(cls, dirLog):
+    def leer(cls, sensor_id):
+        index = -1
+        for i in range(0, len(cls.tabla_control)):
+            if cls.tabla_control[i].sensor_id == sensor_id:
+                index = i
+        if index == -1:
+            paginas_raw = bytes(1)
+            return paginas_raw
+
         paginas_raw = bytearray()
-        for pagina in cls.tabla_control[dirLog].paginas:
+        for pagina in cls.tabla_control[index].paginas:
             paginas_raw += AdministradorMemoria.read(pagina)
         return  paginas_raw
 
@@ -79,20 +83,19 @@ class Interfaz:
                     print("Write!")
                     dir_logica, data = unpack('I' + str(len(msg) - 4) + 's', msg)
                     cls.guardar(dir_logica, data)
+
                 if tipo == cls.READ:
-                    print("Read!")
-                    print(len(AdministradorMemoria.read(0)))
-                    if len(AdministradorMemoria.read(0)) != 0 :
-                        os.write(cls.pipe, bytes(1))
-                    else:
-                        os.write(cls.pipe, bytes(1))
+                    id_grupo, id_sensor = pack('s3s', msg)
+                    print("Leyendo datos de: " + "ID grupo:"
+                    #print("msg: " + str(msg))
+                    paginas_raw = cls.leer(msg)
+                    with open("datos_graficador.bin", "wb") as f:
+                        f.write(paginas_raw)
+                    cls.mq.send(bytes(1), type = cls.DATOS_GRAFICADOR)
 
         except KeyboardInterrupt:
             cls.mq.remove()
             #TODO: finalizar administrador de memoria
             print("\nInterfaz Finalizada...")
 
-Interfaz.init()
 Interfaz.start()
-# interfaz_thread = threading.Thread(target=Interfaz.listen_recolector)
-# interfaz_thread.start()
