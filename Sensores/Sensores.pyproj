@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>df04b357-9aea-420e-a874-589f4f85fc78</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Test.py</StartupFile>
+    <StartupFile>Graficador.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
