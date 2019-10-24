@@ -17,7 +17,7 @@ if Recolector_pid == 0:
 # Inicia proceso Graficador
 Graficador_pid = os.fork()
 if Graficador_pid == 0:
-    os.execlp("gnome-terminal", "gnome-terminal", "-e" , "python3.7 GraficadorTest.py")
+    os.execlp("gnome-terminal", "gnome-terminal", "-e" , "python3.7 Graficador.py")
 
 input()
 os.kill(Recolector_pid, signal.SIGTERM)

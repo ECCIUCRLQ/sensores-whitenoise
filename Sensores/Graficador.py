@@ -37,6 +37,8 @@ class Graficador:
 	@classmethod
 	def plotear(cls, sensor_id, data):
 
+		print(sensor_id)
+		print(data)
 		names = list(data.keys())
 		values = list(data.values())
 
@@ -54,6 +56,9 @@ class Graficador:
 		axs[1].tick_params(axis='x', rotation=70)
 		fig.suptitle(sensor_id.group_id.name)
 
+		fig.show()
+		
+		print(values)
 		return 0
 
 
@@ -75,7 +80,7 @@ class Graficador:
 	@classmethod
 	def interpretar_datos_solo_fecha(cls, datos):
 		datos_intermedios = [datos[i:i+4] for i in range(0, len(datos), 4)]
-
+		print(datos_intermedios)
 		datos_graficar = {}
 
 		# Genera los pares para la graficación
@@ -128,7 +133,7 @@ class Graficador:
 	@classmethod
 	def obtener_datos(cls, sensor_id):
 		#sensor_id_bytes = pack('BBBB', sensor_id.group_id.value, sensor_id.pos1, sensor_id.pos2, sensor_id.pos3)
-		sensor_id_bytes = pack('ssss', b'\x01', b'\x00', b'\x00', b'\x01')
+		sensor_id_bytes = pack('ssss', bytes([sensor_id.group_id.value]), b'\x00', b'\x00', bytes([sensor_id.pos3]))
 		print(sensor_id_bytes)
 		cls.mq.send(sensor_id_bytes, type = cls.READ)
 
