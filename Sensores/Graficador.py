@@ -138,14 +138,11 @@ class Graficador:
 		return datos
 
 	@classmethod
-	def iniciar_graficador(cls):
+	def iniciar_graficador(cls, id_grupo, id_sensor):
 		try:
-			sensor_id_param = sys.argv[1]
+			e_id = Equipo(id_grupo)
 
-			e_id = Equipo(int(sensor_id_param.split(".")[0]))
-			s_id = sensor_id_param.split(".")[1]
-
-			sensor_id = SensorId([e_id, int(s_id[0]), int(s_id[1]), int(s_id[2])])
+			sensor_id = SensorId([e_id, 0, 0, id_sensor])
 
 			cls.graficar(sensor_id)
 
@@ -153,5 +150,17 @@ class Graficador:
 			servidor.sock.close()
 			print ("\nGraficador Finalizado...")
 
+	@classmethod
+	def start(cls):
+		try:
+			while(True):
+				id_grupo = int(input("Inserte ID grupo: "))
+				id_sensor = int(input("Inserte ID sensor: "))
 
-Graficador.iniciar_graficador()
+				cls.iniciar_graficador(id_grupo, id_sensor)
+
+		except KeyboardInterrupt:
+			print("\nGraficador Finalizado...")
+
+
+Graficador.start()
