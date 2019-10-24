@@ -18,7 +18,7 @@ class Interfaz:
     DATOS_GRAFICADOR = 5
     tabla_control = []
     tabla_offset = []
-    
+
     pipe = 0
 
     try:
@@ -56,7 +56,7 @@ class Interfaz:
 
         mem_principal = "MemoriaPrincipal: "
         mem_secundaria = "MemoriaSecundaria: "
-        
+
         for pagina in cls.tabla_control[index].paginas:
             obj_pagina = AdministradorMemoria.tabla_paginas[pagina]
 
@@ -95,15 +95,17 @@ class Interfaz:
                     sensor_id, tamano_dato  = unpack('4sI', msg)
                     dir_logica = cls.malloc_maravilloso(sensor_id, tamano_dato)
                     cls.mq.send(pack('I', dir_logica), block = True, type = cls.DIR_LOGICA)
-                
+
                 if tipo == cls.WRITE:
-                    print("\nWrite!")
                     dir_logica, data = unpack('I' + str(len(msg) - 4) + 's', msg)
+                    print(("\nWrite en la página " + str(max(cls.tabla_control[dir_logica].paginas))) + " en offset " + str(cls.tabla_offset[dir_logica]))
                     cls.guardar(dir_logica, data)
 
                 if tipo == cls.READ:
                     id_grupo, id_sensor = unpack('s3s', msg)
-                    print("Leyendo datos de: ID grupo: " + str(int.from_bytes(id_grupo, "little")) + " ID sensor: " + str(int.from_bytes(id_sensor, "little")))
+                    print("Leyendo datos de: ID grupo: " + str(int.from_bytes(id_grupo, "big")) + " ID sensor: " + str(int.from_bytes(id_sensor, "big")))
+                    #print("Leyendo datos de: ID grupo: " + str(id_grupo) + " ID sensor: " + str(id_sensor))
+                    
                     paginas_raw = cls.leer(msg)
                     with open("datos_graficador.bin", "wb") as f:
                         f.write(paginas_raw)

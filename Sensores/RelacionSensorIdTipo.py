@@ -38,13 +38,10 @@ class RelacionSensorIdTipo:
 		if (sensor_id.group_id == Equipo.equipo_404 and sensor_id.pos3 == 2):
 		    return Tipo.humedad.value
 
-		if (sensor_id.group_id == Equipo.equipo_404 and sensor_id.pos3 == 2):
+		if (sensor_id.group_id == Equipo.equipo_404 and sensor_id.pos3 == 3):
 		    return Tipo.temperatura.value
 
 		if (sensor_id.group_id == Equipo.poffis and sensor_id.pos3 == 1):
-		    return Tipo.movimiento.value
-
-		if (sensor_id.group_id == Equipo.poffis and sensor_id.pos3 == 2):
 		    return Tipo.ultrasonico.value
 
 		if (sensor_id.group_id == Equipo.poffis and sensor_id.pos3 == 2):
