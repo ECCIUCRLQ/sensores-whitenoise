@@ -8,7 +8,7 @@ class Pagina:
 		self.nodo = nodo
 
 	def __repr__(self):
-		return "Pagina()"
+		return "Pagina: \n\tNombre -> %s \n\tNodo -> %s" % (self.nombre, self.nodo)
 
 	def __str__(self):
 		return "Pagina: \n\tNombre -> %s \n\tNodo -> %s" % (self.nombre, self.nodo)
