@@ -44,17 +44,28 @@ class Interfaz:
 
     @classmethod
     def leer(cls, sensor_id):
+        print("Paginas referenciadas\n")
         index = -1
         for i in range(0, len(cls.tabla_control)):
             if cls.tabla_control[i].sensor_id == sensor_id:
                 index = i
         if index == -1:
             paginas_raw = bytes(1)
+            print("Ninguna")
             return paginas_raw
-
+        mem_principal = "MemoriaPrincipal: "
+        mem_secundaria = "MemoriaSecundaria: "
         paginas_raw = bytearray()
         for pagina in cls.tabla_control[index].paginas:
+            obj_pagina = AdministradorMemoria.tabla_paginas[pagina]
+            if obj_pagina.frame >= 0:
+                mem_principal += obj_pagina.nombre + " "
+            else:
+                mem_secundaria += obj_pagina.nombre + " "
             paginas_raw += AdministradorMemoria.read(pagina)
+
+        print(mem_principal)
+        print(mem_secundaria)
         return  paginas_raw
 
     @classmethod
@@ -80,14 +91,13 @@ class Interfaz:
                     cls.mq.send(pack('I', dir_logica), block = True, type = cls.DIR_LOGICA)
                 
                 if tipo == cls.WRITE:
-                    print("Write!")
+                    print("\nWrite!")
                     dir_logica, data = unpack('I' + str(len(msg) - 4) + 's', msg)
                     cls.guardar(dir_logica, data)
 
                 if tipo == cls.READ:
-                    id_grupo, id_sensor = pack('s3s', msg)
-                    print("Leyendo datos de: " + "ID grupo:"
-                    #print("msg: " + str(msg))
+                    id_grupo, id_sensor = unpack('s3s', msg)
+                    print("Leyendo datos de: ID grupo: " + str(int.from_bytes(id_grupo, "little")) + " ID sensor: " + str(int.from_bytes(id_sensor, "little")))
                     paginas_raw = cls.leer(msg)
                     with open("datos_graficador.bin", "wb") as f:
                         f.write(paginas_raw)

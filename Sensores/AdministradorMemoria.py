@@ -131,7 +131,7 @@ class AdministradorMemoria:
 
 		# Le da un sitio en memoria principal
 		frame = cls.obtener_frame_memoria_principal()
-
+		print("frame: " + str(frame))
 		nueva_pagina = Pagina('Pag' + str(siguiente), frame, 0)
 
 		cls.tabla_paginas.append(nueva_pagina)
@@ -216,7 +216,6 @@ class AdministradorMemoria:
 
 		# Borra el archivo
 		os.remove(filename)
-		print("Archivo: " + filename + " borrado")
 
 		return datos
 
