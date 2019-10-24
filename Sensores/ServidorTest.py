@@ -16,7 +16,7 @@ class ServidorTest:
 
 	@classmethod
 	def sendToQueue(cls):
-		carreta = CARRETA(2, 0, SensorId([Equipo((int)(sys.argv[1])), 0, 0, 0]), Tipo((int)(sys.argv[2])), 0)
+		carreta = CARRETA(2, 0, SensorId([Equipo((int)(sys.argv[1])), 0, 0, 1]), Tipo((int)(sys.argv[2])), 0)
 		while True:
 			cls.mq.send(carreta.pack_byte_array())
 			time.sleep(0.5)

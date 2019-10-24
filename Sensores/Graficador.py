@@ -14,6 +14,8 @@ from struct import *
 class Graficador:
 
 	mq = None
+	READ = 4
+	DATOS_GRAFICADOR = 5
 
 	@classmethod
 	def graficar(cls, sensor_id):
@@ -78,13 +80,14 @@ class Graficador:
 
 		# Genera los pares para la graficación
 		for dato in datos_intermedios:
-			fecha_numero = int(unpack('I', dato)[0])
+			if len(dato) == 4:
+				fecha_numero = int(unpack('I', dato)[0])
 
-			fecha_texto = Utilidades.get_date(fecha_numero)
+				fecha_texto = Utilidades.get_date(fecha_numero)
 
-			punto = {fecha_texto : 1}
+				punto = {fecha_texto : 1}
 
-			datos_graficar.update(punto)
+				datos_graficar.update(punto)
 
 		return datos_graficar
 
@@ -96,11 +99,12 @@ class Graficador:
 
 		# Genera los pares para la graficación
 		for dato in datos_intermedios:
-			fecha_numero, valor = unpack('IB', dato)
+			if len(dato) == 5:
+				fecha_numero, valor = unpack('IB', dato)
 
-			punto = {fecha_numero : valor}
+				punto = {fecha_numero : valor}
 
-			datos_graficar.update(punto)
+				datos_graficar.update(punto)
 
 		return datos_graficar
 
@@ -112,18 +116,20 @@ class Graficador:
 
 		# Genera los pares para la graficación
 		for dato in datos_intermedios:
-			fecha_numero, valor = unpack('If', dato)
+			if len(dato) == 0:
+				fecha_numero, valor = unpack('If', dato)
 
-			punto = {fecha_numero : valor}
+				punto = {fecha_numero : valor}
 
-			datos_graficar.update(punto)
+				datos_graficar.update(punto)
 
 		return datos_graficar
 
 	@classmethod
 	def obtener_datos(cls, sensor_id):
-		sensor_id_bytes = pack('ssss', sensor_id.group_id.value, sensor_id.pos1, sensor_id.pos2, sensor_id.pos3)
-		
+		#sensor_id_bytes = pack('BBBB', sensor_id.group_id.value, sensor_id.pos1, sensor_id.pos2, sensor_id.pos3)
+		sensor_id_bytes = pack('ssss', b'\x01', b'\x00', b'\x00', b'\x01')
+		print(sensor_id_bytes)
 		cls.mq.send(sensor_id_bytes, type = cls.READ)
 
 		msg, tipo = cls.mq.receive(block = True, type = cls.DATOS_GRAFICADOR)

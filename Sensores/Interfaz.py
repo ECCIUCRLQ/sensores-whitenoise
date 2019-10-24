@@ -98,12 +98,14 @@ class Interfaz:
 
                 if tipo == cls.WRITE:
                     dir_logica, data = unpack('I' + str(len(msg) - 4) + 's', msg)
-                    print("\nWrite en la página " + max(cls.tabla_control[dir_logica].paginas) + " en offset " + cls.tabla_offset[dir_logica])
+                    print(("\nWrite en la página " + str(max(cls.tabla_control[dir_logica].paginas))) + " en offset " + str(cls.tabla_offset[dir_logica]))
                     cls.guardar(dir_logica, data)
 
                 if tipo == cls.READ:
                     id_grupo, id_sensor = unpack('s3s', msg)
-                    print("Leyendo datos de: ID grupo: " + str(int.from_bytes(id_grupo, "little")) + " ID sensor: " + str(int.from_bytes(id_sensor, "little")))
+                    print("Leyendo datos de: ID grupo: " + str(int.from_bytes(id_grupo, "big")) + " ID sensor: " + str(int.from_bytes(id_sensor, "big")))
+                    #print("Leyendo datos de: ID grupo: " + str(id_grupo) + " ID sensor: " + str(id_sensor))
+                    
                     paginas_raw = cls.leer(msg)
                     with open("datos_graficador.bin", "wb") as f:
                         f.write(paginas_raw)

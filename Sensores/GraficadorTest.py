@@ -22,6 +22,7 @@ class GraficadorTest:
                 id_grupo = bytes([int(input("Inserte ID grupo: "))])
                 id_sensor = bytes([int(input("Inserte ID sensor: "))])
                 cls.mq.send(pack('ssss', id_grupo, b'\x00', b'\x00',id_sensor), type = cls.READ)
+                #cls.mq.send(pack('ssss', b'\x01', b'\x00', b'\x00',b'\x01'), type = cls.READ)
                 msg, tipo = cls.mq.receive(block = True, type = cls.DATOS_GRAFICADOR)
                 with open("datos_graficador.bin", "rb") as f:
                     sensor_data = f.read()
