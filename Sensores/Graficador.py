@@ -8,12 +8,21 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
 import sys
+import sysv_ipc
 from struct import *
 
 class Graficador:
 
+	mq = None
+
 	@classmethod
 	def graficar(cls, sensor_id):
+
+		try:
+			cls.mq = sysv_ipc.MessageQueue(key = 3333, flags = 0, mode =int("0600", 8),max_message_size = 2048)
+		except sysv_ipc.ExistentialError:
+			print("La Interfaz no ha sido inicializada!")
+			exit(0)
 
 		datos = cls.obtener_datos(sensor_id)
 
@@ -113,14 +122,20 @@ class Graficador:
 
 	@classmethod
 	def obtener_datos(cls, sensor_id):
-		sensor_id_bytes = pack('BBBB', sensor_id.group_id.value, sensor_id.pos1, sensor_id.pos2, sensor_id.pos3)
+		sensor_id_bytes = pack('ssss', sensor_id.group_id.value, sensor_id.pos1, sensor_id.pos2, sensor_id.pos3)
 		
-		#datos = Interfaz.leer(sensor_id_bytes)
+		cls.mq.send(sensor_id_bytes, type = cls.READ)
 
-		datos = b'\x01\x02\x03\x04\x05\x06\x07\x08\x09\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x40'
+		msg, tipo = cls.mq.receive(block = True, type = cls.DATOS_GRAFICADOR)
+
+		with open("datos_graficador.bin", "rb") as f:
+			sensor_data = f.read()
+
+		datos = sensor_data
+
+		#datos = b'\x01\x02\x03\x04\x05\x06\x07\x08\x09\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x40'
 
 		return datos
-		
 
 	@classmethod
 	def iniciar_graficador(cls):
