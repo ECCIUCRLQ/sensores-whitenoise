@@ -202,7 +202,7 @@ class AdministradorMemoria:
 
 	@classmethod
 	def obtener_datos_nodo(cls, nombre_pagina, nodo_id):
-		print("Leyendo de memoria secundaria página: " + str(nombre_pagina))
+		#print("Leyendo de memoria secundaria página: " + str(nombre_pagina))
 		# Obtiene el nodo que le corresponda (en esta etapa solo hay un nodo)
 		nodo = cls.obtener_nodo_correspondiente(nodo_id)
 

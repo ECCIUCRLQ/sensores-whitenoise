@@ -53,16 +53,22 @@ class Interfaz:
             paginas_raw = bytes(1)
             print("Ninguna")
             return paginas_raw
+
         mem_principal = "MemoriaPrincipal: "
         mem_secundaria = "MemoriaSecundaria: "
-        paginas_raw = bytearray()
+        
         for pagina in cls.tabla_control[index].paginas:
             obj_pagina = AdministradorMemoria.tabla_paginas[pagina]
+
             if obj_pagina.frame >= 0:
                 mem_principal += obj_pagina.nombre + " "
             else:
                 mem_secundaria += obj_pagina.nombre + " "
+
+        paginas_raw = bytearray()
+        for pagina in cls.tabla_control[index].paginas:
             paginas_raw += AdministradorMemoria.read(pagina)
+            #print(AdministradorMemoria.tabla_paginas)
 
         print(mem_principal)
         print(mem_secundaria)
