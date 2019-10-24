@@ -37,8 +37,8 @@ class Graficador:
 	@classmethod
 	def plotear(cls, sensor_id, data):
 
-		print(sensor_id)
-		print(data)
+		#print(sensor_id)
+		#print(data)
 		names = list(data.keys())
 		values = list(data.values())
 
@@ -58,7 +58,7 @@ class Graficador:
 
 		fig.show()
 		
-		print(values)
+		#print(values)
 		return 0
 
 
@@ -73,14 +73,14 @@ class Graficador:
 		elif tamanno_datos == 5:
 			datos_interpretados = cls.interpretar_datos_fecha_evento(datos)
 		elif tamanno_datos == 8:
-			datos_interpretados = cls.interpretar_datos_fecha_valor(datos)
+			datos_interpretados = cls.interpretar_datos_fecha_valor(datos, sensor_id)
 
 		return datos_interpretados
 
 	@classmethod
 	def interpretar_datos_solo_fecha(cls, datos):
 		datos_intermedios = [datos[i:i+4] for i in range(0, len(datos), 4)]
-		print(datos_intermedios)
+		#print(datos_intermedios)
 		datos_graficar = {}
 
 		# Genera los pares para la graficación
@@ -107,25 +107,31 @@ class Graficador:
 			if len(dato) == 5:
 				fecha_numero, valor = unpack('IB', dato)
 
-				punto = {fecha_numero : valor}
+				fecha_texto = Utilidades.get_date(fecha_numero)
+
+				punto = {fecha_texto : valor}
 
 				datos_graficar.update(punto)
 
 		return datos_graficar
 
 	@classmethod
-	def interpretar_datos_fecha_valor(cls, datos):
+	def interpretar_datos_fecha_valor(cls, datos, sensor_id):
 		datos_intermedios = [datos[i:i+8] for i in range(0, len(datos), 8)]
 
 		datos_graficar = {}
 
 		# Genera los pares para la graficación
 		for dato in datos_intermedios:
-			if len(dato) == 0:
-				fecha_numero, valor = unpack('If', dato)
+			if len(dato) == 8:
+				if sensor_id.group_id == Equipo.poffis:
+					fecha_numero, valor = unpack('II', dato)
+				else:
+					fecha_numero, valor = unpack('If', dato)
 
-				punto = {fecha_numero : valor}
-
+				fecha_texto = Utilidades.get_date(fecha_numero)
+				punto = {fecha_texto : valor}
+				print(punto)
 				datos_graficar.update(punto)
 
 		return datos_graficar
@@ -134,7 +140,7 @@ class Graficador:
 	def obtener_datos(cls, sensor_id):
 		#sensor_id_bytes = pack('BBBB', sensor_id.group_id.value, sensor_id.pos1, sensor_id.pos2, sensor_id.pos3)
 		sensor_id_bytes = pack('ssss', bytes([sensor_id.group_id.value]), b'\x00', b'\x00', bytes([sensor_id.pos3]))
-		print(sensor_id_bytes)
+		#print(sensor_id_bytes)
 		cls.mq.send(sensor_id_bytes, type = cls.READ)
 
 		msg, tipo = cls.mq.receive(block = True, type = cls.DATOS_GRAFICADOR)
