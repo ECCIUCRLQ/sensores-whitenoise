@@ -10,7 +10,7 @@ from Archivos import Archivos
 
 class Aplicacion:
 
-	def __init__(self): #Podria recibir el path del archivo de donde lee
+	def __init__(self):
 		self.mq = sysv_ipc.MessageQueue(2424, sysv_ipc.IPC_CREAT, int("0600", 8), 2048)
 	def start(self):
 		try:

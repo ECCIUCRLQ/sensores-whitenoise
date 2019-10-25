@@ -10,4 +10,5 @@ class Tipo(enum.Enum):
 	humedad = 6
 	big_sound_int = 7
 	temperatura = 8
+	ultrasonico = 9
 
