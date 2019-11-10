@@ -3,3 +3,5 @@
 /Sensores/__pycache__/*.pyc
 /Sensores/*.user
 /Sensores/UpgradeLog.htm
+*.testlog
+*.manifest

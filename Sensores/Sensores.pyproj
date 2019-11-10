@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>df04b357-9aea-420e-a874-589f4f85fc78</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Graficador.py</StartupFile>
+    <StartupFile>Test.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -14,6 +14,7 @@
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <CommandLineArguments>5.002</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+    <TestFramework>Pytest</TestFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,6 +35,9 @@
     <Compile Include="BUEY.py" />
     <Compile Include="CARRETA.py" />
     <Compile Include="Cliente.py" />
+    <Compile Include="Comunicacion.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Demo.py" />
     <Compile Include="Equipo.py">
       <SubType>Code</SubType>
@@ -50,6 +54,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Pagina.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PaquetesHelper.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Prueba.py" />
