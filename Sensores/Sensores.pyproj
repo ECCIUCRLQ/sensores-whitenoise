@@ -56,6 +56,9 @@
     <Compile Include="Pagina.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Paquete.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="PaquetesHelper.py">
       <SubType>Code</SubType>
     </Compile>
@@ -76,6 +79,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Tipo.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TipoComunicacion.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TipoOperacion.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilidades.py" />
