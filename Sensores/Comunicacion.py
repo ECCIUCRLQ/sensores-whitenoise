@@ -1,3 +1,5 @@
+#coding utf-8
+
 import socket
 import time
 
@@ -59,5 +61,5 @@ class Comunicacion:
 		client.bind(("", broadcast_port))
 		while True:
 			data, addr = client.recvfrom(self.BUFFER_SIZE)
-			# Aquí hacer algo con los datos
+			# Aqui hacer algo con los datos
 			metodo(data)

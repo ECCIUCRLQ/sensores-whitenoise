@@ -1,3 +1,6 @@
+#coding=utf-8
+
+
 from struct import *
 
 from TipoComunicacion import TipoComunicacion
@@ -51,7 +54,7 @@ class PaquetesHelper:
 
 	def procesar_operacion_desempaquetar_MLID(self, datos):
 
-		# Primero verifica que tipo de operación es.
+		# Primero verifica que tipo de operacion es.
 		tipo_operacion = self.obtener_tipo_operacion(datos);
 
 		switcher = {
@@ -82,7 +85,7 @@ class PaquetesHelper:
 
 	def procesar_operacion_desempaquetar_IDID(self, datos):
 
-		# Primero verifica que tipo de operación es.
+		# Primero verifica que tipo de operacion es.
 		tipo_operacion = self.obtener_tipo_operacion(datos);
 
 		return 0
@@ -93,7 +96,7 @@ class PaquetesHelper:
 
 	def procesar_operacion_desempaquetar_IDNM(self, datos):
 
-		# Primero verifica que tipo de operación es.
+		# Primero verifica que tipo de operacion es.
 		tipo_operacion = self.obtener_tipo_operacion(datos);
 
 		switcher = {
@@ -112,8 +115,8 @@ class PaquetesHelper:
 		return 0
 
 	def procesar_operacion_desempaquetar_MLID_guardar(self, datos):
-		# Guarda una página desde memoria local a memoria distribuida
-		# Formato: CodigoOperacion(1 Byte) + PaginaId(1 Byte) + TamañoPagina(4 Bytes) + DatosPagina(TamañoPagina Bytes)
+		# Guarda una pagina desde memoria local a memoria distribuida
+		# Formato: CodigoOperacion(1 Byte) + PaginaId(1 Byte) + TamanoPagina(4 Bytes) + DatosPagina(TamanoPagina Bytes)
 		tam = len(datos)
 
 		paquete = Paquete()
@@ -125,7 +128,7 @@ class PaquetesHelper:
 		return paquete
 
 	def procesar_operacion_desempaquetar_MLID_pedir(self, datos):
-		# Obtiene una página de memoria desde la interfaz distribuida.
+		# Obtiene una pagina de memoria desde la interfaz distribuida.
 		# Formato: CodigoOperacion(1 Byte) + PaginaId(1 Byte)
 		tam = len(datos)
 
@@ -136,7 +139,7 @@ class PaquetesHelper:
 		return 0
 
 	def procesar_operacion_desempaquetar_MLID_recibir(self, datos):
-		# Recibe una página desde memoria distribuida a memoria local
+		# Recibe una pagina desde memoria distribuida a memoria local
 		# Formato: CodigoOperacion(1 Byte) + PaginaId(1 Byte) + DatosPagina(n Bytes)
 		tam = len(datos)
 
@@ -147,7 +150,7 @@ class PaquetesHelper:
 		return 0
 
 	def procesar_operacion_desempaquetar_MLID_error(self, datos):
-		# Envia un código de error????
+		# Envia un codigo de error????
 		# Formato: CodigoOperacion(1 Byte) + Codigo_Error(1 Byte)
 		tam = len(datos)
 
@@ -162,8 +165,8 @@ class PaquetesHelper:
 
 	# OPERACIONES DE EMPAQUETAR
 	def procesar_operacion_empaquetar_MLID_guardar(self, paquete):
-		# Guarda una página desde memoria local a memoria distribuida
-		# Formato: CodigoOperacion(1 Byte) + PaginaId(1 Byte) + TamañoPagina(4 Bytes) + DatosPagina(TamañoPagina Bytes)
+		# Guarda una pagina desde memoria local a memoria distribuida
+		# Formato: CodigoOperacion(1 Byte) + PaginaId(1 Byte) + TamanoPagina(4 Bytes) + DatosPagina(TamanoPagina Bytes)
 
 		datos = pack('=BBI', paquete.operacion, paquete.pagina_id, paquete.tamanno_pagina)
 		datos = datos + paquete.datos_pagina
