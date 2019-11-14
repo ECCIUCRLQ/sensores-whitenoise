@@ -50,6 +50,9 @@
     </Compile>
     <Compile Include="GraficadorTest.py" />
     <Compile Include="Interfaz.py" />
+    <Compile Include="InterfazDistribuida.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Nodo.py">
       <SubType>Code</SubType>
     </Compile>
@@ -76,6 +79,9 @@
     <Compile Include="ServidorTest.py" />
     <Compile Include="TablaControlConfig.py" />
     <Compile Include="Test.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestID.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Tipo.py">

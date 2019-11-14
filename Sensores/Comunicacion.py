@@ -6,6 +6,8 @@ import time
 class Comunicacion:
 
 	BUFFER_SIZE = 1024
+	PUERTO_ENVIO_MLID = 10101
+	PUERTO_RECEPCION_ID_ML = 10102
 
 	def __init__(self, *args, **kwargs):
 		return super().__init__(*args, **kwargs)
@@ -17,19 +19,30 @@ class Comunicacion:
 		data = s.recv(self.BUFFER_SIZE)
 		s.close()
 
+		return data
+
 	def recibir_paquete_tcp(self, tcp_ip, tcp_port, metodo):
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP
 		s.bind((tcp_ip, tcp_port))
 		s.listen()
-		metodo("HOOOLA")
-		conn, addr = s.accept()
 		
-		while True:
-			data = conn.recv(self.BUFFER_SIZE)
-			if not data: break
+		
+		
+		#while True:
+		conn, addr = s.accept()
 
+		print("Se recibio un paquete desde: %1", addr)
+
+		data = conn.recv(self.BUFFER_SIZE)
 			
-			conn.send(data)  # echo
+		#if not data: continue
+
+		#else:
+		if data != None:
+			respuesta = metodo(data)
+
+			if True: # TODO: Revisa si tiene que enviar respuesta
+				conn.send(respuesta)  # echo
 		
 		conn.close()
 

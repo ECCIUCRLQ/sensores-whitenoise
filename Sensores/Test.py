@@ -79,9 +79,13 @@ class Test():
 	def RecibirDatos(self):
 		com = Comunicacion()
 
-		#com.recibir_paquete_tcp('10.1.137.79', 10000, self.Prueba)
+		#com.recibir_paquete_tcp('127.0.0.1', 10000, self.Prueba)
 
-		com.enviar_broadcast(15000, self.datos)
+		respuesta = com.enviar_paquete_tcp('192.168.86.180', 10000, self.datos)
+
+		print(respuesta)
+
+		#com.enviar_broadcast(15000, self.datos)
 
 		#com.recibir_broadcast(10002, self.Prueba)
 

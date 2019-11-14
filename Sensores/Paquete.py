@@ -4,6 +4,7 @@ class Paquete:
 		self.pagina_id = None
 		self.tamanno_pagina = None
 		self.datos_pagina = None
+		self.codigo_ok = None
 		self.codigo_error = None
 	
 	

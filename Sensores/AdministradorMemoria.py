@@ -2,6 +2,12 @@ from Frame import Frame
 from Nodo import Nodo
 from Pagina import Pagina
 
+from Comunicacion import Comunicacion
+from Paquete import Paquete
+from PaquetesHelper import PaquetesHelper
+from TipoComunicacion import TipoComunicacion
+from TipoOperacion import TipoOperacion
+
 from operator import attrgetter
 
 import datetime
@@ -187,16 +193,24 @@ class AdministradorMemoria:
 
 	@classmethod
 	def guardar_datos_nodo(cls, nombre_pagina, data):
-		# Obtiene el nodo que le corresponda (en esta etapa solo hay un nodo)
+		# Obtiene el nodo que le corresponda (en esta etapa solo hay un nodo y en esta parte realmente es una interfaz distribuida)
 		nodo = cls.obtener_nodo_disponible()
 
-		# Crea o abre el archivo de datos para guardar los datos
-		filename = nodo.localizacion + nombre_pagina + ".bin"
+		# Ahora el nodo tiene la IP de la Interfaz Distribuida. Solo hay que 
+		# generar un paquete y enviarlo
 
-		with open(filename, "wb") as f:
-			for dato in data:
-				#print("dato: " + str(dato) + "pagina: " + nombre_pagina)
-				f.write(dato)
+		paquete = Paquete()
+		paquete.operacion = TipoOperacion.Guardar.value
+		paquete.pagina_id = nombre_pagina
+		paquete.tamanno_pagina = len(data)
+		paquete.datos_pagina = data
+
+		paq_helper = PaquetesHelper()
+		buffer = paq_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Guardar, paquete)
+
+		com = Comunicacion()
+		com.enviar_paquete_tcp('', com.PUERTO_ENVIO_MLID, buffer)
+
 
 		return nodo.id
 
@@ -206,18 +220,16 @@ class AdministradorMemoria:
 		# Obtiene el nodo que le corresponda (en esta etapa solo hay un nodo)
 		nodo = cls.obtener_nodo_correspondiente(nodo_id)
 
-		# Crea o abre el archivo de datos para guardar los datos
-		filename = nodo.localizacion + nombre_pagina + ".bin"
+		# Ahora el nodo trae la ip donde está la interfaz distribuida
+		# y envia una solicitud para recibir la página
 
-		datos = []
-		# Obtiene los datos del archivo
-		with open(filename, "rb") as f:
-			datos.append(f.read())
+		com = Comunicacion()
+		buffer = com.enviar_paquete_tcp(nodo.localizacion, com.PUERTO_RECEPCION_ID_ML, None)
 
-		# Borra el archivo
-		os.remove(filename)
+		paq_helper = PaquetesHelper()
+		paquete = paq_helper.desempaquetar(TipoComunicacion.MLID, buffer)
 
-		return datos
+		return paquete.datos_pagina
 
 	@classmethod
 	def obtener_nodo_disponible(cls):

@@ -61,6 +61,7 @@ class PaquetesHelper:
 			TipoOperacion.Guardar: self.procesar_operacion_desempaquetar_MLID_guardar,
 			TipoOperacion.Pedir: self.procesar_operacion_desempaquetar_MLID_pedir,
 			TipoOperacion.Recibir: self.procesar_operacion_desempaquetar_MLID_recibir,
+			TipoOperacion.Ok: self.procesar_operacion_desempaquetar_MLID_ok,
 			TipoOperacion.Error: self.procesar_operacion_desempaquetar_MLID_error
 		}
 
@@ -74,6 +75,7 @@ class PaquetesHelper:
 			TipoOperacion.Guardar: self.procesar_operacion_empaquetar_MLID_guardar,
 			TipoOperacion.Pedir: self.procesar_operacion_empaquetar_MLID_pedir,
 			TipoOperacion.Recibir: self.procesar_operacion_empaquetar_MLID_recibir,
+			TipoOperacion.Ok: self.procesar_operacion_empaquetar_MLID_ok,
 			TipoOperacion.Error: self.procesar_operacion_empaquetar_MLID_error
 		}
 
@@ -103,6 +105,7 @@ class PaquetesHelper:
 			TipoOperacion.Guardar: self.procesar_operacion_desempaquetar_IDNM_Guardar,
 			TipoOperacion.Pedir: self.procesar_operacion_desempaquetar_IDNM_pedir,
 			TipoOperacion.Recibir: self.procesar_operacion_desempaquetar_IDNM_recibir,
+			TipoOperacion.Error: self.procesar_operacion_desempaquetar_IDNM_ok,
 			TipoOperacion.Error: self.procesar_operacion_desempaquetar_IDNM_error
 		}
 
@@ -112,7 +115,24 @@ class PaquetesHelper:
 
 	def procesar_operacion_empaquetar_IDNM(self, tipo_operacion, paquete):
 
-		return 0
+		# Primero verifica que tipo de operacion es.
+		tipo_operacion = self.obtener_tipo_operacion(datos);
+
+		switcher = {
+			TipoOperacion.Guardar: self.procesar_operacion_empaquetar_IDNM_Guardar,
+			TipoOperacion.Pedir: self.procesar_operacion_empaquetar_IDNM_pedir,
+			TipoOperacion.Recibir: self.procesar_operacion_empaquetar_IDNM_recibir,
+			TipoOperacion.Error: self.procesar_operacion_empaquetar_IDNM_ok,
+			TipoOperacion.Error: self.procesar_operacion_empaquetar_IDNM_error
+		}
+
+		procesador_operacion = switcher.get(tipo_operacion, lambda: "Operacion de IDNM No Valida")
+
+		return procesador_operacion(datos)
+
+	# OPERACIONES DE DESEMPAQUETAR
+
+	#MLID
 
 	def procesar_operacion_desempaquetar_MLID_guardar(self, datos):
 		# Guarda una pagina desde memoria local a memoria distribuida
@@ -143,27 +163,101 @@ class PaquetesHelper:
 		# Formato: CodigoOperacion(1 Byte) + PaginaId(1 Byte) + DatosPagina(n Bytes)
 		tam = len(datos)
 
-		operacion = unpack('B', datos[0:1])[0]
-		pagina_id= unpack('B', datos[1:2])[0]
-		datos = datos[2:tam]
+		paquete = Paquete()
+		paquete.operacion = unpack('B', datos[0:1])[0]
+		paquete.pagina_id= unpack('B', datos[1:2])[0]
+		paquete.datos_pagina = datos[2:tam]
 
 		return 0
+
+	def procesar_operacion_desempaquetar_MLID_ok(self, datos):
+		# Envia un codigo de ok????
+		# Formato: CodigoOperacion(1 Byte) + Codigo_Ok(1 Byte)
+		tam = len(datos)
+
+		paquete = Paquete()
+		paquete.operacion = unpack('B', datos[0:1])[0]
+		paquete.codigo_ok = unpack('B', datos[1:2])[0]
+
+		return paquete
 
 	def procesar_operacion_desempaquetar_MLID_error(self, datos):
 		# Envia un codigo de error????
 		# Formato: CodigoOperacion(1 Byte) + Codigo_Error(1 Byte)
 		tam = len(datos)
 
-		operacion = unpack('B', datos[0:1])[0]
-		codigo_error= unpack('B', datos[1:2])[0]
+		paquete = Paquete()
+		paquete.operacion = unpack('B', datos[0:1])[0]
+		paquete.codigo_error= unpack('B', datos[1:2])[0]
+
+		return paquete
+
+	# IDNM
+
+	def procesar_operacion_desempaquetar_IDNM_guardar(self, datos):
+		# Guarda una pagina desde memoria local a memoria distribuida
+		# Formato: CodigoOperacion(1 Byte) + PaginaId(1 Byte) + TamanoPagina(4 Bytes) + DatosPagina(TamanoPagina Bytes)
+		tam = len(datos)
+
+		paquete = Paquete()
+		paquete.operacion = unpack('B', datos[0:1])[0]
+		paquete.pagina_id = unpack('B', datos[1:2])[0]
+		paquete.tamanno_pagina = unpack('I', datos[2:6])[0]
+		paquete.datos_pagina = datos[6:(6 + paquete.tamanno_pagina)]
+
+		return paquete
+
+	def procesar_operacion_desempaquetar_IDNM_pedir(self, datos):
+		# Obtiene una pagina de memoria desde la interfaz distribuida.
+		# Formato: CodigoOperacion(1 Byte) + PaginaId(1 Byte)
+		tam = len(datos)
+
+		paquete = Paquete()
+		paquete.operacion = unpack('B', datos[0:1])[0]
+		paquete.pagina_id= unpack('B', datos[1:2])[0]
 
 		return 0
 
+	def procesar_operacion_desempaquetar_IDNM_recibir(self, datos):
+		# Recibe una pagina desde memoria distribuida a memoria local
+		# Formato: CodigoOperacion(1 Byte) + PaginaId(1 Byte) + DatosPagina(n Bytes)
+		tam = len(datos)
 
+		paquete = Paquete()
+		paquete.operacion = unpack('B', datos[0:1])[0]
+		paquete.pagina_id= unpack('B', datos[1:2])[0]
+		paquete.datos_pagina = datos[2:tam]
+
+		return 0
+
+	def procesar_operacion_desempaquetar_IDNM_ok(self, datos):
+		# Envia un codigo de ok????
+		# Formato: CodigoOperacion(1 Byte) + Codigo_Ok(1 Byte)
+		tam = len(datos)
+
+		paquete = Paquete()
+		paquete.operacion = unpack('B', datos[0:1])[0]
+		paquete.codigo_ok = unpack('B', datos[1:2])[0]
+
+		return paquete
+
+	def procesar_operacion_desempaquetar_IDNM_error(self, datos):
+		# Envia un codigo de error????
+		# Formato: CodigoOperacion(1 Byte) + Codigo_Error(1 Byte)
+		tam = len(datos)
+
+		paquete = Paquete()
+		paquete.operacion = unpack('B', datos[0:1])[0]
+		paquete.codigo_error= unpack('B', datos[1:2])[0]
+
+		return paquete
 
 
 
 	# OPERACIONES DE EMPAQUETAR
+
+	# MLID
+
 	def procesar_operacion_empaquetar_MLID_guardar(self, paquete):
 		# Guarda una pagina desde memoria local a memoria distribuida
 		# Formato: CodigoOperacion(1 Byte) + PaginaId(1 Byte) + TamanoPagina(4 Bytes) + DatosPagina(TamanoPagina Bytes)
@@ -174,14 +268,63 @@ class PaquetesHelper:
 		return datos
 
 	def procesar_operacion_empaquetar_MLID_pedir(self, paquete):
+		
+		datos = pack('=BB', paquete.operacion, paquete.pagina_id)
 
-		return 0
+		return datos
 
 	def procesar_operacion_empaquetar_MLID_recibir(self, paquete):
 		
+		datos = pack('=BB', paquete.operacion, paquete.pagina_id)
+		datos = datos + paquete.datos_pagina
 
-		return 0
+		return datos
+
+	def procesar_operacion_empaquetar_MLID_ok(self, paquete):
+		
+		datos = pack('=BB', paquete.operacion, paquete.pagina_id)
+
+		return datos
 
 	def procesar_operacion_empaquetar_MLID_error(self, paquete):
 		
-		return 0
+		datos = pack('=BB', paquete.operacion, paquete.pagina_id)
+
+		return datos
+
+
+	# IDNM
+
+	def procesar_operacion_empaquetar_IDNM_guardar(self, paquete):
+		# Guarda una pagina desde memoria local a memoria distribuida
+		# Formato: CodigoOperacion(1 Byte) + PaginaId(1 Byte) + TamanoPagina(4 Bytes) + DatosPagina(TamanoPagina Bytes)
+
+		datos = pack('=BBI', paquete.operacion, paquete.pagina_id, paquete.tamanno_pagina)
+		datos = datos + paquete.datos_pagina
+
+		return datos
+
+	def procesar_operacion_empaquetar_IDNM_pedir(self, paquete):
+		
+		datos = pack('=BB', paquete.operacion, paquete.pagina_id)
+
+		return datos
+
+	def procesar_operacion_empaquetar_IDNM_recibir(self, paquete):
+		
+		datos = pack('=BB', paquete.operacion, paquete.pagina_id)
+		datos = datos + paquete.datos_pagina
+
+		return datos
+
+	def procesar_operacion_empaquetar_IDNM_ok(self, paquete):
+		
+		datos = pack('=BB', paquete.operacion, paquete.pagina_id)
+
+		return datos
+
+	def procesar_operacion_empaquetar_IDNM_error(self, paquete):
+		
+		datos = pack('=BB', paquete.operacion, paquete.pagina_id)
+
+		return datos
