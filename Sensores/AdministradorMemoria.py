@@ -1,5 +1,5 @@
 from Frame import Frame
-from Nodo import Nodo
+from MLID import MLID
 from Pagina import Pagina
 
 from Comunicacion import Comunicacion
@@ -19,9 +19,9 @@ class AdministradorMemoria:
 	tamanno_memoria_principal = 4
 	memoria_inicializada = False
 	tabla_paginas = []
-	tabla_nodos = []
+	tabla_ID = []
 	memoria_principal = []
-	ruta_nodo_uno = "memoria/"
+	ruta_ID_uno = "memoria/"
 
 	@classmethod
 	def write(cls, direccion_fisica, dato):
@@ -46,7 +46,7 @@ class AdministradorMemoria:
 			frame_libre = cls.obtener_frame_memoria_principal()
 
 			# Obtiene los datos que haya en memoria secundaria
-			datos_memoria_secundaria = cls.obtener_datos_nodo(pagina.nombre, pagina.nodo)
+			datos_memoria_secundaria = cls.obtener_datos_ID(pagina.nombre, pagina.ID)
 
 			# Le adjunta los datos y lo deja en memoria principal
 			datos_memoria_secundaria.append(dato)
@@ -58,7 +58,7 @@ class AdministradorMemoria:
 
 			# Actualiza la tabla de paginas
 			pagina.frame = frame_libre
-			pagina.nodo = 0
+			pagina.ID = 0
 
 	@classmethod
 	def read(cls, pagina_id):
@@ -81,7 +81,7 @@ class AdministradorMemoria:
 			frame_libre = cls.obtener_frame_memoria_principal()
 
 			# Obtiene los datos que haya en memoria secundaria
-			datos_memoria_secundaria = cls.obtener_datos_nodo(pagina.nombre, pagina.nodo)
+			datos_memoria_secundaria = cls.obtener_datos_ID(pagina.nombre, pagina.ID)
 
 			frame = cls.memoria_principal[frame_libre]
 
@@ -90,7 +90,7 @@ class AdministradorMemoria:
 
 			# Actualiza la tabla de paginas
 			pagina.frame = frame_libre
-			pagina.nodo = 0
+			pagina.ID = 0
 
 			datos = datos_memoria_secundaria
 
@@ -115,12 +115,12 @@ class AdministradorMemoria:
 		cls.memoria_principal = [Frame() for i in range(cls.tamanno_memoria_principal)]
 
 		# Comprueba si existe el directorio de memoria, si existe lo elimina. Crea uno nuevo
-		if os.path.exists(cls.ruta_nodo_uno):
+		if os.path.exists(cls.ruta_ID_uno):
 			cls.finalizar_memoria()
 
-		os.makedirs(cls.ruta_nodo_uno)
-		# Agrega el nodo por defecto a la tabla de nodos.
-		cls.tabla_nodos.append(Nodo(1, cls.ruta_nodo_uno))
+		os.makedirs(cls.ruta_ID_uno)
+		# Agrega el MLID por defecto a la tabla de IDs.
+		cls.tabla_ID.append(MLID(1, cls.ruta_ID_uno))
 
 		# Pone la bandera de que la memoria fue inicializada.
 		cls.memoria_inicializada = True
@@ -128,7 +128,7 @@ class AdministradorMemoria:
 	@classmethod
 	def finalizar_memoria(cls):
 		# Borra la carpeta de memoria secundaria y todo su contenido.
-		shutil.rmtree(cls.ruta_nodo_uno)
+		shutil.rmtree(cls.ruta_ID_uno)
 
 	@classmethod
 	def asignar_pagina_memoria(cls):
@@ -187,16 +187,16 @@ class AdministradorMemoria:
 		for index, pagina in enumerate(cls.tabla_paginas):
 			if pagina.frame == frame_indice:
 				pagina.frame = -1
-				pagina.nodo = cls.guardar_datos_nodo(pagina.nombre, data)
+				pagina.ID = cls.guardar_datos_ID(pagina.nombre, data)
 				break
 		return 0
 
 	@classmethod
-	def guardar_datos_nodo(cls, nombre_pagina, data):
-		# Obtiene el nodo que le corresponda (en esta etapa solo hay un nodo y en esta parte realmente es una interfaz distribuida)
-		nodo = cls.obtener_nodo_disponible()
+	def guardar_datos_ID(cls, nombre_pagina, data):
+		# Obtiene la ID que le corresponda (en esta etapa solo hay una ID y en esta parte realmente es una interfaz distribuida)
+		ID = cls.obtener_ID_disponible()
 
-		# Ahora el nodo tiene la IP de la Interfaz Distribuida. Solo hay que 
+		# Ahora la ID tiene la IP de la Interfaz Distribuida. Solo hay que 
 		# generar un paquete y enviarlo
 
 		paquete = Paquete()
@@ -209,22 +209,25 @@ class AdministradorMemoria:
 		buffer = paq_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Guardar, paquete)
 
 		com = Comunicacion()
-		com.enviar_paquete_tcp('', com.PUERTO_ENVIO_MLID, buffer)
+		com.enviar_paquete_tcp('', com.PUERTO_ENVIO_MLID, buffer) # TODO: Esperar OK de respuesta
 
-
-		return nodo.id
+		return ID.id
 
 	@classmethod
-	def obtener_datos_nodo(cls, nombre_pagina, nodo_id):
+	def obtener_datos_ID(cls, nombre_pagina, ID_id):
 		#print("Leyendo de memoria secundaria página: " + str(nombre_pagina))
-		# Obtiene el nodo que le corresponda (en esta etapa solo hay un nodo)
-		nodo = cls.obtener_nodo_correspondiente(nodo_id)
+		# Obtiene la ID que le corresponda (en esta etapa solo hay una ID)
+		ID = cls.obtener_ID_correspondiente(ID_id)
 
-		# Ahora el nodo trae la ip donde está la interfaz distribuida
+		# Ahora la ID trae la ip donde está la interfaz distribuida
 		# y envia una solicitud para recibir la página
 
+		paquete_pedir = Paquete()
+		paquete_pedir.operacion = TipoOperacion.Pedir.value
+		paquete_pedir.pagina_id = nombre_pagina
+
 		com = Comunicacion()
-		buffer = com.enviar_paquete_tcp(nodo.localizacion, com.PUERTO_RECEPCION_ID_ML, None)
+		buffer = com.enviar_paquete_tcp(ID.localizacion, com.PUERTO_RECEPCION_ID_ML, paquete_pedir)
 
 		paq_helper = PaquetesHelper()
 		paquete = paq_helper.desempaquetar(TipoComunicacion.MLID, buffer)
@@ -232,18 +235,18 @@ class AdministradorMemoria:
 		return paquete.datos_pagina
 
 	@classmethod
-	def obtener_nodo_disponible(cls):
-		# Metodo para obtener el nodo que se debe utilizar para guardar en memoria secundaria
-		# en este etapa solo devuelve el unico nodo que existe
-		return cls.tabla_nodos[0]
+	def obtener_ID_disponible(cls):
+		# Metodo para obtener la ID que se debe utilizar para guardar en memoria secundaria
+		# en este etapa solo devuelve la unica ID que existe
+		return cls.tabla_ID[0]
 
 	@classmethod
-	def obtener_nodo_correspondiente(cls, nodo_id):
-		# Obtiene el nodo que le corresponde a una página
-		nodo_utilizado = None
+	def obtener_ID_correspondiente(cls, ID_id):
+		# Obtiene la ID que le corresponde a una página
+		ID_utilizado = None
 
-		for nodo in cls.tabla_nodos:
-			if nodo.id == nodo_id:
-				nodo_utilizado = nodo
+		for ID in cls.tabla_ID:
+			if ID.id == ID_id:
+				ID_utilizado = ID
 
-		return nodo_utilizado
+		return ID_utilizado

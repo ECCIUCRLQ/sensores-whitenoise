@@ -6,8 +6,14 @@ import time
 class Comunicacion:
 
 	BUFFER_SIZE = 1024
+	
 	PUERTO_ENVIO_MLID = 10101
 	PUERTO_RECEPCION_ID_ML = 10102
+	
+	PUERTO_BC_NMID = 5000
+	PUERTO_BC_IDID = 6666
+	PUERTO_TCP_IDNM = 3114
+	PUERTO_TCP_NMID = 2000
 
 	def __init__(self, *args, **kwargs):
 		return super().__init__(*args, **kwargs)

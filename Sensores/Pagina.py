@@ -2,16 +2,16 @@
 
 class Pagina:
 
-	def __init__(self, nombre = "", frame = 0, nodo = 0):
+	def __init__(self, nombre = "", frame = 0, ID = 0):
 		self.nombre = nombre
 		self.frame = frame
-		self.nodo = nodo
+		self.ID = ID
 
 	def __repr__(self):
-		return "Pagina: \n\tNombre -> %s \n\tNodo -> %s" % (self.nombre, self.nodo)
+		return "Pagina: \n\tNombre -> %s \n\tID -> %s" % (self.nombre, self.ID)
 
 	def __str__(self):
-		return "Pagina: \n\tNombre -> %s \n\tNodo -> %s" % (self.nombre, self.nodo)
+		return "Pagina: \n\tNombre -> %s \n\tID -> %s" % (self.nombre, self.ID)
 
 	def get_nombre(self):
 		return self.__nombre

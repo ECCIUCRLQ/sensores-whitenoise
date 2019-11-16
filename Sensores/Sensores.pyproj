@@ -53,7 +53,7 @@
     <Compile Include="InterfazDistribuida.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Nodo.py">
+    <Compile Include="MLID.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Pagina.py">
