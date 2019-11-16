@@ -29,6 +29,7 @@ class Comunicacion:
 
 	def recibir_paquete_tcp(self, tcp_ip, tcp_port, metodo):
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP
+		s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		s.bind((tcp_ip, tcp_port))
 		s.listen()
 		
@@ -36,6 +37,8 @@ class Comunicacion:
 		
 		#while True:
 		conn, addr = s.accept()
+
+		t = s.getsockname()
 
 		print("Se recibio un paquete desde: %1", addr)
 

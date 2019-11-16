@@ -26,7 +26,7 @@ class InterfazDistribuida:
 			if self.event.is_set():
 				break
 
-			com.recibir_paquete_tcp('192.168.86.180', 10000, self.AnalizarPaqueteTCP)
+			com.recibir_paquete_tcp('10.1.137.79', 10000, self.AnalizarPaqueteTCP)
 
 
 	def RecibirComunicacionesBroadcast(self, tabla_nodos):
@@ -43,6 +43,7 @@ class InterfazDistribuida:
 
 		paquete = paquete_helper.desempaquetar(TipoComunicacion.MLID, data)
 
+		paquete.operacion = TipoOperacion.Ok.value
 		paquete.ok = paquete.pagina_id
 
 		respuesta = paquete_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Ok, paquete)
@@ -69,7 +70,7 @@ class InterfazDistribuida:
 		hilo_bc = Thread(target=self.RecibirComunicacionesBroadcast, args=(self.tabla_nodos, ))
 
 		hilo_tcp.start()
-		hilo_bc.start()
+		#hilo_bc.start()
 
 		while True:
 			try:
