@@ -7,20 +7,18 @@ class Comunicacion:
 
 	BUFFER_SIZE = 1024
 	
-	PUERTO_ENVIO_MLID = 10101
-	PUERTO_RECEPCION_ID_ML = 10102
-	
 	PUERTO_BC_NMID = 5000
 	PUERTO_BC_IDID = 6666
 	PUERTO_TCP_IDNM = 3114
-	PUERTO_TCP_NMID = 2000
+	PUERTO_TCP_NMMLID = 2000
 
 	def __init__(self, *args, **kwargs):
 		return super().__init__(*args, **kwargs)
 
-	def enviar_paquete_tcp(self, tcp_ip, tcp_port, message):
+	def enviar_paquete_tcp(self, tcp_ip, tcp_port_to, message):
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP
-		s.connect((tcp_ip, tcp_port))
+
+		s.connect((tcp_ip, tcp_port_to))
 		s.send(message)
 		data = s.recv(self.BUFFER_SIZE)
 		s.close()
@@ -32,8 +30,6 @@ class Comunicacion:
 		s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		s.bind((tcp_ip, tcp_port))
 		s.listen()
-		
-		
 		
 		#while True:
 		conn, addr = s.accept()

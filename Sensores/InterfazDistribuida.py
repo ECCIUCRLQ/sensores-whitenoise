@@ -43,10 +43,10 @@ class InterfazDistribuida:
 
 		paquete = paquete_helper.desempaquetar(TipoComunicacion.MLID, data)
 
-		paquete.operacion = TipoOperacion.Ok.value
+		paquete.operacion = TipoOperacion.Ok_KeepAlive.value
 		paquete.ok = paquete.pagina_id
 
-		respuesta = paquete_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Ok, paquete)
+		respuesta = paquete_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Ok_KeepAlive, paquete)
 
 
 		print(data)

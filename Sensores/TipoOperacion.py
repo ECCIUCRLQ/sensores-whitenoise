@@ -1,8 +1,9 @@
 import enum
 
 class TipoOperacion(enum.Enum):
-	Guardar = 0
-	Pedir = 1
-	Recibir = 2
-	Ok = 3
+	Guardar_QuierSer = 0
+	Pedir_SoyActiva = 1
+	Ok_KeepAlive = 2
+	Recibir = 3
 	Error = 4
+	EstoyAqui = 5

@@ -102,7 +102,7 @@ class PaquetesHelper:
 		tipo_operacion = self.obtener_tipo_operacion(datos);
 
 		switcher = {
-			TipoOperacion.Guardar: self.procesar_operacion_desempaquetar_IDNM_Guardar,
+			TipoOperacion.Guardar: self.procesar_operacion_desempaquetar_IDNM_guardar,
 			TipoOperacion.Pedir: self.procesar_operacion_desempaquetar_IDNM_pedir,
 			TipoOperacion.Recibir: self.procesar_operacion_desempaquetar_IDNM_recibir,
 			TipoOperacion.Error: self.procesar_operacion_desempaquetar_IDNM_ok,
@@ -251,7 +251,6 @@ class PaquetesHelper:
 		paquete.codigo_error= unpack('B', datos[1:2])[0]
 
 		return paquete
-
 
 
 	# OPERACIONES DE EMPAQUETAR

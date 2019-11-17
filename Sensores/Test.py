@@ -81,7 +81,7 @@ class Test():
 
 		# com.recibir_paquete_tcp('127.0.0.1', 10000, self.Prueba)
 
-		respuesta = com.enviar_paquete_tcp('10.1.137.79', 10000, self.datos)
+		respuesta = com.enviar_paquete_tcp('10.1.137.79', com.PUERTO_TCP_NMMLID, self.datos)
 
 		print(respuesta)
 

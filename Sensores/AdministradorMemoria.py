@@ -200,16 +200,16 @@ class AdministradorMemoria:
 		# generar un paquete y enviarlo
 
 		paquete = Paquete()
-		paquete.operacion = TipoOperacion.Guardar.value
+		paquete.operacion = TipoOperacion.Guardar_QuierSer.value
 		paquete.pagina_id = nombre_pagina
 		paquete.tamanno_pagina = len(data)
 		paquete.datos_pagina = data
 
 		paq_helper = PaquetesHelper()
-		buffer = paq_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Guardar, paquete)
+		buffer = paq_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Guardar_QuierSer, paquete)
 
 		com = Comunicacion()
-		com.enviar_paquete_tcp('', com.PUERTO_ENVIO_MLID, buffer) # TODO: Esperar OK de respuesta
+		respuesta = com.enviar_paquete_tcp(ID.localizacion, com.PUERTO_TCP_NMMLID, buffer) # TODO: Esperar OK de respuesta
 
 		return ID.id
 
@@ -223,16 +223,16 @@ class AdministradorMemoria:
 		# y envia una solicitud para recibir la página
 
 		paquete_pedir = Paquete()
-		paquete_pedir.operacion = TipoOperacion.Pedir.value
+		paquete_pedir.operacion = TipoOperacion.Pedir_SoyActiva.value
 		paquete_pedir.pagina_id = nombre_pagina
 
 		com = Comunicacion()
-		buffer = com.enviar_paquete_tcp(ID.localizacion, com.PUERTO_RECEPCION_ID_ML, paquete_pedir)
+		buffer = com.enviar_paquete_tcp(ID.localizacion, com.PUERTO_TCP_NMMLID, paquete_pedir)
 
 		paq_helper = PaquetesHelper()
-		paquete = paq_helper.desempaquetar(TipoComunicacion.MLID, buffer)
+		paquete_respuesta = paq_helper.desempaquetar(TipoComunicacion.MLID, buffer)
 
-		return paquete.datos_pagina
+		return paquete_respuesta.datos_pagina
 
 	@classmethod
 	def obtener_ID_disponible(cls):

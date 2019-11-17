@@ -6,5 +6,7 @@ class Paquete:
 		self.datos_pagina = None
 		self.codigo_ok = None
 		self.codigo_error = None
+		self.tamanno_disponible = None
+
 	
 	
