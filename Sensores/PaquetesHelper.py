@@ -233,7 +233,7 @@ class PaquetesHelper:
 
 		paquete = Paquete()
 		paquete.operacion = unpack('B', datos[0:1])[0]
-		paquete.pagina_id= unpack('B', datos[1:2])[0]
+		paquete.pagina_id = unpack('B', datos[1:2])[0]
 		paquete.datos_pagina = datos[2:tam]
 
 		return 0
@@ -254,7 +254,7 @@ class PaquetesHelper:
 
 		paquete = Paquete()
 		paquete.operacion = unpack('B', datos[0:1])[0]
-		paquete.codigo_error= unpack('B', datos[1:2])[0]
+		paquete.codigo_error = unpack('B', datos[1:2])[0]
 
 		return paquete
 
@@ -262,7 +262,7 @@ class PaquetesHelper:
 
 	def procesar_operacion_desempaquetar_IDID_QuieroSer(self, datos):
 		paquete = Paquete()
-		paquete.operacion =  unpack('B', datos[0:1])[0]
+		paquete.operacion = unpack('B', datos[0:1])[0]
 		paquete.mac = datos[1:7]
 		paquete.ronda_id = unpack('B', datos[7:8])[0]
 		
@@ -270,9 +270,9 @@ class PaquetesHelper:
 
 	def procesar_operacion_desempaquetar_IDID_SoyActiva(self, datos):
 		paquete = Paquete()
-		paquete.operacion =  unpack('B', datos[0:1])[0]
-		paquete.filas1 =  unpack('B', datos[1:2])[0]
-		paquete.filas2 =  unpack('B', datos[2:3])[0]
+		paquete.operacion = unpack('B', datos[0:1])[0]
+		paquete.filas1 = unpack('B', datos[1:2])[0]
+		paquete.filas2 = unpack('B', datos[2:3])[0]
 		paquete.dump1 = datos[3: 3 + paquete.filas1 * 2]
 		paquete.dump2 = datos[3 + paquete.filas1 * 2: 3 + paquete.filas1 * 2 + paquete.filas2 * 9]
 
@@ -280,9 +280,9 @@ class PaquetesHelper:
 	
 	def procesar_operacion_desempaquetar_IDID_KeepAlive(self, datos):
 		paquete = Paquete()
-		paquete.operacion =  unpack('B', datos[0:1])[0]
-		paquete.filas1 =  unpack('B', datos[1:2])[0]
-		paquete.filas2 =  unpack('B', datos[2:3])[0]
+		paquete.operacion = unpack('B', datos[0:1])[0]
+		paquete.filas1 = unpack('B', datos[1:2])[0]
+		paquete.filas2 = unpack('B', datos[2:3])[0]
 		paquete.dump1 = datos[3: 3 + paquete.filas1 * 2]
 		paquete.dump2 = datos[3 + paquete.filas1 * 2: 3 + paquete.filas1 * 2 + paquete.filas2 * 9]
 

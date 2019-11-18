@@ -76,14 +76,27 @@ class Test():
 	def Prueba(self, data):
 		print(data)
 
+		paquete_helper = PaquetesHelper()
+
+		paquete = paquete_helper.desempaquetar(TipoComunicacion.MLID, data)
+
+		paquete.operacion = TipoOperacion.Ok_KeepAlive.value
+		paquete.ok = paquete.pagina_id
+
+		respuesta = paquete_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Ok_KeepAlive, paquete)
+
+		print(respuesta)
+
+		return respuesta
+
 	def RecibirDatos(self):
 		com = Comunicacion()
 
-		# com.recibir_paquete_tcp('127.0.0.1', 10000, self.Prueba)
+		com.recibir_paquete_tcp('10.1.137.79', com.PUERTO_TCP_NMMLID, self.Prueba)
 
-		respuesta = com.enviar_paquete_tcp('10.1.137.79', com.PUERTO_TCP_NMMLID, self.datos)
+		#respuesta = com.enviar_paquete_tcp('10.1.137.79', com.PUERTO_TCP_NMMLID, self.datos)
 
-		print(respuesta)
+		#print(respuesta)
 
 		# com.enviar_broadcast(15000, self.datos)
 

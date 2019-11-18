@@ -38,12 +38,12 @@ class TablaPaginas:
 
 class InterfazDistribuida:
 
-	#tabla_nodos = []
+	tabla_nodos = []
 
 	#event = Event()
 	def __init__(self, *args, **kwargs):
 		self.tabla_paginas = TablaPaginas()
-		#self.tabla_nodos = []
+		self.tabla_nodos = []
 
 		return super().__init__(*args, **kwargs)
 
@@ -51,11 +51,11 @@ class InterfazDistribuida:
 
 		com = Comunicacion()
 
-		while True:
-			if self.event.is_set():
-				break
+		#while True:
+		#	if self.event.is_set():
+		#		break
 
-			com.recibir_paquete_tcp('10.1.137.79', 10000, self.AnalizarPaqueteTCP)
+		com.recibir_paquete_tcp('10.1.137.79', com.PUERTO_TCP_NMMLID, self.AnalizarPaqueteTCP)
 
 
 	def RecibirComunicacionesBroadcast(self, tabla_nodos):
@@ -105,7 +105,7 @@ class InterfazDistribuida:
 			try:
 				sleep(1)
 			except KeyboardInterrupt:
-				self.event.set()
+				#self.event.set()
 				break
 		
 		hilo_tcp.join()
@@ -118,7 +118,7 @@ class InterfazDistribuida:
 		espacio_disponible = 75
 
 	
-		self.tabla_paginas.append([pg_id, node_id])
+		#self.tabla_paginas.append([pg_id, node_id])
 		print (self.tabla_paginas.tabla_paginas)
 		# tabla_nodos = []
 		# tabla_nodos.append((node_id, node_ip ,espacio_disponible ))
@@ -146,4 +146,5 @@ class InterfazDistribuida:
 		print (self.tabla_paginas.tabla_paginas)
 		
 interfaz_distribuida = InterfazDistribuida()
+#interfaz_distribuida.IniciarInterfazDistribuida()
 interfaz_distribuida.test()
