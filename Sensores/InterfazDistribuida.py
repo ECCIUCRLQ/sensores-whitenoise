@@ -8,14 +8,43 @@ from threading import Thread, Event
 from threading import Lock
 from time import sleep
 
+from struct import *
+
+
+class TablaPaginas:
+	def __init__(self):
+		self.tabla_paginas = []
+		self.filas = 0
+
+	def append(self, par):
+		self.filas += 1
+		self.tabla_paginas.append(par)
+
+	def actualizar(self, filas_nuevas, datos_tabla):
+		for fila in range(0, filas_nuevas):
+			self.tabla_paginas.append([datos_tabla[fila * 2], datos_tabla[fila * 2 + 1]])
+			self.filas += 1
+	
+	def get_filas(self):
+		return self.filas
+
+	def to_raw(self):
+		raw_table = bytearray()
+		print(self.filas)
+		for fila in range(0, self.filas):
+			raw_table += pack('=BB', self.tabla_paginas[fila][0], self.tabla_paginas[fila][1])
+
+		return raw_table
 
 class InterfazDistribuida:
 
-	tabla_nodos = []
+	#tabla_nodos = []
 
-	event = Event()
-
+	#event = Event()
 	def __init__(self, *args, **kwargs):
+		self.tabla_paginas = TablaPaginas()
+		#self.tabla_nodos = []
+
 		return super().__init__(*args, **kwargs)
 
 	def RecibirComunicacionesTCP(self, tabla_nodos):
@@ -60,7 +89,7 @@ class InterfazDistribuida:
 
 	def IniciarInterfazDistribuida(self):
 		
-		#Inicio la interfaz distribuida
+		# Inicio la interfaz distribuida
 
 		# Averiguo quien es la ID Activa, o me autoproclamo si es necesario
 
@@ -81,3 +110,40 @@ class InterfazDistribuida:
 		
 		hilo_tcp.join()
 		hilo_bc.join()
+
+	def test(self):
+		pg_id = 1
+		node_id = 7
+		node_ip = 15
+		espacio_disponible = 75
+
+	
+		self.tabla_paginas.append([pg_id, node_id])
+		print (self.tabla_paginas.tabla_paginas)
+		# tabla_nodos = []
+		# tabla_nodos.append((node_id, node_ip ,espacio_disponible ))
+		paquete_helper = PaquetesHelper()
+
+		paquete_enviar = Paquete()
+
+		paquete_enviar.operacion = TipoOperacion.Pedir_SoyActiva.value
+		paquete_enviar.filas1 = self.tabla_paginas.filas
+		paquete_enviar.filas2 = 1
+		paquete_enviar.dump1 = self.tabla_paginas.to_raw()
+		paquete_enviar.dump2 = pack('=BII', node_id, node_ip, espacio_disponible)
+		
+		# paquete_enviar.operacion = TipoOperacion.Guardar_QuieroSer.value
+		# paquete_enviar.mac = b'\x01\x02\x03\x04\x05\x06'
+		# paquete_enviar.ronda_id = 0
+
+		paquete_raw = paquete_helper.empaquetar(TipoComunicacion.IDID, TipoOperacion.Pedir_SoyActiva, paquete_enviar)
+		
+		print (paquete_raw)
+
+		paquete_recibir = paquete_helper.desempaquetar(TipoComunicacion.IDID, paquete_raw)
+
+		self.tabla_paginas.actualizar(paquete_recibir.filas1, paquete_recibir.dump1)
+		print (self.tabla_paginas.tabla_paginas)
+		
+interfaz_distribuida = InterfazDistribuida()
+interfaz_distribuida.test()
