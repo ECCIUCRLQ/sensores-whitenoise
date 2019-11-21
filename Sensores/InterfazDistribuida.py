@@ -10,6 +10,7 @@ from time import sleep
 
 from struct import *
 
+from uuid import getnode as get_mac
 
 class TablaPaginas:
 	def __init__(self):
@@ -44,6 +45,7 @@ class InterfazDistribuida:
 	def __init__(self, *args, **kwargs):
 		self.tabla_paginas = TablaPaginas()
 		self.tabla_nodos = []
+		self.ronda = 0
 
 		return super().__init__(*args, **kwargs)
 
@@ -58,11 +60,11 @@ class InterfazDistribuida:
 		com.recibir_paquete_tcp('10.1.137.79', com.PUERTO_TCP_NMMLID, self.AnalizarPaqueteTCP)
 
 
-	def RecibirComunicacionesBroadcast(self, tabla_nodos):
+	def recibir_comunicaciones_broadcast_IDID(self, tabla_nodos):
 
 		com = Comunicacion()
 
-		com.recibir_broadcast(1000, self.AnalizarPaqueteBC)
+		com.recibir_broadcast(com.PUERTO_BC_IDID, self.analizar_paquete_BC_IDID)
 
 		return 0
 
@@ -83,7 +85,34 @@ class InterfazDistribuida:
 
 		return respuesta
 
-	def AnalizarPaqueteBC(self, data):
+	def analizar_paquete_BC_IDID(self, data):
+
+		paquete_helper = PaquetesHelper()
+
+		paquete = paquete_helper.desempaquetar(TipoComunicacion.IDID, data)
+
+		print(paquete)
+
+	def enviar_bc_quiero_ser(self):
+
+		paquete_helper = PaquetesHelper()
+
+		paquete = Paquete()
+
+		paquete.operacion = TipoOperacion.Guardar_QuieroSer.value
+		paquete.mac = self.obtener_mac_address()
+		paquete.ronda = self.ronda
+
+		quiero_ser = paquete_helper.empaquetar(TipoComunicacion.IDID, TipoOperacion.Guardar_QuieroSer, paquete)
+
+		com = Comunicacion()
+
+		com.enviar_broadcast(com.PUERTO_BC_IDID, 1, quiero_ser)
+
+	def obtener_mac_address(self):
+		mac = get_mac()
+
+		mac_array = mac.to_bytes(6, 'little')
 
 		return 0
 
@@ -91,15 +120,16 @@ class InterfazDistribuida:
 		
 		# Inicio la interfaz distribuida
 
-		# Averiguo quien es la ID Activa, o me autoproclamo si es necesario
+		# Iniciar campeonato
 
-		# En caso de que sea la activa inicio las tareas de escucha
+		hilo_bc = Thread(target=self.recibir_comunicaciones_broadcast_IDID, args=(self.tabla_nodos,))
+		# Llamado a metodo activa
 
 		hilo_tcp = Thread(target=self.RecibirComunicacionesTCP, args=(self.tabla_nodos, ))
-		hilo_bc = Thread(target=self.RecibirComunicacionesBroadcast, args=(self.tabla_nodos, ))
 
-		hilo_tcp.start()
-		#hilo_bc.start()
+		# Llamado a metodo de pasiva
+		#hilo_tcp.start()
+		hilo_bc.start()
 
 		while True:
 			try:
@@ -146,5 +176,5 @@ class InterfazDistribuida:
 		print (self.tabla_paginas.tabla_paginas)
 		
 interfaz_distribuida = InterfazDistribuida()
-#interfaz_distribuida.IniciarInterfazDistribuida()
-interfaz_distribuida.test()
+interfaz_distribuida.IniciarInterfazDistribuida()
+#interfaz_distribuida.test()

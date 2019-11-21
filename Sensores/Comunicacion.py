@@ -63,11 +63,15 @@ class Comunicacion:
 			data, addr = sock.recvfrom(self.BUFFER_SIZE)
 			metodo(data)
 
-	def enviar_broadcast(self, broadcast_port, message):
+	def enviar_broadcast(self, broadcast_port, timeout, message):
 		server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
 		server.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+
 		# Timeout para no bloquear el socket mientras se envia el broadcast
-		server.settimeout(0.2)
+
+		if timeout != None:
+			server.settimeout(timeout)
+
 		server.bind(("", 44444)) # TODO: Revisar este puerto
 		while True:
 			server.sendto(message, ('<broadcast>', broadcast_port))
