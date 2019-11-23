@@ -85,25 +85,26 @@ class TablaNodos:
 				self.tabla_nodos[fila][2] = espacio_disponible
 
 class InterfazDistribuida:
-	#event = Event()
+	
 	def __init__(self, *args, **kwargs):
 		self.ip_red_ml = '127.0.0.1'
 		self.ip_red_nodos_id = '192.168.1.1'
 		self.tabla_paginas = TablaPaginas()
 		self.tabla_nodos = TablaNodos()
 		self.ronda = 0
+		self.event = Event()
 
 		return super().__init__(*args, **kwargs)
 
-	def RecibirComunicacionesTCP(self, tabla_nodos):
+	def recibir_comunicaciones_TCP(self, tabla_nodos):
 
 		com = Comunicacion()
 
-		#while True:
-		#	if self.event.is_set():
-		#		break
+		while True:
+			if self.event.is_set():
+				break
 
-		com.recibir_paquete_tcp('10.1.137.79', com.PUERTO_TCP_NMMLID, self.AnalizarPaqueteTCP)
+			com.recibir_paquete_tcp(com.IP_MLID, com.PUERTO_TCP_NMMLID, self.analizar_datos_TCP)
 
 
 	def recibir_comunicaciones_broadcast_IDID(self, tabla_nodos):
@@ -114,7 +115,7 @@ class InterfazDistribuida:
 
 		return 0
 
-	def AnalizarPaqueteTCP(self, data):
+	def analizar_datos_TCP(self, data):
 
 		paquete_helper = PaquetesHelper()
 
@@ -126,7 +127,7 @@ class InterfazDistribuida:
 		respuesta = paquete_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Ok_KeepAlive, paquete)
 
 
-		print(data)
+		print(paquete)
 		print(respuesta)
 
 		return respuesta
@@ -171,17 +172,17 @@ class InterfazDistribuida:
 		hilo_bc = Thread(target=self.recibir_comunicaciones_broadcast_IDID, args=(self.tabla_nodos,))
 		# Llamado a metodo activa
 
-		hilo_tcp = Thread(target=self.RecibirComunicacionesTCP, args=(self.tabla_nodos, ))
+		hilo_tcp = Thread(target=self.recibir_comunicaciones_TCP, args=(self.tabla_nodos, ))
 
 		# Llamado a metodo de pasiva
-		#hilo_tcp.start()
+		hilo_tcp.start()
 		hilo_bc.start()
 
 		while True:
 			try:
 				sleep(1)
 			except KeyboardInterrupt:
-				#self.event.set()
+				self.event.set()
 				break
 		
 		hilo_tcp.join()
@@ -243,5 +244,5 @@ class InterfazDistribuida:
 		print(self.tabla_nodos)
 		
 interfaz_distribuida = InterfazDistribuida()
-# interfaz_distribuida.IniciarInterfazDistribuida()
-interfaz_distribuida.test()
+interfaz_distribuida.IniciarInterfazDistribuida()
+#interfaz_distribuida.test()

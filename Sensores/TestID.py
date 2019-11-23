@@ -1,6 +1,8 @@
 from InterfazDistribuida import InterfazDistribuida
 from uuid import getnode as get_mac
+import socket
 
+import netifaces as ni
 
 
 class TestID:
@@ -11,6 +13,12 @@ class TestID:
         print(mac)
         #id.IniciarInterfazDistribuida()
 
+	def PruebaIP(self):
+
+		ip = socket.gethostbyname(socket.gethostname())
+
+		print(ip)
+
 test = TestID()
 
-test.Prueba()
+test.PruebaIP()

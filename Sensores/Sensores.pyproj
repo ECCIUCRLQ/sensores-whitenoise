@@ -84,6 +84,9 @@
     <Compile Include="TestID.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TestMLID.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Tipo.py">
       <SubType>Code</SubType>
     </Compile>

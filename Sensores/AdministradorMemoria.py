@@ -21,7 +21,7 @@ class AdministradorMemoria:
 	tabla_paginas = []
 	tabla_ID = []
 	memoria_principal = []
-	ruta_ID_uno = "memoria/"
+	ruta_ID_uno = "192.168.86.198"
 
 	@classmethod
 	def write(cls, direccion_fisica, dato):
@@ -200,16 +200,18 @@ class AdministradorMemoria:
 		# generar un paquete y enviarlo
 
 		paquete = Paquete()
-		paquete.operacion = TipoOperacion.Guardar_QuierSer.value
+		paquete.operacion = TipoOperacion.Guardar_QuieroSer.value
 		paquete.pagina_id = nombre_pagina
 		paquete.tamanno_pagina = len(data)
 		paquete.datos_pagina = data
 
 		paq_helper = PaquetesHelper()
-		buffer = paq_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Guardar_QuierSer, paquete)
+		buffer = paq_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Guardar_QuieroSer, paquete)
 
 		com = Comunicacion()
-		respuesta = com.enviar_paquete_tcp(ID.localizacion, com.PUERTO_TCP_NMMLID, buffer) # TODO: Esperar OK de respuesta
+		respuesta = com.enviar_paquete_tcp(com.IP_MLID, com.PUERTO_TCP_NMMLID, buffer) # TODO: Esperar OK de respuesta
+
+		print(respuesta)
 
 		return ID.id
 
