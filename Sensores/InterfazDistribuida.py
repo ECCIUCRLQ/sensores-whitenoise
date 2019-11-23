@@ -37,8 +37,11 @@ class TablaPaginas:
 			self.tabla_paginas.append([datos_tabla[fila * 2], datos_tabla[fila * 2 + 1]])
 			self.filas += 1
 	
-	def get_filas(self):
-		return self.filas
+	def obtener_nodo_id(self, pg_id):
+		for fila in range(0, self.filas):
+			if self.tabla_paginas[fila][0] == pg_id:
+				return self.tabla_paginas[fila][1]
+		return -1
 
 class TablaNodos:
 	def __init__(self):
@@ -55,6 +58,12 @@ class TablaNodos:
 
 	def tripleta_to_raw(self, tripleta):
 		return pack('B', tripleta[0]) + socket.inet_aton(tripleta[1]) + pack('I', tripleta[2])
+
+	def obtener_nodo_disponible(self, tamanno_pagina):
+		for fila in range(0, self.filas):
+			if(self.tabla_nodos[fila][2] >= tamanno_pagina):
+				return self.tabla_nodos[fila][0], self.tabla_nodos[fila][1]
+		return -1, -1
 
 	def append(self, tripleta):
 		self.filas += 1
@@ -266,7 +275,7 @@ class InterfazDistribuida:
 		# # paquete_enviar.operacion = TipoOperacion.Guardar_QuieroSer.value
 		# # paquete_enviar.mac = b'\x01\x02\x03\x04\x05\x06'
 		# # paquete_enviar.ronda_id = 0
-
+		
 		# paquete_raw = paquete_helper.empaquetar(TipoComunicacion.IDID, TipoOperacion.Pedir_SoyActiva, paquete_enviar)
 		
 		# print (paquete_raw)
@@ -276,27 +285,6 @@ class InterfazDistribuida:
 		# self.tabla_paginas.actualizar(paquete_recibir.filas1, paquete_recibir.dump1)
 		# print (self.tabla_paginas.tabla_paginas)
 		
-		self.tabla_nodos.append([7, '192.168.1.1', 70])
-		print(self.tabla_nodos)
-		raw_table = self.tabla_nodos.to_raw()
-		
-		paquete_enviar = Paquete()
-		paquete_enviar.operacion = TipoOperacion.Pedir_SoyActiva.value
-		paquete_enviar.filas1 = self.tabla_paginas.filas
-		paquete_enviar.filas2 = self.tabla_nodos.filas
-		paquete_enviar.dump1 = self.tabla_paginas.to_raw()
-		paquete_enviar.dump2 = self.tabla_nodos.to_raw()
-
-		paquete_raw = paquete_helper.empaquetar(TipoComunicacion.IDID, TipoOperacion.Pedir_SoyActiva, paquete_enviar)
-		paquete_recibir = paquete_helper.desempaquetar(TipoComunicacion.IDID, paquete_raw)
-
-		print(paquete_recibir)
-
-
-		#self.tabla_nodos.actualizar(paquete_recibir.filas2, paquete_recibir.dump2)
-
-		print(self.tabla_nodos)
-		
 interfaz_distribuida = InterfazDistribuida()
-interfaz_distribuida.IniciarInterfazDistribuida()
-#interfaz_distribuida.test()
+#interfaz_distribuida.IniciarInterfazDistribuida()
+interfaz_distribuida.test()
