@@ -121,14 +121,68 @@ class InterfazDistribuida:
 
 		paquete = paquete_helper.desempaquetar(TipoComunicacion.MLID, data)
 
-		paquete.operacion = TipoOperacion.Ok_KeepAlive.value
-		paquete.ok = paquete.pagina_id
+		tipo_operacion = TipoOperacion(paquete.operacion)
 
-		respuesta = paquete_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Ok_KeepAlive, paquete)
-
+		if tipo_operacion == TipoOperacion.Guardar_QuieroSer:
+			respuesta = self.GuardarEnNM(paquete)
+		elif tipo_operacion == TipoOperacion.Pedir_SoyActiva:
+			respuesta = self.PedirEnNM(paquete)
 
 		print(paquete)
 		print(respuesta)
+
+		return respuesta
+
+	def GuardarEnNM(self, paquete):
+
+		paquete_helper = PaquetesHelper()
+
+		buffer = paquete_helper.empaquetar(TipoComunicacion.IDNM, TipoOperacion.Guardar_QuieroSer, paquete)
+
+		nodo_id, nodo_ip = self.tabla_nodos.obtener_nodo_disponible(paquete.tamanno_pagina)
+
+		com = Comunicacion()
+
+		respuesta = com.enviar_paquete_tcp(nodo_ip, com.PUERTO_TCP_IDNM, buffer)
+		
+		# respuesta trae espacio disponible, cambiar paquete para solo enviar OK
+
+		paquete_respuesta = paquete_helper.desempaquetar(TipoComunicacion.IDNM, respuesta)
+
+		self.tabla_nodos.set_espacio_disponible_nodo(nodo_id, paquete_respuesta.tamanno_disponible)
+
+		# enviar broadcast de ID ID Keep Alive con Actualización
+		paquete_bc = Paquete()
+		paquete_bc.operacion = TipoOperacion.Ok_KeepAlive
+		paquete_bc.filas1 = 1
+		paquete_bc.filas2 = 2
+		paquete_bc.dump1 = pack("=BB", paquete.pagina_id, nodo_id)
+		paquete_bc.dump2 = self.tabla_nodos.tripleta_to_raw([nodo_id, nodo_ip, paquete_respuesta.tamanno_disponible])
+
+		buffer_bc = paquete_helper.empaquetar(TipoComunicacion.IDID, TipoOperacion.Ok_KeepAlive, paquete_bc)
+
+		com.enviar_broadcast(com.PUERTO_BC_IDID, None, buffer_bc)
+
+		# Crea respuesta para ML con un OK
+		paquete_ok = Paquete()
+		paquete_ok.operacion = TipoOperacion.Ok_KeepAlive
+		paquete_ok.pagina_id = paquete.pagina_id
+
+		respuesta_ok = paquete_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Ok_KeepAlive, paquete_ok)
+
+		return respuesta_ok
+
+	def PedirEnNM(self, paquete):
+
+		paquete_helper = PaquetesHelper()
+
+		buffer = paquete_helper.empaquetar(TipoComunicacion.IDNM, TipoOperacion.Pedir_SoyActiva, paquete)
+
+		ip_nodo_nm = None
+
+		com = Comunicacion()
+
+		respuesta = com.enviar_paquete_tcp(ip_nodo_nm, com.PUERTO_TCP_IDNM, buffer)
 
 		return respuesta
 

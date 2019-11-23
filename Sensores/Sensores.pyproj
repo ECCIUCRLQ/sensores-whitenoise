@@ -42,6 +42,7 @@
     <Compile Include="Equipo.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="FileSystem.py" />
     <Compile Include="Frame.py">
       <SubType>Code</SubType>
     </Compile>
