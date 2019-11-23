@@ -229,7 +229,7 @@ class AdministradorMemoria:
 		paquete_pedir.pagina_id = nombre_pagina
 
 		com = Comunicacion()
-		buffer = com.enviar_paquete_tcp(ID.localizacion, com.PUERTO_TCP_NMMLID, paquete_pedir)
+		buffer = com.enviar_paquete_tcp(com.IP_MLID, com.PUERTO_TCP_NMMLID, paquete_pedir)
 
 		paq_helper = PaquetesHelper()
 		paquete_respuesta = paq_helper.desempaquetar(TipoComunicacion.MLID, buffer)
