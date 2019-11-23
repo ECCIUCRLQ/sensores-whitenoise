@@ -13,7 +13,6 @@ class Comunicacion:
 	PUERTO_TCP_NMMLID = 2000
 
 	IP_MLID = "192.168.86.198"
-
 	def __init__(self, *args, **kwargs):
 		return super().__init__(*args, **kwargs)
 
@@ -38,7 +37,7 @@ class Comunicacion:
 
 		t = s.getsockname()
 
-		print("Se recibio un paquete desde: %1", addr)
+		print("Se recibio un paquete desde: ", addr)
 
 		data = conn.recv(self.BUFFER_SIZE)
 			
@@ -47,9 +46,7 @@ class Comunicacion:
 		#else:
 		if data != None:
 			respuesta = metodo(data)
-
-			if True: # TODO: Revisa si tiene que enviar respuesta
-				conn.send(respuesta)  # echo
+			conn.send(respuesta)  # echo
 		
 		conn.close()
 
@@ -70,14 +67,11 @@ class Comunicacion:
 		server.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
 		# Timeout para no bloquear el socket mientras se envia el broadcast
-
 		if timeout != None:
 			server.settimeout(timeout)
 
 		server.bind(("", 44444)) # TODO: Revisar este puerto
-		while True:
-			server.sendto(message, ('<broadcast>', broadcast_port))
-			time.sleep(1)
+		server.sendto(message, ('<broadcast>', broadcast_port))
 
 	def recibir_broadcast(self, broadcast_port, metodo):
 		client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
