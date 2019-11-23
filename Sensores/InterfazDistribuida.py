@@ -178,11 +178,15 @@ class InterfazDistribuida:
 
 		buffer = paquete_helper.empaquetar(TipoComunicacion.IDNM, TipoOperacion.Pedir_SoyActiva, paquete)
 
-		ip_nodo_nm = None
+		# Obtengo el nodo y la dirección donde está almacenada la página
+		nodo_id, nodo_ip = self.tabla_nodos.obtener_nodo_por_pagina(paquete.pagina_id)
 
 		com = Comunicacion()
 
-		respuesta = com.enviar_paquete_tcp(ip_nodo_nm, com.PUERTO_TCP_IDNM, buffer)
+		# Envio el paquete para pedir la pagina al Nodo de Memoria
+		respuesta = com.enviar_paquete_tcp(nodo_ip, com.PUERTO_TCP_IDNM, buffer)
+
+		# En la respuesta está la pagina con los datos, no es necesario empaquetar y desempaquetar ya que la estructura del paquete es la misma en NM y ML
 
 		return respuesta
 
