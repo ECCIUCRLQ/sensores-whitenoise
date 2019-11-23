@@ -80,4 +80,4 @@ class Comunicacion:
 		while True:
 			data, addr = client.recvfrom(self.BUFFER_SIZE)
 			# Aqui hacer algo con los datos
-			metodo(data)
+			metodo(data,addr)

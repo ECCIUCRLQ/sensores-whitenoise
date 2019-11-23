@@ -111,6 +111,7 @@ class FileSystem:
 			respuesta = self.readData(paquete.page_id):
         elif tipo_operacion == TipoOperacion.Ok_KeepAlive:
 			cls.keep_trying_bc = False
+            respuesta = None
 
 		print(paquete)
 		print(respuesta)
