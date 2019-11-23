@@ -64,6 +64,12 @@ class TablaNodos:
 			if(self.tabla_nodos[fila][2] >= tamanno_pagina):
 				return self.tabla_nodos[fila][0], self.tabla_nodos[fila][1]
 		return -1, -1
+	
+	def obtener_nodo_ip(self, nodo_id):
+		for fila in rannge(0, self.filas):
+			if self.tabla_nodos[fila][0] == nodo_id:
+				return self.tabla_nodos[fila][1]
+		return -1
 
 	def append(self, tripleta):
 		self.filas += 1
@@ -117,12 +123,13 @@ class InterfazDistribuida:
 
 
 	def recibir_comunicaciones_broadcast_IDID(self, tabla_nodos):
-
 		com = Comunicacion()
-
 		com.recibir_broadcast(com.PUERTO_BC_IDID, self.analizar_paquete_BC_IDID)
 
-		return 0
+	def recibir_comunicaciones_broadcast_NMID(self, tabla_nodos):
+		com = Comunicacion()
+		com.recibir_broadcast(com.PUERTO_BC_NMID, self.analizar_paquete_BC_NMID)
+
 
 	def analizar_datos_TCP(self, data):
 
@@ -164,7 +171,7 @@ class InterfazDistribuida:
 		paquete_bc = Paquete()
 		paquete_bc.operacion = TipoOperacion.Ok_KeepAlive
 		paquete_bc.filas1 = 1
-		paquete_bc.filas2 = 2
+		paquete_bc.filas2 = 1
 		paquete_bc.dump1 = pack("=BB", paquete.pagina_id, nodo_id)
 		paquete_bc.dump2 = self.tabla_nodos.tripleta_to_raw([nodo_id, nodo_ip, paquete_respuesta.tamanno_disponible])
 
@@ -188,7 +195,8 @@ class InterfazDistribuida:
 		buffer = paquete_helper.empaquetar(TipoComunicacion.IDNM, TipoOperacion.Pedir_SoyActiva, paquete)
 
 		# Obtengo el nodo y la dirección donde está almacenada la página
-		nodo_id, nodo_ip = self.tabla_nodos.obtener_nodo_por_pagina(paquete.pagina_id)
+		nodo_id = self.tabla_paginas.obtener_nodo_id(paquete.pagina_id)
+		nodo_ip = self.tabla_nodos.obtener_nodo_ip(nodo_id)
 
 		com = Comunicacion()
 
@@ -199,7 +207,7 @@ class InterfazDistribuida:
 
 		return respuesta
 
-	def analizar_paquete_BC_IDID(self, data):
+	def analizar_paquete_BC_IDID(self, data, addr):
 
 		paquete_helper = PaquetesHelper()
 
@@ -207,6 +215,20 @@ class InterfazDistribuida:
 
 		print(paquete)
 
+	def analizar_paquete_BC_NMID(self, data, addr):
+		paquete_helper = PaquetesHelper()
+		paquete = paquete_helper.desempaquetar(TipoComunicacion.NMID, data)
+		
+		tipo_operacion = TipoOperacion(paquete.operacion)
+
+		if tipo_operacion == TipoOperacion.EstoyAqui:
+			com = Comunicacion()
+			paquete_ok = Paquete()
+			paquete_ok.operacion = TipoOperacion.Ok_KeepAlive.value
+			
+			paquete_ok_raw = paquete_helper.empaquetar(TipoComunicacion.NMID, TipoOperacion.Ok_KeepAlive, paquete_ok)
+			com.enviar_paquete_tcp(addr, com.PUERTO_TCP_IDNM, paquete_ok_raw)
+			
 	def enviar_bc_quiero_ser(self):
 
 		paquete_helper = PaquetesHelper()
@@ -279,7 +301,7 @@ class InterfazDistribuida:
 		# # paquete_enviar.operacion = TipoOperacion.Guardar_QuieroSer.value
 		# # paquete_enviar.mac = b'\x01\x02\x03\x04\x05\x06'
 		# # paquete_enviar.ronda_id = 0
-		
+
 		# paquete_raw = paquete_helper.empaquetar(TipoComunicacion.IDID, TipoOperacion.Pedir_SoyActiva, paquete_enviar)
 		
 		# print (paquete_raw)
