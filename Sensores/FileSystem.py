@@ -76,11 +76,11 @@ class FileSystem:
         
         paquete_helper = PaquetesHelper()
         paquete_enviar = Paquete()
-        paquete_enviar.operacion = TipoOperacion.Recibir.value
+        paquete_enviar.operacion = TipoOperacion.Enviar.value
         paquete_enviar.pagina_id = id
         paquete_enviar.datos_pagina = datos
 
-        buffer = paquete_helper.empaquetar(TipoComunicacion.IDNM, TipoOperacion.Recibir, paquete_enviar)
+        buffer = paquete_helper.empaquetar(TipoComunicacion.IDNM, TipoOperacion.Enviar, paquete_enviar)
 
         return buffer
 

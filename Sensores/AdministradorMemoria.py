@@ -89,8 +89,8 @@ class AdministradorMemoria:
 			frame.fecha_ultimo_acceso = datetime.datetime.now()
 
 			# Actualiza la tabla de paginas
-			pagina.frame = frame_libre
-			pagina.ID = 0
+			#pagina.frame = frame_libre ###################### YA NO HAY QUE ACTUALIZAR EL FRAME PORQUE SIGUEN ESTANDO EN UN NM#############################
+			#pagina.ID = 0 ###################### YA NO HAY QUE ACTUALIZAR EL FRAME PORQUE SIGUEN ESTANDO EN UN NM#############################
 
 			datos = datos_memoria_secundaria
 

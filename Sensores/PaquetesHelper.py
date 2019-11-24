@@ -60,7 +60,7 @@ class PaquetesHelper:
 		switcher = {
 			TipoOperacion.Guardar_QuieroSer: self.procesar_operacion_desempaquetar_MLID_Guardar,
 			TipoOperacion.Pedir_SoyActiva: self.procesar_operacion_desempaquetar_MLID_pedir,
-			TipoOperacion.Recibir: self.procesar_operacion_desempaquetar_MLID_recibir,
+			TipoOperacion.Enviar: self.procesar_operacion_desempaquetar_MLID_recibir,
 			TipoOperacion.Ok_KeepAlive: self.procesar_operacion_desempaquetar_MLID_ok,
 			TipoOperacion.Error: self.procesar_operacion_desempaquetar_MLID_error
 		}
@@ -74,7 +74,7 @@ class PaquetesHelper:
 		switcher = {
 			TipoOperacion.Guardar_QuieroSer: self.procesar_operacion_empaquetar_MLID_Guardar,
 			TipoOperacion.Pedir_SoyActiva: self.procesar_operacion_empaquetar_MLID_pedir,
-			TipoOperacion.Recibir: self.procesar_operacion_empaquetar_MLID_recibir,
+			TipoOperacion.Enviar: self.procesar_operacion_empaquetar_MLID_recibir,
 			TipoOperacion.Ok_KeepAlive: self.procesar_operacion_empaquetar_MLID_ok,
 			TipoOperacion.Error: self.procesar_operacion_empaquetar_MLID_error
 		}
@@ -120,7 +120,7 @@ class PaquetesHelper:
 		switcher = {
 			TipoOperacion.Guardar_QuieroSer: self.procesar_operacion_desempaquetar_IDNM_Guardar,
 			TipoOperacion.Pedir_SoyActiva: self.procesar_operacion_desempaquetar_IDNM_pedir,
-			TipoOperacion.Recibir: self.procesar_operacion_desempaquetar_IDNM_recibir,
+			TipoOperacion.Enviar: self.procesar_operacion_desempaquetar_IDNM_recibir,
 			TipoOperacion.Ok_KeepAlive: self.procesar_operacion_desempaquetar_IDNM_ok,
 			TipoOperacion.Error: self.procesar_operacion_desempaquetar_IDNM_error,
 			TipoOperacion.EstoyAqui: self.procesar_operacion_desempaquetar_IDNM_estoyaqui
@@ -135,7 +135,7 @@ class PaquetesHelper:
 		switcher = {
 			TipoOperacion.Guardar_QuieroSer: self.procesar_operacion_empaquetar_IDNM_Guardar,
 			TipoOperacion.Pedir_SoyActiva: self.procesar_operacion_empaquetar_IDNM_pedir,
-			TipoOperacion.Recibir: self.procesar_operacion_empaquetar_IDNM_recibir,
+			TipoOperacion.Enviar: self.procesar_operacion_empaquetar_IDNM_recibir,
 			TipoOperacion.Ok_KeepAlive: self.procesar_operacion_empaquetar_IDNM_ok,
 			TipoOperacion.Error: self.procesar_operacion_empaquetar_IDNM_error,
 			TipoOperacion.EstoyAqui: self.procesar_operacion_empaquetar_IDNM_estoyaqui

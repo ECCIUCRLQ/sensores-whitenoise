@@ -108,6 +108,7 @@ class InterfazDistribuida:
 		self.ronda = 0
 		self.event = Event()
 		self.ip_pata_nmid = ""
+        self.soy_activa = False
 
 		return super().__init__(*args, **kwargs)
 
@@ -129,7 +130,6 @@ class InterfazDistribuida:
 	def recibir_comunicaciones_broadcast_NMID(self, tabla_nodos):
 		com = Comunicacion()
 		com.recibir_broadcast(self.ip_pata_nmid, com.PUERTO_BC_NMID, self.analizar_paquete_BC_NMID)
-
 
 	def analizar_datos_TCP(self, data):
 
@@ -236,7 +236,6 @@ class InterfazDistribuida:
 
 			self.tabla_nodos.append([self.tabla_nodos.filas, addr[0], paquete.tamanno_disponible])
 			
-			
 	def enviar_bc_quiero_ser(self):
 
 		paquete_helper = PaquetesHelper()
@@ -280,6 +279,18 @@ class InterfazDistribuida:
 
 		while True:
 			try:
+				# Escuchar por un tiempo el keep alive de la interfaz distribuida si existe
+
+				# Si no escucho nada inicio campeonato para ser interfaz activa
+
+                # Inicio el timeout junto con las rondas, si gané me pongo ronda tres y mando bc para todo el mundo
+
+                # Inicio el tiempo extra 
+
+                if self.soy_activa == True:
+                    # Empiezo a enviar los Keep Alive cada 2 segundos
+
+
 				sleep(1)
 			except KeyboardInterrupt:
 				self.event.set()
@@ -300,7 +311,7 @@ class InterfazDistribuida:
 		# print (self.tabla_paginas.tabla_paginas)
 		# # tabla_nodos = []
 		# # tabla_nodos.append((node_id, node_ip ,espacio_disponible ))
-		paquete_helper = PaquetesHelper()
+		#paquete_helper = PaquetesHelper()
 
 		# paquete_enviar = Paquete()
 
@@ -322,7 +333,10 @@ class InterfazDistribuida:
 
 		# self.tabla_paginas.actualizar(paquete_recibir.filas1, paquete_recibir.dump1)
 		# print (self.tabla_paginas.tabla_paginas)
-		
+
+
 interfaz_distribuida = InterfazDistribuida()
+
+
 interfaz_distribuida.IniciarInterfazDistribuida("192.168.86.203")
 #interfaz_distribuida.test()
