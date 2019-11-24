@@ -80,6 +80,11 @@ class FileSystem:
                 contenido[dir+size:dir+size+4] = pack('>I', int(time.time()))
                 break
             i += 12
+
+        # Se escribe para modificar la hora de acceso
+        f = open(cls.FILENAME, "wb")
+        f.write(contenido)
+        f.close()
         
         paquete_helper = PaquetesHelper()
         paquete_enviar = Paquete()
