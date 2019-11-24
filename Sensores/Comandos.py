@@ -43,8 +43,10 @@ class Comandos:
             while True:
                 comando = input(username+"@"+hostname+":"+path+"/Volume$ ").split()
                 if len(comando) > 0:
-                    if comando[0] == "ls":
+                    if comando[0].lower() == "ls":
                         cls.ls(comando[1:])
+                    else:
+                        print("Comando no disponible")
         except KeyboardInterrupt:
             print("\nLínea de comandos finalizada...")
 
