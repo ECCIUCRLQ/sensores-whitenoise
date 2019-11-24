@@ -111,6 +111,7 @@ class InterfazDistribuida:
 		self.soy_activa = False
 		self.existe_activa = False
 		self.timeout_campeonato_termino = False
+		self.timeout_keep_alive_termino = False
 
 		return super().__init__(*args, **kwargs)
 
@@ -130,6 +131,7 @@ class InterfazDistribuida:
 		com = Comunicacion()
 		
 		while True:
+
 			# Iniciar con un quiero ser
 			self.enviar_quiero_ser()
 			
@@ -145,19 +147,46 @@ class InterfazDistribuida:
 				#Me declaro activa
 				self.soy_activa = True
 				self.ronda = 3
+				
+			if self.soy_activa():
+				keep_alive = Thread(target=self.enviar_keep_alive(), args=())
 
+				keep_alive.start()
 
-			if True:
-				break
+			timer_keep_alive = Thread(target=self.iniciar_timer_keep_alive, args=(4, self.timeout_campeonato_termino,))
+			timer_keep_alive.start()
+			
+			while True:
+				com.recibir_broadcast(self.ip_pata_nmid, com.PUERTO_BC_IDID, self.analizar_paquete_BC_IDID)
 
+				if self.timeout_keep_alive_termino == True and self.soy_activa == False:
+					break
 
-        # Inicio el timeout junto con las rondas, si gané me pongo ronda tres y mando bc para todo el mundo
+				
+	def enviar_keep_alive(self):
+		com = Comunicacion()
 
-        # Inicio el tiempo extra 
+		paquete = Paquete()
+
+		paquete.operacion = TipoOperacion.Ok_KeepAlive.value
+		paquete.filas1 = 0
+		paquete.filas2 = 0
+
+		paquetes_helper = Paquetes_Helper()
+
+		buffer = paquetes_helper.empaquetar(TipoComunicacion.IDID, TipoTipoOperacion.Ok_KeepAlive, paquete)
+
+		while True:
+			com.enviar_broadcast(self.ip_pata_nmid, com.PUERTO_BC_IDID, None, buffer)
+			sleep(2)
 
 	def iniciar_timer_campeonato(self, tiempo, timeout_campeonato_termino):
 		sleep(tiempo)
 		self.timeout_campeonato_termino = True
+
+	def iniciar_timer_keep_alive(self, tiempo, timeout_campeonato_termino):
+		sleep(tiempo)
+		self.timeout_keep_alive_termino = True
 		
 
 	def enviar_quiero_ser(self):
