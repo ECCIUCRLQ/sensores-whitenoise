@@ -13,8 +13,6 @@ from threading import Thread, Event
 class FileSystem:
 
     FILENAME = "volume.bin"
-    IND_DATOS = 0
-    IND_METAS = 0
     keep_trying_bc = True
     hostname = socket.gethostname()
     nodo_ip = ""
@@ -26,32 +24,37 @@ class FileSystem:
         contenido = bytearray(f.read())
         f.close()
 
+        # Busca los indices de los datos y metadatos
+        ind_metas = int.from_bytes(contenido[0:4], "big")
+        ind_datos = int.from_bytes(contenido[4:8], "big")
+
         # Agrega las fechas a los datos
         datos = pack('>'+str(size)+'sII', data, int(time.time()), int(time.time()))
         #print("Datos: ")
         #print(datos)
 
         # Arma la estructura de los metadatos que se van a guardar
-        metadatos = pack('>III', page_id, size, cls.IND_DATOS-len(datos))
+        metadatos = pack('>III', page_id, size, ind_datos-len(datos))
 
         # Se guardan los datos y metadatos en el bytearray
-        contenido[cls.IND_METAS:cls.IND_METAS+12] = metadatos
-        contenido[cls.IND_DATOS-size-8:cls.IND_DATOS] = datos
+        contenido[ind_metas:ind_metas+12] = metadatos
+        contenido[ind_datos-size-8:ind_datos] = datos
+
+        ind_metas += 12
+        ind_datos -= len(datos)
+        contenido[0:8] = pack(">II", ind_metas, ind_datos)
+        print(contenido)
 
         # Se escribe el bytearray en el archivo
         f = open(cls.FILENAME, "wb")
         f.write(contenido)
         f.close()
 
-        cls.IND_METAS += 12
-        cls.IND_DATOS -= len(datos)
-        print(contenido)
-
         paquete_helper = PaquetesHelper()
         paquete = Paquete()
         paquete.operacion = TipoOperacion.Ok_KeepAlive.value
         paquete.pagina_id = page_id
-        paquete.tamanno_disponible = ((cls.IND_DATOS - cls.IND_METAS) - 12)
+        paquete.tamanno_disponible = ((ind_datos - ind_metas) - 12)
 
         buffer = paquete_helper.empaquetar(TipoComunicacion.NMID, TipoOperacion.Ok_KeepAlive, paquete)
 
@@ -62,15 +65,19 @@ class FileSystem:
         f = open(cls.FILENAME, "rb")
         contenido = bytearray(f.read())
         f.close()
+
+        # Busca los indices de los datos y metadatos
+        ind_metas = int.from_bytes(contenido[0:4], "big")
+
         datos = bytearray()
-        i = 0
-        while i < cls.IND_METAS:
+        i = 8
+        while i < ind_metas:
             current = int.from_bytes(contenido[i:i+4], "big")
             if(current == id):
                 size = int.from_bytes(contenido[i+4:i+8], "big")
                 dir = int.from_bytes(contenido[i+8:i+12], "big")
                 datos = (contenido[dir:dir+size])
-                contenido[dir+size:dir+size+4] = pack('I', int(time.time()))
+                contenido[dir+size:dir+size+4] = pack('>I', int(time.time()))
                 break
             i += 12
         
@@ -86,12 +93,20 @@ class FileSystem:
 
     @classmethod
     def anunciarse_broadcast(cls, keep_trying_bc):
+        # Guarda el contenido de todo el archivo en un byte array
+        f = open(cls.FILENAME, "rb")
+        contenido = bytearray(f.read())
+        f.close()
+
+        # Busca los indices de los datos y metadatos
+        ind_datos = int.from_bytes(contenido[4:8], "big")
+
         com = Comunicacion()
         paquete_estoy_aqui = Paquete()
         paquete_helper = PaquetesHelper()
 
         paquete_estoy_aqui.operacion = TipoOperacion.EstoyAqui.value
-        paquete_estoy_aqui.tamanno_disponible = (cls.IND_DATOS - cls.IND_METAS) - 12
+        paquete_estoy_aqui.tamanno_disponible = (ind_datos) - 20
         
         paquete_estoy_aqui_raw = paquete_helper.empaquetar(TipoComunicacion.IDNM, TipoOperacion.EstoyAqui, paquete_estoy_aqui)
 
@@ -129,11 +144,12 @@ class FileSystem:
     def start(cls, size, nodo_ip):
         # Llena el archivo con bytes en cero para reservar todo el espacio
         f = open(cls.FILENAME, "wb+")
-        f.write(bytearray(size))
+        contenido = bytearray(size)
+        contenido[0:8] = pack(">II", 8, size)
+        f.write(contenido)
         f.close()
 
-        cls.IND_METAS = 0
-        cls.IND_DATOS = size
+    
         cls.nodo_ip = nodo_ip
 
         # Hacer broadcast para ver cual nodo me recibe
