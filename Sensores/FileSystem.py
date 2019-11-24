@@ -17,7 +17,7 @@ class FileSystem:
     IND_METAS = 0
     keep_trying_bc = True
     hostname = socket.gethostname()
-    nodo_ip = socket.gethostbyname(hostname)
+    nodo_ip = ""
 
     @classmethod
     def writeData(cls, page_id, size, data):
@@ -97,8 +97,8 @@ class FileSystem:
 
         while cls.keep_trying_bc:
             print("Anunciadome desde: ", cls.nodo_ip)
-            com.enviar_broadcast(com.PUERTO_BC_NMID, 1, paquete_estoy_aqui_raw)
-            time.sleep(0.5)
+            com.enviar_broadcast(cls.nodo_ip, com.PUERTO_BC_NMID, 1, paquete_estoy_aqui_raw)
+            time.sleep(1)
 
     
     @classmethod
@@ -126,7 +126,7 @@ class FileSystem:
         return respuesta
 
     @classmethod
-    def start(cls, size):
+    def start(cls, size, nodo_ip):
         # Llena el archivo con bytes en cero para reservar todo el espacio
         f = open(cls.FILENAME, "wb+")
         f.write(bytearray(size))
@@ -134,6 +134,7 @@ class FileSystem:
 
         cls.IND_METAS = 0
         cls.IND_DATOS = size
+        cls.nodo_ip = nodo_ip
 
         # Hacer broadcast para ver cual nodo me recibe
         hilo_bc = Thread(target = cls.anunciarse_broadcast, args = (cls.keep_trying_bc, ))
@@ -161,4 +162,4 @@ class FileSystem:
             #     break
 
 
-FileSystem.start(1000)
+FileSystem.start(1000, "192.168.86.203")

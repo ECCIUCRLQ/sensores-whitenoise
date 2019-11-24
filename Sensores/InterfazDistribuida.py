@@ -103,12 +103,11 @@ class TablaNodos:
 class InterfazDistribuida:
 	
 	def __init__(self, *args, **kwargs):
-		self.ip_red_ml = '127.0.0.1'
-		self.ip_red_nodos_id = '192.168.1.1'
 		self.tabla_paginas = TablaPaginas()
 		self.tabla_nodos = TablaNodos()
 		self.ronda = 0
 		self.event = Event()
+		self.ip_pata_nmid = ""
 
 		return super().__init__(*args, **kwargs)
 
@@ -125,11 +124,11 @@ class InterfazDistribuida:
 
 	def recibir_comunicaciones_broadcast_IDID(self, tabla_nodos):
 		com = Comunicacion()
-		com.recibir_broadcast(com.PUERTO_BC_IDID, self.analizar_paquete_BC_IDID)
+		com.recibir_broadcast(self.ip_pata_nmid, com.PUERTO_BC_IDID, self.analizar_paquete_BC_IDID)
 
 	def recibir_comunicaciones_broadcast_NMID(self, tabla_nodos):
 		com = Comunicacion()
-		com.recibir_broadcast(com.PUERTO_BC_NMID, self.analizar_paquete_BC_NMID)
+		com.recibir_broadcast(self.ip_pata_nmid, com.PUERTO_BC_NMID, self.analizar_paquete_BC_NMID)
 
 
 	def analizar_datos_TCP(self, data):
@@ -183,7 +182,7 @@ class InterfazDistribuida:
 
 		buffer_bc = paquete_helper.empaquetar(TipoComunicacion.IDID, TipoOperacion.Ok_KeepAlive, paquete_bc)
 
-		com.enviar_broadcast(com.PUERTO_BC_IDID, None, buffer_bc)
+		com.enviar_broadcast(self.ip_pata_nmid, com.PUERTO_BC_IDID, None, buffer_bc)
 
 		# Crea respuesta para ML con un OK
 		paquete_ok = Paquete()
@@ -261,17 +260,18 @@ class InterfazDistribuida:
 
 		return 0
 
-	def IniciarInterfazDistribuida(self):
+	def IniciarInterfazDistribuida(self, ip_pata_nmid):
 		
 		# Inicio la interfaz distribuida
+		self.ip_pata_nmid = ip_pata_nmid
 
 		# Iniciar campeonato
 
 		hilo_bc_IDID = Thread(target=self.recibir_comunicaciones_broadcast_IDID, args=(self.tabla_nodos,))
-		hilo_bc_NMID = Thread(target=self.recibir_comunicaciones_broadcast_NMID, args=(self.tabla_nodos,))
+		
 		# Llamado a metodo activa
-
-		hilo_tcp = Thread(target=self.recibir_comunicaciones_TCP, args=(self.tabla_nodos, ))
+		hilo_bc_NMID = Thread(target=self.recibir_comunicaciones_broadcast_NMID, args=(self.tabla_nodos,))
+		hilo_tcp = Thread(target=self.recibir_comunicaciones_TCP, args=(self.tabla_nodos,))
 
 		# Llamado a metodo de pasiva
 		hilo_tcp.start()
@@ -324,5 +324,5 @@ class InterfazDistribuida:
 		# print (self.tabla_paginas.tabla_paginas)
 		
 interfaz_distribuida = InterfazDistribuida()
-interfaz_distribuida.IniciarInterfazDistribuida()
+interfaz_distribuida.IniciarInterfazDistribuida("192.168.86.203")
 #interfaz_distribuida.test()

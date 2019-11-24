@@ -32,7 +32,6 @@ class Comunicacion:
 		s.bind((tcp_ip, tcp_port))
 		s.listen()
 		
-		#while True:
 		conn, addr = s.accept()
 
 		t = s.getsockname()
@@ -40,10 +39,7 @@ class Comunicacion:
 		print("Se recibio un paquete desde: ", addr)
 
 		data = conn.recv(self.BUFFER_SIZE)
-			
-		#if not data: continue
 
-		#else:
 		if data != None:
 			respuesta = metodo(data)
 			conn.send(respuesta)  # echo
@@ -62,7 +58,7 @@ class Comunicacion:
 			data, addr = sock.recvfrom(self.BUFFER_SIZE)
 			metodo(data)
 
-	def enviar_broadcast(self, broadcast_port, timeout, message):
+	def enviar_broadcast(self, broadcast_ip, broadcast_port, timeout, message):
 		server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
 		server.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
@@ -70,13 +66,13 @@ class Comunicacion:
 		if timeout != None:
 			server.settimeout(timeout)
 
-		server.bind(("", 44444)) # TODO: Revisar este puerto
+		server.bind((broadcast_ip, 44444)) # TODO: Revisar este puerto
 		server.sendto(message, ('<broadcast>', broadcast_port))
 
-	def recibir_broadcast(self, broadcast_port, metodo):
+	def recibir_broadcast(self, broadcast_ip, broadcast_port, metodo):
 		client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 		client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-		client.bind(("", broadcast_port))
+		client.bind((broadcast_ip, broadcast_port))
 		while True:
 			data, addr = client.recvfrom(self.BUFFER_SIZE)
 			# Aqui hacer algo con los datos

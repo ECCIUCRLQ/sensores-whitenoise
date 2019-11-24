@@ -43,7 +43,7 @@ class AdministradorMemoria:
 		# obtiene la pagina desde un archivo y lo carga a memoria.
 		else:
 			# Obtiene un espacio en memoria principal
-			frame_libre = cls.obtener_frame_memoria_principal()
+			frame_libre = cls.obtener_frame_memoria_principal(False)
 
 			# Obtiene los datos que haya en memoria secundaria
 			datos_memoria_secundaria = cls.obtener_datos_ID(pagina.nombre, pagina.ID)
@@ -78,7 +78,7 @@ class AdministradorMemoria:
 		# principal y la retorna.
 		else:
 			# Obtiene un espacio en memoria principal
-			frame_libre = cls.obtener_frame_memoria_principal()
+			frame_libre = cls.obtener_frame_memoria_principal(True)
 
 			# Obtiene los datos que haya en memoria secundaria
 			datos_memoria_secundaria = cls.obtener_datos_ID(pagina.nombre, pagina.ID)
@@ -114,6 +114,10 @@ class AdministradorMemoria:
 		# Inicializa la memoria principal con todos los frames disponibles.
 		cls.memoria_principal = [Frame() for i in range(cls.tamanno_memoria_principal)]
 
+		for index, frame in enumerate(cls.memoria_principal):
+			if index % 2 != 0:
+				frame.solo_lectura = True
+
 		# Comprueba si existe el directorio de memoria, si existe lo elimina. Crea uno nuevo
 		if os.path.exists(cls.ruta_ID_uno):
 			cls.finalizar_memoria()
@@ -136,7 +140,7 @@ class AdministradorMemoria:
 		siguiente = len(cls.tabla_paginas)
 
 		# Le da un sitio en memoria principal
-		frame = cls.obtener_frame_memoria_principal()
+		frame = cls.obtener_frame_memoria_principal(False)
 		print("frame: " + str(frame))
 		nueva_pagina = Pagina('Pag' + str(siguiente), frame, 0)
 
@@ -145,13 +149,13 @@ class AdministradorMemoria:
 		return siguiente
 
 	@classmethod
-	def obtener_frame_memoria_principal(cls):
+	def obtener_frame_memoria_principal(cls, es_lectura = False):
 		
 		frame_disponible = -1
 
 		# Busca el primer frame de memoria disponible
 		for index, frame in enumerate(cls.memoria_principal):
-			if frame.disponible == True:
+			if (frame.disponible == True and frame.solo_lectura == es_lectura):
 				
 				frame_disponible = index
 
@@ -167,8 +171,9 @@ class AdministradorMemoria:
 			# Obtiene el indice en la memoria principal del frame a mover a memoria secundaria
 			frame_indice = cls.memoria_principal.index(frame_antiguo)
 
-			# Mueve los datos a memoria secundaria
-			cls.mover_frame_memoria_secundaria(frame_indice, frame_antiguo.datos)
+			# Mueve los datos a memoria secundaria si es una operacion de escritura
+			if es_lectura == False:
+				cls.mover_frame_memoria_secundaria(frame_indice, frame_antiguo.datos)
 
 			# Limpia los datos en la seccion de data
 			frame_antiguo.datos = []
