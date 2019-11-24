@@ -73,7 +73,13 @@ class Comunicacion:
 		client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 		client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 		client.bind((broadcast_ip, broadcast_port))
-		while True:
+
+		client.setblocking(0)
+
+		try:
 			data, addr = client.recvfrom(self.BUFFER_SIZE)
 			# Aqui hacer algo con los datos
 			metodo(data,addr)
+		except socket.error:
+			pass
+		
