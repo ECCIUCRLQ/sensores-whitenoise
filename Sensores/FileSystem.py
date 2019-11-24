@@ -3,9 +3,12 @@ from struct import *
 import time
 import socket
 from Comunicacion import Comunicacion
+from TipoComunicacion import TipoComunicacion
 from TipoOperacion import TipoOperacion
 from Paquete import Paquete
 from PaquetesHelper import PaquetesHelper
+
+from threading import Thread, Event
 
 class FileSystem:
 
@@ -46,11 +49,11 @@ class FileSystem:
 
         paquete_helper = PaquetesHelper()
         paquete = Paquete()
-		paquete.operacion = TipoOperacion.Ok_KeepAlive.value
-		paquete.page_id = pg_id
-		paquete.tamanno_disponible = ((cls.IND_DATOS - cls.IND_METAS) - 12)
+        paquete.operacion = TipoOperacion.Ok_KeepAlive.value
+        paquete.pagina_id = page_id
+        paquete.tamanno_disponible = ((cls.IND_DATOS - cls.IND_METAS) - 12)
 
-		buffer = paquete_helper.empaquetar(TipoComunicacion.NMID, TipoOperacion.Ok_KeepAlive, paquete)
+        buffer = paquete_helper.empaquetar(TipoComunicacion.NMID, TipoOperacion.Ok_KeepAlive, paquete)
 
         return buffer
 
@@ -77,12 +80,12 @@ class FileSystem:
         paquete_enviar.pagina_id = id
         paquete_enviar.datos_pagina = datos
 
-        buffer = paquete_helper.empaquetar(TipoComunicacion.NMID, TipoOperacion.Recibir, paquete_enviar)
+        buffer = paquete_helper.empaquetar(TipoComunicacion.IDNM, TipoOperacion.Recibir, paquete_enviar)
 
         return buffer
 
     @classmethod
-    def anunciarse_broadcast(cls):
+    def anunciarse_broadcast(cls, keep_trying_bc):
         com = Comunicacion()
         paquete_estoy_aqui = Paquete()
         paquete_helper = PaquetesHelper()
@@ -92,7 +95,8 @@ class FileSystem:
         
         paquete_estoy_aqui_raw = paquete_helper.empaquetar(TipoComunicacion.IDNM, TipoOperacion.EstoyAqui, paquete_estoy_aqui)
 
-        while keep_trying_bc:
+        while cls.keep_trying_bc:
+            print("Anunciadome desde: ", cls.nodo_ip)
             com.enviar_broadcast(com.PUERTO_BC_NMID, 1, paquete_estoy_aqui_raw)
             time.sleep(0.5)
 
@@ -101,22 +105,25 @@ class FileSystem:
     def analizar_paquete_TCP(cls, data):
         paquete_helper = PaquetesHelper()
 
-		paquete = paquete_helper.desempaquetar(TipoComunicacion.NMID, data)
+        paquete = paquete_helper.desempaquetar(TipoComunicacion.IDNM, data)
 
-		tipo_operacion = TipoOperacion(paquete.operacion)
+        tipo_operacion = TipoOperacion(paquete.operacion)
 
-		if tipo_operacion == TipoOperacion.Guardar_QuieroSer:
-			respuesta = self.writeData(paquete.page_id, paquete.tamanno_pagina, paquete.datos_pagina)
-		elif tipo_operacion == TipoOperacion.Pedir_SoyActiva:
-			respuesta = self.readData(paquete.page_id):
+        if tipo_operacion == TipoOperacion.Guardar_QuieroSer:
+            print("Se recibio pagina para guardar")
+            respuesta = cls.writeData(paquete.pagina_id, paquete.tamanno_pagina, paquete.datos_pagina)
+        elif tipo_operacion == TipoOperacion.Pedir_SoyActiva:
+            print("Se recibio peticion de pagina")
+            respuesta = cls.readData(paquete.pagina_id)
         elif tipo_operacion == TipoOperacion.Ok_KeepAlive:
-			cls.keep_trying_bc = False
-            respuesta = None
+            cls.keep_trying_bc = False
+            respuesta = b'\x00'
 
-		print(paquete)
-		print(respuesta)
+        print(paquete)
+        print("Enviando respuesta", str(respuesta))
 
-		return respuesta
+
+        return respuesta
 
     @classmethod
     def start(cls, size):
@@ -129,7 +136,7 @@ class FileSystem:
         cls.IND_DATOS = size
 
         # Hacer broadcast para ver cual nodo me recibe
-        hilo_bc = Thread(target = self.anunciarse_broadcast, args = (cls.keep_trying_bc))
+        hilo_bc = Thread(target = cls.anunciarse_broadcast, args = (cls.keep_trying_bc, ))
         hilo_bc.start()
 
         com = Comunicacion()

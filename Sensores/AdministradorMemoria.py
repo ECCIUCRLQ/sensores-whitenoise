@@ -228,11 +228,14 @@ class AdministradorMemoria:
 		paquete_pedir.operacion = TipoOperacion.Pedir_SoyActiva.value
 		paquete_pedir.pagina_id = nombre_pagina
 
+		paquete_helper = PaquetesHelper()
+		buffer = paquete_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Pedir_SoyActiva, paquete_pedir)
+
 		com = Comunicacion()
-		buffer = com.enviar_paquete_tcp(com.IP_MLID, com.PUERTO_TCP_NMMLID, paquete_pedir)
+		respuesta = com.enviar_paquete_tcp(com.IP_MLID, com.PUERTO_TCP_NMMLID, buffer)
 
 		paq_helper = PaquetesHelper()
-		paquete_respuesta = paq_helper.desempaquetar(TipoComunicacion.MLID, buffer)
+		paquete_respuesta = paq_helper.desempaquetar(TipoComunicacion.MLID, respuesta)
 
 		return paquete_respuesta.datos_pagina
 

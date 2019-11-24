@@ -32,7 +32,8 @@ class PaquetesHelper:
 		switcher = {
 			TipoComunicacion.MLID: self.procesar_operacion_desempaquetar_MLID,
 			TipoComunicacion.IDID: self.procesar_operacion_desempaquetar_IDID,
-			TipoComunicacion.IDNM: self.procesar_operacion_desempaquetar_IDNM
+			TipoComunicacion.IDNM: self.procesar_operacion_desempaquetar_IDNM,
+			TipoComunicacion.NMID: self.procesar_operacion_desempaquetar_NMID
 		}
 		
 		procesador_comunicacion = switcher.get(tipo_comunicacion, lambda: "Comunicacion No Valida")
@@ -43,7 +44,8 @@ class PaquetesHelper:
 		switcher = {
 			TipoComunicacion.MLID: self.procesar_operacion_empaquetar_MLID,
 			TipoComunicacion.IDID: self.procesar_operacion_empaquetar_IDID,
-			TipoComunicacion.IDNM: self.procesar_operacion_empaquetar_IDNM
+			TipoComunicacion.IDNM: self.procesar_operacion_empaquetar_IDNM,
+			TipoComunicacion.NMID: self.procesar_operacion_empaquetar_NMID
 		}
 		
 		procesador_comunicacion = switcher.get(tipo_comunicacion, lambda: "Comunicacion No Valida")
@@ -119,8 +121,9 @@ class PaquetesHelper:
 			TipoOperacion.Guardar_QuieroSer: self.procesar_operacion_desempaquetar_IDNM_Guardar,
 			TipoOperacion.Pedir_SoyActiva: self.procesar_operacion_desempaquetar_IDNM_pedir,
 			TipoOperacion.Recibir: self.procesar_operacion_desempaquetar_IDNM_recibir,
-			TipoOperacion.Error: self.procesar_operacion_desempaquetar_IDNM_ok,
-			TipoOperacion.Error: self.procesar_operacion_desempaquetar_IDNM_error
+			TipoOperacion.Ok_KeepAlive: self.procesar_operacion_desempaquetar_IDNM_ok,
+			TipoOperacion.Error: self.procesar_operacion_desempaquetar_IDNM_error,
+			TipoOperacion.EstoyAqui: self.procesar_operacion_desempaquetar_IDNM_estoyaqui
 		}
 
 		procesador_operacion = switcher.get(tipo_operacion, lambda: "Operacion de IDNM No Valida")
@@ -133,11 +136,33 @@ class PaquetesHelper:
 			TipoOperacion.Guardar_QuieroSer: self.procesar_operacion_empaquetar_IDNM_Guardar,
 			TipoOperacion.Pedir_SoyActiva: self.procesar_operacion_empaquetar_IDNM_pedir,
 			TipoOperacion.Recibir: self.procesar_operacion_empaquetar_IDNM_recibir,
-			TipoOperacion.Error: self.procesar_operacion_empaquetar_IDNM_ok,
-			TipoOperacion.Error: self.procesar_operacion_empaquetar_IDNM_error
+			TipoOperacion.Ok_KeepAlive: self.procesar_operacion_empaquetar_IDNM_ok,
+			TipoOperacion.Error: self.procesar_operacion_empaquetar_IDNM_error,
+			TipoOperacion.EstoyAqui: self.procesar_operacion_empaquetar_IDNM_estoyaqui
 		}
 
 		procesador_operacion = switcher.get(tipo_operacion, lambda: "Operacion de IDNM No Valida")
+
+		return procesador_operacion(paquete)
+
+	def procesar_operacion_desempaquetar_NMID(self, datos):
+		# Primero verifica que tipo de operacion es.
+		tipo_operacion = self.obtener_tipo_operacion(datos);
+
+		switcher = {
+			TipoOperacion.Ok_KeepAlive: self.procesar_operacion_desempaquetar_NMID_ok
+		}
+
+		procesador_operacion = switcher.get(tipo_operacion, lambda: "Operacion de NMID No Valida")
+
+		return procesador_operacion(datos)
+
+	def procesar_operacion_empaquetar_NMID(self, tipo_operacion, paquete):
+		switcher = {
+			TipoOperacion.Ok_KeepAlive: self.procesar_operacion_empaquetar_NMID_ok
+		}
+
+		procesador_operacion = switcher.get(tipo_operacion, lambda: "Operacion de NMID No Valida")
 
 		return procesador_operacion(paquete)
 
@@ -167,7 +192,7 @@ class PaquetesHelper:
 		paquete.operacion = unpack('B', datos[0:1])[0]
 		paquete.pagina_id= unpack('B', datos[1:2])[0]
 
-		return 0
+		return paquete
 
 	def procesar_operacion_desempaquetar_MLID_recibir(self, datos):
 		# Recibe una pagina desde memoria distribuida a memoria local
@@ -179,7 +204,7 @@ class PaquetesHelper:
 		paquete.pagina_id = unpack('B', datos[1:2])[0]
 		paquete.datos_pagina = datos[2:tam]
 
-		return 0
+		return paquete
 
 	def procesar_operacion_desempaquetar_MLID_ok(self, datos):
 		# Envia un codigo de ok????
@@ -224,7 +249,7 @@ class PaquetesHelper:
 		paquete.operacion = unpack('B', datos[0:1])[0]
 		paquete.pagina_id= unpack('B', datos[1:2])[0]
 
-		return 0
+		return paquete
 
 	def procesar_operacion_desempaquetar_IDNM_recibir(self, datos):
 		# Recibe una pagina desde memoria distribuida a memoria local
@@ -236,15 +261,14 @@ class PaquetesHelper:
 		paquete.pagina_id = unpack('B', datos[1:2])[0]
 		paquete.datos_pagina = datos[2:tam]
 
-		return 0
+		return paquete
 
 	def procesar_operacion_desempaquetar_IDNM_ok(self, datos):
 		# Envia un codigo de ok????
-		# Formato: CodigoOperacion(1 Byte) + Codigo_Ok(1 Byte)
+		# Formato: CodigoOperacion(1 Byte)
 
 		paquete = Paquete()
 		paquete.operacion = unpack('B', datos[0:1])[0]
-		paquete.codigo_ok = unpack('B', datos[1:2])[0]
 
 		return paquete
 
@@ -255,6 +279,25 @@ class PaquetesHelper:
 		paquete = Paquete()
 		paquete.operacion = unpack('B', datos[0:1])[0]
 		paquete.codigo_error = unpack('B', datos[1:2])[0]
+
+		return paquete
+
+	def procesar_operacion_desempaquetar_IDNM_estoyaqui(self, datos):
+		paquete = Paquete()
+		paquete.operacion = unpack('B', datos[0:1])[0]
+		paquete.tamanno_disponible = unpack('I', datos[1:5])[0]
+
+		return paquete
+
+	#NMID
+	def procesar_operacion_desempaquetar_NMID_ok(self, datos):
+		# Envia un codigo de ok????
+		# Formato: CodigoOperacion(1 Byte)
+
+		paquete = Paquete()
+		paquete.operacion = unpack('B', datos[0:1])[0]
+		paquete.pagina_id = unpack('B', datos[1:2])[0]
+		paquete.tamanno_disponible = unpack('I', datos[2:6])[0]
 
 		return paquete
 
@@ -351,13 +394,25 @@ class PaquetesHelper:
 
 	def procesar_operacion_empaquetar_IDNM_ok(self, paquete):
 		
-		datos = pack('=BB', paquete.operacion, paquete.pagina_id)
+		datos = pack('=B', paquete.operacion)
 
 		return datos
 
 	def procesar_operacion_empaquetar_IDNM_error(self, paquete):
 		
 		datos = pack('=BB', paquete.operacion, paquete.pagina_id)
+
+		return datos
+
+	def procesar_operacion_empaquetar_IDNM_estoyaqui(self, paquete):
+		datos = pack('=BI', paquete.operacion, paquete.tamanno_disponible)
+
+		return datos
+
+	# NMID
+	def procesar_operacion_empaquetar_NMID_ok(self, paquete):
+		
+		datos = pack('=BBI', paquete.operacion, paquete.pagina_id, paquete.tamanno_disponible)
 
 		return datos
 	

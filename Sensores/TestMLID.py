@@ -6,4 +6,15 @@ datos = b'\x01\x02\x03\x04\x05\x06\x07\x08\x09\x10\x11\x12\x13\x14\x15\x16\x17\x
 
 AdministradorMemoria.inicializar_memoria()
 
-AdministradorMemoria.guardar_datos_ID(1, datos)
+AdministradorMemoria.guardar_datos_ID(6, datos)
+
+
+print(AdministradorMemoria.obtener_datos_ID(1, 1))
+
+#print(AdministradorMemoria.obtener_datos_ID(2, 1))
+
+#print(AdministradorMemoria.obtener_datos_ID(3, 1))
+
+#print(AdministradorMemoria.obtener_datos_ID(4, 1))
+
+#print(AdministradorMemoria.obtener_datos_ID(5, 1))

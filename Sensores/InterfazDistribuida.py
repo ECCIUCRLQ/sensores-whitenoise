@@ -66,7 +66,7 @@ class TablaNodos:
 		return -1, -1
 	
 	def obtener_nodo_ip(self, nodo_id):
-		for fila in rannge(0, self.filas):
+		for fila in range(0, self.filas):
 			if self.tabla_nodos[fila][0] == nodo_id:
 				return self.tabla_nodos[fila][1]
 		return -1
@@ -74,6 +74,7 @@ class TablaNodos:
 	def append(self, tripleta):
 		self.filas += 1
 		self.tabla_nodos.append(tripleta)
+		print("Nodo Agregado: " + str(tripleta))
 	
 	def actualizar(self, filas_cambios, datos_tabla):
 		for fila in range(0, filas_cambios):
@@ -140,13 +141,16 @@ class InterfazDistribuida:
 		tipo_operacion = TipoOperacion(paquete.operacion)
 
 		if tipo_operacion == TipoOperacion.Guardar_QuieroSer:
+			print("Se recibio pagina para guardar")
 			respuesta = self.GuardarEnNM(paquete)
 		elif tipo_operacion == TipoOperacion.Pedir_SoyActiva:
+			print("Se recibio peticion de pagina")
 			respuesta = self.PedirEnNM(paquete)
 
 		print(paquete)
-		print(respuesta)
+		print("Enviando respuesta", str(respuesta))
 
+		
 		return respuesta
 
 	def GuardarEnNM(self, paquete):
@@ -157,19 +161,21 @@ class InterfazDistribuida:
 
 		nodo_id, nodo_ip = self.tabla_nodos.obtener_nodo_disponible(paquete.tamanno_pagina)
 
+		self.tabla_paginas.append([paquete.pagina_id, nodo_id])
+
 		com = Comunicacion()
 
 		respuesta = com.enviar_paquete_tcp(nodo_ip, com.PUERTO_TCP_IDNM, buffer)
 		
 		# respuesta trae espacio disponible, cambiar paquete para solo enviar OK
 
-		paquete_respuesta = paquete_helper.desempaquetar(TipoComunicacion.IDNM, respuesta)
+		paquete_respuesta = paquete_helper.desempaquetar(TipoComunicacion.NMID, respuesta)
 
 		self.tabla_nodos.set_espacio_disponible_nodo(nodo_id, paquete_respuesta.tamanno_disponible)
 
 		# enviar broadcast de ID ID Keep Alive con Actualización
 		paquete_bc = Paquete()
-		paquete_bc.operacion = TipoOperacion.Ok_KeepAlive
+		paquete_bc.operacion = TipoOperacion.Ok_KeepAlive.value
 		paquete_bc.filas1 = 1
 		paquete_bc.filas2 = 1
 		paquete_bc.dump1 = pack("=BB", paquete.pagina_id, nodo_id)
@@ -181,7 +187,7 @@ class InterfazDistribuida:
 
 		# Crea respuesta para ML con un OK
 		paquete_ok = Paquete()
-		paquete_ok.operacion = TipoOperacion.Ok_KeepAlive
+		paquete_ok.operacion = TipoOperacion.Ok_KeepAlive.value
 		paquete_ok.pagina_id = paquete.pagina_id
 
 		respuesta_ok = paquete_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Ok_KeepAlive, paquete_ok)
@@ -217,7 +223,7 @@ class InterfazDistribuida:
 
 	def analizar_paquete_BC_NMID(self, data, addr):
 		paquete_helper = PaquetesHelper()
-		paquete = paquete_helper.desempaquetar(TipoComunicacion.NMID, data)
+		paquete = paquete_helper.desempaquetar(TipoComunicacion.IDNM, data)
 		
 		tipo_operacion = TipoOperacion(paquete.operacion)
 
@@ -226,8 +232,11 @@ class InterfazDistribuida:
 			paquete_ok = Paquete()
 			paquete_ok.operacion = TipoOperacion.Ok_KeepAlive.value
 			
-			paquete_ok_raw = paquete_helper.empaquetar(TipoComunicacion.NMID, TipoOperacion.Ok_KeepAlive, paquete_ok)
-			com.enviar_paquete_tcp(addr, com.PUERTO_TCP_IDNM, paquete_ok_raw)
+			paquete_ok_raw = paquete_helper.empaquetar(TipoComunicacion.IDNM, TipoOperacion.Ok_KeepAlive, paquete_ok)
+			com.enviar_paquete_tcp(addr[0], com.PUERTO_TCP_IDNM, paquete_ok_raw)
+
+			self.tabla_nodos.append([self.tabla_nodos.filas, addr[0], paquete.tamanno_disponible])
+			
 			
 	def enviar_bc_quiero_ser(self):
 
@@ -258,14 +267,16 @@ class InterfazDistribuida:
 
 		# Iniciar campeonato
 
-		hilo_bc = Thread(target=self.recibir_comunicaciones_broadcast_IDID, args=(self.tabla_nodos,))
+		hilo_bc_IDID = Thread(target=self.recibir_comunicaciones_broadcast_IDID, args=(self.tabla_nodos,))
+		hilo_bc_NMID = Thread(target=self.recibir_comunicaciones_broadcast_NMID, args=(self.tabla_nodos,))
 		# Llamado a metodo activa
 
 		hilo_tcp = Thread(target=self.recibir_comunicaciones_TCP, args=(self.tabla_nodos, ))
 
 		# Llamado a metodo de pasiva
 		hilo_tcp.start()
-		hilo_bc.start()
+		hilo_bc_IDID.start()
+		hilo_bc_NMID.start()
 
 		while True:
 			try:
@@ -275,7 +286,8 @@ class InterfazDistribuida:
 				break
 		
 		hilo_tcp.join()
-		hilo_bc.join()
+		hilo_bc_IDID.join()
+		hilo_bc_NMID.join()
 
 	def test(self):
 		# pg_id = 1
@@ -312,5 +324,5 @@ class InterfazDistribuida:
 		# print (self.tabla_paginas.tabla_paginas)
 		
 interfaz_distribuida = InterfazDistribuida()
-#interfaz_distribuida.IniciarInterfazDistribuida()
-interfaz_distribuida.test()
+interfaz_distribuida.IniciarInterfazDistribuida()
+#interfaz_distribuida.test()
