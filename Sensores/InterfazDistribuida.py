@@ -108,28 +108,79 @@ class InterfazDistribuida:
 		self.ronda = 0
 		self.event = Event()
 		self.ip_pata_nmid = ""
-        self.soy_activa = False
+		self.soy_activa = False
+		self.existe_activa = False
+		self.timeout_campeonato_termino = False
 
 		return super().__init__(*args, **kwargs)
 
 	def recibir_comunicaciones_TCP(self, tabla_nodos):
+			com = Comunicacion()
 
+			while True:
+				if self.soy_activa:
+					if self.event.is_set():
+						break
+
+					com.recibir_paquete_tcp(com.IP_MLID, com.PUERTO_TCP_NMMLID, self.analizar_datos_TCP)
+
+
+	def iniciar_comunicacion_IDID(self, tabla_nodos):
+		
 		com = Comunicacion()
-
+		
 		while True:
-			if self.event.is_set():
+			# Iniciar con un quiero ser
+			self.enviar_quiero_ser()
+			
+			# Iniciar timer
+			timer_campeonato = Thread(target=self.iniciar_timer_campeonato, args=(3, self.timeout_campeonato_termino,))
+			timer_campeonato.start()
+
+			while self.timeout_campeonato_termino == False and self.existe_activa == False:
+				# Espero otros quiero ser o un soy activa
+				com.recibir_broadcast(self.ip_pata_nmid, com.PUERTO_BC_IDID, self.analizar_paquete_BC_IDID)
+
+			if self.soy_activa == False and self.existe_activa == False:
+				#Me declaro activa
+				self.soy_activa = True
+				self.ronda = 3
+
+
+			if True:
 				break
 
-			com.recibir_paquete_tcp(com.IP_MLID, com.PUERTO_TCP_NMMLID, self.analizar_datos_TCP)
 
+        # Inicio el timeout junto con las rondas, si gané me pongo ronda tres y mando bc para todo el mundo
 
-	def recibir_comunicaciones_broadcast_IDID(self, tabla_nodos):
+        # Inicio el tiempo extra 
+
+	def iniciar_timer_campeonato(self, tiempo, timeout_campeonato_termino):
+		sleep(tiempo)
+		self.timeout_campeonato_termino = True
+		
+
+	def enviar_quiero_ser(self):
 		com = Comunicacion()
-		com.recibir_broadcast(self.ip_pata_nmid, com.PUERTO_BC_IDID, self.analizar_paquete_BC_IDID)
+
+		paquete_quiero_ser = Paquete()
+
+		paquete_quiero_ser.operacion = TipoOperacion.Guardar_QuieroSer.value
+		paquete_quiero_ser.mac = self.obtener_mac_address()
+		paquete_quiero_ser.ronda = self.ronda
+
+		paquete_helper = PaquetesHelper()
+
+		buffer = paquete_helper.empaquetar(TipoComunicacion.IDID, TipoOperacion.Guardar_QuieroSer, paquete_quiero_ser)
+
+		com.enviar_broadcast(self.ip_pata_nmid, com.PUERTO_BC_IDID, None, buffer)
 
 	def recibir_comunicaciones_broadcast_NMID(self, tabla_nodos):
-		com = Comunicacion()
-		com.recibir_broadcast(self.ip_pata_nmid, com.PUERTO_BC_NMID, self.analizar_paquete_BC_NMID)
+			com = Comunicacion()
+
+			while True:
+				if self.soy_activa:
+					com.recibir_broadcast(self.ip_pata_nmid, com.PUERTO_BC_NMID, self.analizar_paquete_BC_NMID)
 
 	def analizar_datos_TCP(self, data):
 
@@ -218,7 +269,41 @@ class InterfazDistribuida:
 
 		paquete = paquete_helper.desempaquetar(TipoComunicacion.IDID, data)
 
+		tipo_operacion = TipoOperacion(paquete.operacion)
+
+		if tipo_operacion ==  TipoOperacion.Pedir_SoyActiva:
+			#Actualizar mis tablas
+
+			#Cambiar a que existe activa
+			self.existe_activa = True
+
+		elif tipo_operacion == TipoOperacion.Guardar_QuieroSer:
+			if self.soy_activa:
+				self.responder_a_quiero_ser()
+			else:
+				pass
+
+		elif tipo_operacion == TipoOperacion.Ok_KeepAlive:
+			self.analizar_keep_alive(paquete)
+
 		print(paquete)
+
+	def analizar_keep_alive(self, paquete):
+		return 0
+
+
+	def responder_a_quiero_ser(self):
+		# enviar broadcast de ID ID Keep Alive con toda la información
+		paquete_bc = Paquete()
+		paquete_bc.operacion = TipoOperacion.Ok_KeepAlive.value
+		paquete_bc.filas1 = self.tabla_paginas.filas
+		paquete_bc.filas2 = self.tabla_nodos.filas
+		paquete_bc.dump1 = self.tabla_paginas.to_raw()
+		paquete_bc.dump2 = self.tabla_nodos.to_raw()
+
+		buffer_bc = paquete_helper.empaquetar(TipoComunicacion.IDID, TipoOperacion.Ok_KeepAlive, paquete_bc)
+
+		com.enviar_broadcast(self.ip_pata_nmid, com.PUERTO_BC_IDID, None, buffer_bc)
 
 	def analizar_paquete_BC_NMID(self, data, addr):
 		paquete_helper = PaquetesHelper()
@@ -257,7 +342,7 @@ class InterfazDistribuida:
 
 		mac_array = mac.to_bytes(6, 'little')
 
-		return 0
+		return mac_array
 
 	def IniciarInterfazDistribuida(self, ip_pata_nmid):
 		
@@ -266,74 +351,20 @@ class InterfazDistribuida:
 
 		# Iniciar campeonato
 
-		hilo_bc_IDID = Thread(target=self.recibir_comunicaciones_broadcast_IDID, args=(self.tabla_nodos,))
+		hilo_bc_IDID = Thread(target=self.iniciar_comunicacion_IDID, args=(self.tabla_nodos,))
+		hilo_bc_IDID.start()
 		
-		# Llamado a metodo activa
 		hilo_bc_NMID = Thread(target=self.recibir_comunicaciones_broadcast_NMID, args=(self.tabla_nodos,))
 		hilo_tcp = Thread(target=self.recibir_comunicaciones_TCP, args=(self.tabla_nodos,))
 
-		# Llamado a metodo de pasiva
-		hilo_tcp.start()
-		hilo_bc_IDID.start()
 		hilo_bc_NMID.start()
+		hilo_tcp.start()
 
-		while True:
-			try:
-				# Escuchar por un tiempo el keep alive de la interfaz distribuida si existe
-
-				# Si no escucho nada inicio campeonato para ser interfaz activa
-
-                # Inicio el timeout junto con las rondas, si gané me pongo ronda tres y mando bc para todo el mundo
-
-                # Inicio el tiempo extra 
-
-                if self.soy_activa == True:
-                    # Empiezo a enviar los Keep Alive cada 2 segundos
-
-
-				sleep(1)
-			except KeyboardInterrupt:
-				self.event.set()
-				break
-		
 		hilo_tcp.join()
 		hilo_bc_IDID.join()
 		hilo_bc_NMID.join()
 
-	def test(self):
-		# pg_id = 1
-		# node_id = 7
-		# node_ip = 15
-		# espacio_disponible = 75
-
 	
-		# #self.tabla_paginas.append([pg_id, node_id])
-		# print (self.tabla_paginas.tabla_paginas)
-		# # tabla_nodos = []
-		# # tabla_nodos.append((node_id, node_ip ,espacio_disponible ))
-		#paquete_helper = PaquetesHelper()
-
-		# paquete_enviar = Paquete()
-
-		# paquete_enviar.operacion = TipoOperacion.Pedir_SoyActiva.value
-		# paquete_enviar.filas1 = self.tabla_paginas.filas
-		# paquete_enviar.filas2 = 1
-		# paquete_enviar.dump1 = self.tabla_paginas.to_raw()
-		# paquete_enviar.dump2 = pack('=BII', node_id, node_ip, espacio_disponible)
-		
-		# # paquete_enviar.operacion = TipoOperacion.Guardar_QuieroSer.value
-		# # paquete_enviar.mac = b'\x01\x02\x03\x04\x05\x06'
-		# # paquete_enviar.ronda_id = 0
-
-		# paquete_raw = paquete_helper.empaquetar(TipoComunicacion.IDID, TipoOperacion.Pedir_SoyActiva, paquete_enviar)
-		
-		# print (paquete_raw)
-
-		# paquete_recibir = paquete_helper.desempaquetar(TipoComunicacion.IDID, paquete_raw)
-
-		# self.tabla_paginas.actualizar(paquete_recibir.filas1, paquete_recibir.dump1)
-		# print (self.tabla_paginas.tabla_paginas)
-
 
 interfaz_distribuida = InterfazDistribuida()
 
