@@ -40,14 +40,15 @@ class FileSystem:
         contenido[ind_metas:ind_metas+12] = metadatos
         contenido[ind_datos-size-8:ind_datos] = datos
 
+        ind_metas += 12
+        ind_datos -= len(datos)
+        contenido[0:8] = pack(">II", ind_metas, ind_datos)
+        print(contenido)
+
         # Se escribe el bytearray en el archivo
         f = open(cls.FILENAME, "wb")
         f.write(contenido)
         f.close()
-
-        ind_metas += 12
-        ind_datos -= len(datos)
-        print(contenido)
 
         paquete_helper = PaquetesHelper()
         paquete = Paquete()
