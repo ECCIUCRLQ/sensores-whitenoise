@@ -148,7 +148,7 @@ class InterfazDistribuida:
 				self.soy_activa = True
 				self.ronda = 3
 				
-			if self.soy_activa():
+			if self.soy_activa:
 				keep_alive = Thread(target=self.enviar_keep_alive(), args=())
 
 				keep_alive.start()
@@ -171,10 +171,12 @@ class InterfazDistribuida:
 		paquete.operacion = TipoOperacion.Ok_KeepAlive.value
 		paquete.filas1 = 0
 		paquete.filas2 = 0
+		paquete.dump1 = b''
+		paquete.dump2 = b''
 
-		paquetes_helper = Paquetes_Helper()
+		paquetes_helper = PaquetesHelper()
 
-		buffer = paquetes_helper.empaquetar(TipoComunicacion.IDID, TipoTipoOperacion.Ok_KeepAlive, paquete)
+		buffer = paquetes_helper.empaquetar(TipoComunicacion.IDID, TipoOperacion.Ok_KeepAlive, paquete)
 
 		while True:
 			com.enviar_broadcast(self.ip_pata_nmid, com.PUERTO_BC_IDID, None, buffer)
