@@ -108,7 +108,7 @@ class InterfazDistribuida:
 		self.ronda = 0
 		self.event = Event()
 		self.ip_pata_nmid = ""
-		self.soy_activa = False
+		self.soy_activa = True
 		self.existe_activa = False
 		self.timeout_campeonato_termino = False
 		self.timeout_keep_alive_termino = False
@@ -119,11 +119,10 @@ class InterfazDistribuida:
 			com = Comunicacion()
 
 			while True:
-				if self.soy_activa:
-					if self.event.is_set():
-						break
+				if self.event.is_set():
+					break
 
-					com.recibir_paquete_tcp(com.IP_MLID, com.PUERTO_TCP_NMMLID, self.analizar_datos_TCP)
+				com.recibir_paquete_tcp(com.IP_MLID, com.PUERTO_TCP_NMMLID, self.analizar_datos_TCP)
 
 
 	def iniciar_comunicacion_IDID(self, tabla_nodos):
@@ -209,30 +208,29 @@ class InterfazDistribuida:
 	def recibir_comunicaciones_broadcast_NMID(self, tabla_nodos):
 			com = Comunicacion()
 
-			while True:
-				if self.soy_activa:
-					com.recibir_broadcast(self.ip_pata_nmid, com.PUERTO_BC_NMID, self.analizar_paquete_BC_NMID)
+			com.recibir_broadcast_ciclo(self.ip_pata_nmid, com.PUERTO_BC_NMID, self.analizar_paquete_BC_NMID)
 
 	def analizar_datos_TCP(self, data):
 
-		paquete_helper = PaquetesHelper()
+		if self.soy_activa:
+			paquete_helper = PaquetesHelper()
 
-		paquete = paquete_helper.desempaquetar(TipoComunicacion.MLID, data)
+			paquete = paquete_helper.desempaquetar(TipoComunicacion.MLID, data)
 
-		tipo_operacion = TipoOperacion(paquete.operacion)
+			tipo_operacion = TipoOperacion(paquete.operacion)
 
-		if tipo_operacion == TipoOperacion.Guardar_QuieroSer:
-			print("Se recibio pagina para guardar")
-			respuesta = self.GuardarEnNM(paquete)
-		elif tipo_operacion == TipoOperacion.Pedir_SoyActiva:
-			print("Se recibio peticion de pagina")
-			respuesta = self.PedirEnNM(paquete)
+			if tipo_operacion == TipoOperacion.Guardar_QuieroSer:
+				print("Se recibio pagina para guardar")
+				respuesta = self.GuardarEnNM(paquete)
+			elif tipo_operacion == TipoOperacion.Pedir_SoyActiva:
+				print("Se recibio peticion de pagina")
+				respuesta = self.PedirEnNM(paquete)
 
-		print(paquete)
-		print("Enviando respuesta", str(respuesta))
+			print(paquete)
+			print("Enviando respuesta", str(respuesta))
 
 		
-		return respuesta
+			return respuesta
 
 	def GuardarEnNM(self, paquete):
 
@@ -337,20 +335,22 @@ class InterfazDistribuida:
 		com.enviar_broadcast(self.ip_pata_nmid, com.PUERTO_BC_IDID, None, buffer_bc)
 
 	def analizar_paquete_BC_NMID(self, data, addr):
-		paquete_helper = PaquetesHelper()
-		paquete = paquete_helper.desempaquetar(TipoComunicacion.IDNM, data)
+
+		if self.soy_activa:
+			paquete_helper = PaquetesHelper()
+			paquete = paquete_helper.desempaquetar(TipoComunicacion.IDNM, data)
 		
-		tipo_operacion = TipoOperacion(paquete.operacion)
+			tipo_operacion = TipoOperacion(paquete.operacion)
 
-		if tipo_operacion == TipoOperacion.EstoyAqui:
-			com = Comunicacion()
-			paquete_ok = Paquete()
-			paquete_ok.operacion = TipoOperacion.Ok_KeepAlive.value
+			if tipo_operacion == TipoOperacion.EstoyAqui:
+				com = Comunicacion()
+				paquete_ok = Paquete()
+				paquete_ok.operacion = TipoOperacion.Ok_KeepAlive.value
 			
-			paquete_ok_raw = paquete_helper.empaquetar(TipoComunicacion.IDNM, TipoOperacion.Ok_KeepAlive, paquete_ok)
-			com.enviar_paquete_tcp(addr[0], com.PUERTO_TCP_IDNM, paquete_ok_raw)
+				paquete_ok_raw = paquete_helper.empaquetar(TipoComunicacion.IDNM, TipoOperacion.Ok_KeepAlive, paquete_ok)
+				com.enviar_paquete_tcp(addr[0], com.PUERTO_TCP_IDNM, paquete_ok_raw)
 
-			self.tabla_nodos.append([self.tabla_nodos.filas, addr[0], paquete.tamanno_disponible])
+				self.tabla_nodos.append([self.tabla_nodos.filas, addr[0], paquete.tamanno_disponible])
 			
 	def enviar_bc_quiero_ser(self):
 
@@ -366,7 +366,7 @@ class InterfazDistribuida:
 
 		com = Comunicacion()
 
-		com.enviar_broadcast(com.PUERTO_BC_IDID, 1, quiero_ser)
+		com.enviar_broadcast(self.ip_pata_nmid, com.PUERTO_BC_IDID, None, quiero_ser)
 
 	def obtener_mac_address(self):
 		mac = get_mac()
@@ -382,8 +382,8 @@ class InterfazDistribuida:
 
 		# Iniciar campeonato
 
-		hilo_bc_IDID = Thread(target=self.iniciar_comunicacion_IDID, args=(self.tabla_nodos,))
-		hilo_bc_IDID.start()
+		#hilo_bc_IDID = Thread(target=self.iniciar_comunicacion_IDID, args=(self.tabla_nodos,))
+		#hilo_bc_IDID.start()
 		
 		hilo_bc_NMID = Thread(target=self.recibir_comunicaciones_broadcast_NMID, args=(self.tabla_nodos,))
 		hilo_tcp = Thread(target=self.recibir_comunicaciones_TCP, args=(self.tabla_nodos,))
@@ -392,7 +392,7 @@ class InterfazDistribuida:
 		hilo_tcp.start()
 
 		hilo_tcp.join()
-		hilo_bc_IDID.join()
+		#hilo_bc_IDID.join()
 		hilo_bc_NMID.join()
 
 	

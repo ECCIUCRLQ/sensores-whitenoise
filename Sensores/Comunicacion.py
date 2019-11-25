@@ -13,6 +13,7 @@ class Comunicacion:
 	PUERTO_TCP_NMMLID = 2000
 
 	IP_MLID = "192.168.86.198"
+	
 	def __init__(self, *args, **kwargs):
 		return super().__init__(*args, **kwargs)
 
@@ -82,4 +83,15 @@ class Comunicacion:
 			metodo(data,addr)
 		except socket.error:
 			pass
-		
+
+		client.close()
+
+	def recibir_broadcast_ciclo(self, broadcast_ip, broadcast_port, metodo):
+		client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+		client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+		client.bind((broadcast_ip, broadcast_port))
+
+		while True:
+			data, addr = client.recvfrom(self.BUFFER_SIZE)
+			# Aqui hacer algo con los datos
+			metodo(data,addr)
