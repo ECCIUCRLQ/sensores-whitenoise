@@ -103,13 +103,13 @@ class AdministradorMemoria:
 		return datos_raw
 
 	@classmethod
-	def malloc(cls):
+	def malloc(cls, pag_actual = None):
 		# Si no se ha inicializado la memoria inicia el proceso que lo hace.
 		if cls.memoria_inicializada == False:
 			cls.inicializar_memoria()
 
 		# Le asigna una pagina de memoria
-		return cls.asignar_pagina_memoria()
+		return cls.asignar_pagina_memoria(pag_actual)
 
 	@classmethod
 	def inicializar_memoria(cls):
@@ -137,12 +137,20 @@ class AdministradorMemoria:
 		shutil.rmtree(cls.ruta_ID_uno)
 
 	@classmethod
-	def asignar_pagina_memoria(cls):
+	def asignar_pagina_memoria(cls, pag_actual):
 		# Localiza el siguiente numero de pagina que le corresponde
 		siguiente = len(cls.tabla_paginas)
 
+		frame_actual = None
+
+		if pag_actual != None:
+			for pagina in cls.tabla_paginas:
+				if pagina.nombre == pag_actual:
+					frame_actual = pagina.frame
+					break
+
 		# Le da un sitio en memoria principal
-		frame = cls.obtener_frame_memoria_principal(False)
+		frame = cls.obtener_frame_memoria_principal(False, frame_actual)
 		print("frame: " + str(frame))
 		nueva_pagina = Pagina('Pag' + str(siguiente), frame, 0)
 
@@ -151,7 +159,7 @@ class AdministradorMemoria:
 		return siguiente
 
 	@classmethod
-	def obtener_frame_memoria_principal(cls, es_lectura = False):
+	def obtener_frame_memoria_principal(cls, es_lectura = False, frame_actual = None):
 		
 		frame_disponible = -1
 
@@ -167,20 +175,26 @@ class AdministradorMemoria:
 
 		# Si no lo encuentra libera uno pasando los datos a memoria secundaria
 		if frame_disponible < 0:
-			# Localiza el frame con el ultimo acceso mas antiguo y lo mueve a memoria secundaria
-			frame_antiguo = min(cls.memoria_principal,key=attrgetter('fecha_ultimo_acceso'))
 
-			# Obtiene el indice en la memoria principal del frame a mover a memoria secundaria
-			frame_indice = cls.memoria_principal.index(frame_antiguo)
+			if frame_actual != None:
+				frame_indice = frame_actual
+
+				frame_utilizar = cls.memoria_principal[frame_indice]
+			else:
+				# Localiza el frame con el ultimo acceso mas antiguo y lo mueve a memoria secundaria
+				frame_utilizar = min(cls.memoria_principal,key=attrgetter('fecha_ultimo_acceso'))
+
+				# Obtiene el indice en la memoria principal del frame a mover a memoria secundaria
+				frame_indice = cls.memoria_principal.index(frame_utilizar)
 
 			# Mueve los datos a memoria secundaria si es una operacion de escritura
 			if es_lectura == False:
-				cls.mover_frame_memoria_secundaria(frame_indice, frame_antiguo.datos)
+				cls.mover_frame_memoria_secundaria(frame_indice, frame_utilizar.datos)
 
 			# Limpia los datos en la seccion de data
-			frame_antiguo.datos = []
-			frame_antiguo.disponible = False
-			frame_antiguo.fecha_ultimo_acceso = datetime.datetime.now()
+			frame_utilizar.datos = []
+			frame_utilizar.disponible = False
+			frame_utilizar.fecha_ultimo_acceso = datetime.datetime.now()
 
 			# Asigna el indice a devolver
 			frame_disponible = frame_indice
