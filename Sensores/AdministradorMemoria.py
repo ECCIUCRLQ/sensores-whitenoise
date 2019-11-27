@@ -36,7 +36,7 @@ class AdministradorMemoria:
 		# en la seccion de datos.
 		if pagina.frame >= 0:
 			frame = cls.memoria_principal[pagina.frame]
-			frame.datos.append(dato)
+			frame.datos += dato
 			frame.fecha_ultimo_acceso = datetime.datetime.now()
 
 		# Si la pagina está en memoria secundaria localiza un frame libre,
@@ -144,11 +144,9 @@ class AdministradorMemoria:
 		frame_actual = None
 
 		if pag_actual != None:
-			for pagina in cls.tabla_paginas:
-				if pagina.nombre == pag_actual:
-					frame_actual = pagina.frame
-					break
+			frame_actual = cls.tabla_paginas[pag_actual].frame
 
+		print("frame_actual: ", frame_actual)			
 		# Le da un sitio en memoria principal
 		frame = cls.obtener_frame_memoria_principal(False, frame_actual)
 		print("frame: " + str(frame))
@@ -208,7 +206,7 @@ class AdministradorMemoria:
 		for index, pagina in enumerate(cls.tabla_paginas):
 			if pagina.frame == frame_indice:
 				pagina.frame = -1
-				pagina.ID = cls.guardar_datos_ID(pagina.nombre, data)
+				pagina.ID = cls.guardar_datos_ID(index, data)
 				break
 		return 0
 
@@ -225,6 +223,8 @@ class AdministradorMemoria:
 		paquete.pagina_id = nombre_pagina
 		paquete.tamanno_pagina = len(data)
 		paquete.datos_pagina = data
+
+		print(paquete)
 
 		paq_helper = PaquetesHelper()
 		buffer = paq_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Guardar_QuieroSer, paquete)

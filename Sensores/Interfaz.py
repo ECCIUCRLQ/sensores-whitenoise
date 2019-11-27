@@ -32,7 +32,8 @@ class Interfaz:
     def guardar(cls, dirLog, message):
         offset = cls.tabla_offset[dirLog]
         if offset >= cls.PAGE_SIZE-1:
-            paginaNueva = AdministradorMemoria.malloc(max(cls.tabla_control[dirLog].paginas)
+            print("max: ", max(cls.tabla_control[dirLog].paginas))
+            paginaNueva = AdministradorMemoria.malloc(max(cls.tabla_control[dirLog].paginas))
             cls.tabla_control[dirLog].paginas.append(paginaNueva)
             offset = '0'
             cls.tabla_offset[dirLog] = 0

@@ -4,7 +4,7 @@ class Frame:
 
 	def __init__(self, disponible = True, datos = [], fecha = datetime.datetime.now(), solo_lectura = False):
 		self.disponible = disponible
-		self.datos = datos[:]
+		self.datos = bytearray()
 		self.fecha_ultimo_acceso = fecha
 		self.solo_lectura = False
 
