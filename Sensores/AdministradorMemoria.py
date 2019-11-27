@@ -60,6 +60,8 @@ class AdministradorMemoria:
 			pagina.frame = frame_libre
 			pagina.ID = 0
 
+		print("Write en frame: ", str(pagina.frame))
+
 	@classmethod
 	def read(cls, pagina_id):
 
