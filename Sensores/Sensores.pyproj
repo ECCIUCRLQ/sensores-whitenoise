@@ -35,6 +35,7 @@
     <Compile Include="BUEY.py" />
     <Compile Include="CARRETA.py" />
     <Compile Include="Cliente.py" />
+    <Compile Include="Comandos.py" />
     <Compile Include="Comunicacion.py">
       <SubType>Code</SubType>
     </Compile>
