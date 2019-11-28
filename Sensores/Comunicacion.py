@@ -6,14 +6,14 @@ import time
 class Comunicacion:
 
 	BUFFER_SIZE = 1024
-	
+
 	PUERTO_BC_NMID = 5000
 	PUERTO_BC_IDID = 6666
 	PUERTO_TCP_IDNM = 3114
 	PUERTO_TCP_NMMLID = 2000
 
 	IP_MLID = "192.168.86.198"
-	
+
 	def __init__(self, *args, **kwargs):
 		return super().__init__(*args, **kwargs)
 
@@ -32,7 +32,7 @@ class Comunicacion:
 		s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		s.bind((tcp_ip, tcp_port))
 		s.listen()
-		
+
 		conn, addr = s.accept()
 
 		t = s.getsockname()
@@ -44,7 +44,7 @@ class Comunicacion:
 		if data != None:
 			respuesta = metodo(data)
 			conn.send(respuesta)  # echo
-		
+
 		conn.close()
 
 	def enviar_paquete_udp(self, udp_ip, udp_port, message):
@@ -67,8 +67,8 @@ class Comunicacion:
 		if timeout != None:
 			server.settimeout(timeout)
 
-		server.bind((broadcast_ip, 44444)) # TODO: Revisar este puerto
-		server.sendto(message, ('<broadcast>', broadcast_port))
+		server.bind(('10.1.255.255', 44444)) # TODO: Revisar este puerto
+		server.sendto(message, ('10.1.255.255', broadcast_port))
 
 	def recibir_broadcast(self, broadcast_ip, broadcast_port, metodo):
 		client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
