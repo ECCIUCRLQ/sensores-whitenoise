@@ -89,7 +89,7 @@ class FileSystem:
         f = open(cls.FILENAME, "wb")
         f.write(contenido)
         f.close()
-        
+
         paquete_helper = PaquetesHelper()
         paquete_enviar = Paquete()
         paquete_enviar.operacion = TipoOperacion.Enviar.value
@@ -116,7 +116,7 @@ class FileSystem:
 
         paquete_estoy_aqui.operacion = TipoOperacion.EstoyAqui.value
         paquete_estoy_aqui.tamanno_disponible = (ind_datos) - 20
-        
+
         paquete_estoy_aqui_raw = paquete_helper.empaquetar(TipoComunicacion.IDNM, TipoOperacion.EstoyAqui, paquete_estoy_aqui)
 
         while cls.keep_trying_bc:
@@ -124,7 +124,7 @@ class FileSystem:
             com.enviar_broadcast(cls.nodo_ip, com.PUERTO_BC_NMID, 1, paquete_estoy_aqui_raw)
             time.sleep(1)
 
-    
+
     @classmethod
     def analizar_paquete_TCP(cls, data):
         paquete_helper = PaquetesHelper()
@@ -158,7 +158,7 @@ class FileSystem:
         f.write(contenido)
         f.close()
 
-    
+
         cls.nodo_ip = nodo_ip
 
         # Hacer broadcast para ver cual nodo me recibe
@@ -169,7 +169,7 @@ class FileSystem:
         while True:
             # Recibir paquete de operacion
             com.recibir_paquete_tcp(cls.nodo_ip, com.PUERTO_TCP_IDNM, cls.analizar_paquete_TCP)
-            
+
             # op = int(input("Digite la operación: "))
 
             # if op == 0:
@@ -182,9 +182,9 @@ class FileSystem:
             # if op == 1:
             #     id = int(input("Digite el id: "))
             #     print(cls.readData(id).decode("utf-8"))
-            
+
             # if op > 1:
             #     break
 
 
-FileSystem.start(100, "10.1.138.229")
+FileSystem.start(800, "10.1.138.42")
