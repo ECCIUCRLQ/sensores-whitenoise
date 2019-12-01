@@ -41,7 +41,7 @@ class FileSystem:
         contenido[ind_datos-size-8:ind_datos] = datos
 
         ind_metas += 12
-        ind_datos -= size
+        ind_datos -= len(datos)
 
         contenido[0:8] = pack(">II", ind_metas, ind_datos)
         print(contenido)
@@ -56,8 +56,8 @@ class FileSystem:
         paquete.operacion = TipoOperacion.Ok_KeepAlive.value
         paquete.pagina_id = page_id
         paquete.tamanno_disponible = 0
-        if -12 != ((ind_datos - ind_metas) - 12):
-            paquete.tamanno_disponible = ((ind_datos - ind_metas) - 12)
+        if 0 < ((ind_datos - ind_metas) - 20):
+            paquete.tamanno_disponible = ((ind_datos - ind_metas) - 20)
 
         #print("paquete.tamanno_disponible: ", paquete.tamanno_disponible)
         buffer = paquete_helper.empaquetar(TipoComunicacion.NMID, TipoOperacion.Ok_KeepAlive, paquete)
@@ -115,7 +115,7 @@ class FileSystem:
         paquete_helper = PaquetesHelper()
 
         paquete_estoy_aqui.operacion = TipoOperacion.EstoyAqui.value
-        paquete_estoy_aqui.tamanno_disponible = (ind_datos) - 20
+        paquete_estoy_aqui.tamanno_disponible = (ind_datos) - 20 - 8
 
         paquete_estoy_aqui_raw = paquete_helper.empaquetar(TipoComunicacion.IDNM, TipoOperacion.EstoyAqui, paquete_estoy_aqui)
 
@@ -187,4 +187,4 @@ class FileSystem:
             #     break
 
 
-FileSystem.start(800, "10.1.138.42")
+FileSystem.start(800, "192.168.1.12")

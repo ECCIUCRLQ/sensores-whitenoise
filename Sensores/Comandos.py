@@ -6,7 +6,7 @@ from struct import *
 
 class Comandos:
 
-    FILENAME = "/home/paceruva/Escritorio/PI/sensores-whitenoise/Sensores/volume.bin"
+    FILENAME = "/home/redes/sensores-whitenoise/Sensores/volume.bin"
 
     @classmethod
     def ls(cls, opciones):
