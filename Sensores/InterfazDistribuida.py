@@ -400,5 +400,5 @@ class InterfazDistribuida:
 interfaz_distribuida = InterfazDistribuida()
 
 
-interfaz_distribuida.IniciarInterfazDistribuida("10.1.138.42")
+interfaz_distribuida.IniciarInterfazDistribuida("10.164.71.126")
 #interfaz_distribuida.test()
