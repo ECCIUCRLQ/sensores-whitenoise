@@ -12,7 +12,7 @@ class Comunicacion:
 	PUERTO_TCP_IDNM = 3114
 	PUERTO_TCP_NMMLID = 2000
 
-	IP_MLID = "10.1.138.82"
+	IP_MLID = "192.168.86.211"
 
 	def __init__(self, *args, **kwargs):
 		return super().__init__(*args, **kwargs)
@@ -67,8 +67,8 @@ class Comunicacion:
 		if timeout != None:
 			server.settimeout(timeout)
 
-		server.bind(('10.164.71.126', 44444)) # TODO: Revisar este puerto
-		server.sendto(message, ('10.164.71.255', broadcast_port))
+		server.bind(('192.168.86.217', 44444)) # TODO: Revisar este puerto
+		server.sendto(message, ('192.168.86.255', broadcast_port))
 
 	def recibir_broadcast(self, broadcast_ip, broadcast_port, metodo):
 		client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
@@ -94,4 +94,4 @@ class Comunicacion:
 		while True:
 			data, addr = client.recvfrom(self.BUFFER_SIZE)
 			# Aqui hacer algo con los datos
-			metodo(data,addr)
+			metodo(data, addr)
