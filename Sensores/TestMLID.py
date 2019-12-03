@@ -6,10 +6,117 @@ datos = b'\x01\x02\x03\x04\x05\x06\x07\x08\x09\x10\x11\x12\x13\x14\x15\x16\x17\x
 
 AdministradorMemoria.inicializar_memoria()
 
-AdministradorMemoria.guardar_datos_ID(1, datos)
+pagina_id = AdministradorMemoria.malloc()
+
+for i in range(0, 79):
+	AdministradorMemoria.write(str(pagina_id) + "x00", b'\x01')
+
+pagina_id = AdministradorMemoria.malloc(pagina_id)
+
+for i in range(0, 79):
+	AdministradorMemoria.write(str(pagina_id) + "x00", b'\x01')
+
+pagina_id = AdministradorMemoria.malloc(pagina_id)
+
+for i in range(0, 79):
+	AdministradorMemoria.write(str(pagina_id) + "x00", b'\x01')
+
+pagina_id = AdministradorMemoria.malloc(pagina_id)
+
+for i in range(0, 79):
+	AdministradorMemoria.write(str(pagina_id) + "x00", b'\x01')
+
+pagina_id = AdministradorMemoria.malloc(pagina_id)
+
+for i in range(0, 79):
+	AdministradorMemoria.write(str(pagina_id) + "x00", b'\x01')
+
+pagina_id = AdministradorMemoria.malloc(pagina_id)
 
 
-print(AdministradorMemoria.obtener_datos_ID(1, 1))
+datos = AdministradorMemoria.read(0)
+
+for i in range(0, 79):
+	AdministradorMemoria.write(str(pagina_id) + "x00", b'\x01')
+
+pagina_id = AdministradorMemoria.malloc(pagina_id)
+
+datos = AdministradorMemoria.read(1)
+
+for i in range(0, 79):
+	AdministradorMemoria.write(str(pagina_id) + "x00", b'\x01')
+
+pagina_id = AdministradorMemoria.malloc(pagina_id)
+
+datos = AdministradorMemoria.read(2)
+
+datos = AdministradorMemoria.read(3)
+
+for i in range(0, 79):
+	AdministradorMemoria.write(str(pagina_id) + "x00", b'\x01')
+
+pagina_id = AdministradorMemoria.malloc(pagina_id)
+
+
+
+
+
+pagina_id = AdministradorMemoria.malloc()
+
+for i in range(0, 79):
+	AdministradorMemoria.write(str(pagina_id) + "x00", b'\x01')
+
+pagina_id = AdministradorMemoria.malloc(pagina_id)
+
+for i in range(0, 79):
+	AdministradorMemoria.write(str(pagina_id) + "x00", b'\x01')
+
+pagina_id = AdministradorMemoria.malloc(pagina_id)
+
+for i in range(0, 79):
+	AdministradorMemoria.write(str(pagina_id) + "x00", b'\x01')
+
+pagina_id = AdministradorMemoria.malloc(pagina_id)
+
+for i in range(0, 79):
+	AdministradorMemoria.write(str(pagina_id) + "x00", b'\x01')
+
+pagina_id = AdministradorMemoria.malloc(pagina_id)
+
+for i in range(0, 79):
+	AdministradorMemoria.write(str(pagina_id) + "x00", b'\x01')
+
+pagina_id = AdministradorMemoria.malloc(pagina_id)
+
+datos = AdministradorMemoria.read(0)
+
+for i in range(0, 79):
+	AdministradorMemoria.write(str(pagina_id) + "x00", b'\x01')
+
+pagina_id = AdministradorMemoria.malloc(pagina_id)
+
+datos = AdministradorMemoria.read(1)
+
+for i in range(0, 79):
+	AdministradorMemoria.write(str(pagina_id) + "x00", b'\x01')
+
+pagina_id = AdministradorMemoria.malloc(pagina_id)
+
+datos = AdministradorMemoria.read(2)
+
+datos = AdministradorMemoria.read(3)
+
+for i in range(0, 79):
+	AdministradorMemoria.write(str(pagina_id) + "x00", b'\x01')
+
+pagina_id = AdministradorMemoria.malloc(pagina_id)
+
+
+
+
+#AdministradorMemoria.guardar_datos_ID(1, datos)
+
+#print(AdministradorMemoria.obtener_datos_ID(1, 1))
 
 #print(AdministradorMemoria.obtener_datos_ID(2, 1))
 

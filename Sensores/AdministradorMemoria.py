@@ -98,7 +98,9 @@ class AdministradorMemoria:
 
 		# Si no hay frame libre tiene que mover la pagina con la escritura mas antigua
 		# a memoria secundaria y cargar ahí la pagina solicitada.
-		datos_raw = bytearray().join(datos)
+		datos_raw = bytearray()
+
+		datos_raw = datos
 		
 		return datos_raw
 
@@ -150,7 +152,7 @@ class AdministradorMemoria:
 		# Le da un sitio en memoria principal
 		frame = cls.obtener_frame_memoria_principal(False, frame_actual)
 		print("frame: " + str(frame))
-		nueva_pagina = Pagina('Pag' + str(siguiente), frame, 0)
+		nueva_pagina = Pagina(siguiente, frame, 0)
 
 		cls.tabla_paginas.append(nueva_pagina)
 
@@ -190,7 +192,7 @@ class AdministradorMemoria:
 				cls.mover_frame_memoria_secundaria(frame_indice, frame_utilizar.datos)
 
 			# Limpia los datos en la seccion de data
-			frame_utilizar.datos = []
+			frame_utilizar.datos = bytearray()
 			frame_utilizar.disponible = False
 			frame_utilizar.fecha_ultimo_acceso = datetime.datetime.now()
 

@@ -2,7 +2,7 @@
 
 class Pagina:
 
-	def __init__(self, nombre = "", frame = 0, ID = 0):
+	def __init__(self, nombre = None, frame = 0, ID = 0):
 		self.nombre = nombre
 		self.frame = frame
 		self.ID = ID
@@ -17,6 +17,4 @@ class Pagina:
 		return self.__nombre
 
 	def set_nombre(self, value):
-		if not isinstance(value, str):
-			raise TypeError("El tipo esperado para nombre es string")
 		self.__nombre =  value
