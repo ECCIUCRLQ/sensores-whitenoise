@@ -12,15 +12,20 @@ class Comunicacion:
 	PUERTO_TCP_IDNM = 3114
 	PUERTO_TCP_NMMLID = 2000
 
-	IP_MLID = "192.168.86.211"
+	IP_MLID = "127.0.0.1"
 
 	def __init__(self, *args, **kwargs):
 		return super().__init__(*args, **kwargs)
 
 	def enviar_paquete_tcp(self, tcp_ip, tcp_port_to, message):
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP
-
-		s.connect((tcp_ip, tcp_port_to))
+		time.sleep(0.07)
+		while True:
+			try:
+				s.connect((tcp_ip, tcp_port_to))
+				break
+			except OSError:
+				print("Error de conexion")
 		s.send(message)
 		data = s.recv(self.BUFFER_SIZE)
 		s.close()
@@ -43,6 +48,7 @@ class Comunicacion:
 
 		if data != None:
 			respuesta = metodo(data)
+			print(respuesta)
 			conn.send(respuesta)  # echo
 
 		conn.close()
@@ -67,13 +73,13 @@ class Comunicacion:
 		if timeout != None:
 			server.settimeout(timeout)
 
-		server.bind(('192.168.86.217', 44444)) # TODO: Revisar este puerto
-		server.sendto(message, ('192.168.86.255', broadcast_port))
+		server.bind(('', 44444)) # TODO: Revisar este puerto
+		server.sendto(message, ('', broadcast_port))
 
 	def recibir_broadcast(self, broadcast_ip, broadcast_port, metodo):
 		client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 		client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-		client.bind((broadcast_ip, broadcast_port))
+		client.bind(("", broadcast_port))
 
 		client.setblocking(0)
 
@@ -89,7 +95,7 @@ class Comunicacion:
 	def recibir_broadcast_ciclo(self, broadcast_ip, broadcast_port, metodo):
 		client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 		client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-		client.bind((broadcast_ip, broadcast_port))
+		client.bind(("", broadcast_port))
 
 		while True:
 			data, addr = client.recvfrom(self.BUFFER_SIZE)
