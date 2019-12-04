@@ -9,6 +9,7 @@ from Tipo import Tipo
 from Equipo import Equipo
 from CARRETA import CARRETA
 from BUEY import BUEY
+from Utilidades import Utilidades
 
 class ServidorTest:
 
@@ -16,8 +17,8 @@ class ServidorTest:
 
 	@classmethod
 	def sendToQueue(cls):
-		carreta = CARRETA(2, 0, SensorId([Equipo((int)(sys.argv[1])), 0, 0, 1]), Tipo((int)(sys.argv[2])), 0)
 		while True:
+			carreta = CARRETA(2, Utilidades.get_unix_time(), SensorId([Equipo(5), 0, 0, 2]), Tipo(2), random.randint(15, 50))
 			cls.mq.send(carreta.pack_byte_array())
 			time.sleep(0.5)
 
