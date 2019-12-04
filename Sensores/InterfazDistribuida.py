@@ -226,9 +226,15 @@ class InterfazDistribuida:
 
 	def analizar_keep_alive(self, paquete):
 		self.ID_activa_viva = dt.datetime.now()
+		if paquete.filas1 > 0:
+			self.tabla_paginas.actualizar(paquete.filas1, paquete.dump1)
+		if paquete.filas2 > 0:
+			self.tabla_nodos.actualizar(paquete.filas2, paquete.dump2)
 
 	def analizar_soy_activa(self, paquete):
-		return 0
+		self.tabla_paginas = TablaPaginas()
+		self.tabla_paginas.actualizar(paquete.filas1, paquete.dump1)
+		self.tabla_nodos.actualizar(paquete.filas2, paquete.dump2)
 
 	def responder_a_quiero_ser_enviar_soy_activa(self):
 		# enviar broadcast de ID ID Soy Activa con toda la información
