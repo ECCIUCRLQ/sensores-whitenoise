@@ -9,6 +9,7 @@ from threading import Lock
 from time import sleep
 import time
 import datetime as dt
+import os
 
 from struct import *
 
@@ -155,25 +156,23 @@ class InterfazDistribuida:
 					print("No tengo que esperar a una activa y el timer del campeonato se acabo, me declaro activa")
 					self.soy_activa = True
 					self.existe_activa = True
+					self.cambiar_IP()
 					self.responder_a_quiero_ser_enviar_soy_activa()
 
 				elif self.esperar_soy_activa == True and self.existe_activa == False and self.timeout_campeonato_termino == True:
 					print("Estoy esperando activa, no existe activa y el timer del campeonato se acabo, me declaro activa")
 					self.soy_activa = True
 					self.existe_activa = True
+					self.cambiar_IP()
 					self.responder_a_quiero_ser_enviar_soy_activa()
 
 			else:
-				if self.timer_keep_alive_on == False:
-					a = dt.datetime.today
+				a = dt.datetime.now()
 
-					current = time.time()
-					if (current - self.ID_activa_viva) > 3:
-					    self.timeout_keep_alive_termino = True
-					
-					#timer_keep_alive = Thread(target=self.iniciar_timer_keep_alive, args=(4, self.timeout_campeonato_termino,))
-					#timer_keep_alive.start()
-					#self.timer_keep_alive_on = True
+				current = time.time()
+				if (a - self.ID_activa_viva).total_seconds() > 3:
+					self.timeout_keep_alive_termino = True
+					self.existe_activa = False
 
 	def analizar_paquete_BC_IDID(self, data, addr):
 
@@ -194,9 +193,9 @@ class InterfazDistribuida:
 				self.responder_a_quiero_ser_enviar_soy_activa()
 			elif self.existe_activa:
 				pass
-			elif self.ronda > paquete.ronda:
+			elif self.ronda > paquete.ronda_id:
 				pass
-			elif self.ronda < paquete.ronda:
+			elif self.ronda < paquete.ronda_id:
 				self.esperar_soy_activa = True
 			elif self.obtener_mac_address() < paquete.mac:
 				self.esperar_soy_activa = True
@@ -212,7 +211,7 @@ class InterfazDistribuida:
 			else:
 				self.ronda = 3
 				self.existe_activa = True
-				self.ID_activa_viva = time.time()
+				self.ID_activa_viva = dt.datetime.now()
 				self.analizar_soy_activa(paquete)
 
 		# Si recibe una operación Keep Alive
@@ -226,7 +225,7 @@ class InterfazDistribuida:
 		print(paquete)
 
 	def analizar_keep_alive(self, paquete):
-		self.ID_activa_viva = time.time()
+		self.ID_activa_viva = dt.datetime.now()
 
 	def analizar_soy_activa(self, paquete):
 		return 0
@@ -283,7 +282,7 @@ class InterfazDistribuida:
 
 		paquete_quiero_ser.operacion = TipoOperacion.Guardar_QuieroSer.value
 		paquete_quiero_ser.mac = self.obtener_mac_address()
-		paquete_quiero_ser.ronda = self.ronda
+		paquete_quiero_ser.ronda_id = self.ronda
 
 		paquete_helper = PaquetesHelper()
 
@@ -387,7 +386,19 @@ class InterfazDistribuida:
 
 		return respuesta
 
-	
+	def cambiar_IP(self):
+
+		com = Comunicacion()
+
+		if os.name == 'nt':
+			print("Cambio IP NT")
+			import subprocess
+			subprocess.call("netsh interface ip set address ethernet static " + com.IP_MLID + " 255.255.255.0")
+		else:
+			print("Cambio IP Posix")
+			os.system('sudo ifconfig eth0 down') # wlan0
+			os.system('sudo ifconfig eth0 ' + com.IP_MLID)
+			os.system('sudo ifconfig eth0 up')
 
 	def analizar_paquete_BC_NMID(self, data, addr):
 
@@ -415,7 +426,7 @@ class InterfazDistribuida:
 
 		paquete.operacion = TipoOperacion.Guardar_QuieroSer.value
 		paquete.mac = self.obtener_mac_address()
-		paquete.ronda = self.ronda
+		paquete.ronda_id = self.ronda
 
 		quiero_ser = paquete_helper.empaquetar(TipoComunicacion.IDID, TipoOperacion.Guardar_QuieroSer, paquete)
 

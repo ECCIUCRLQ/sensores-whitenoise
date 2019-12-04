@@ -12,7 +12,7 @@ class Comunicacion:
 	PUERTO_TCP_IDNM = 3114
 	PUERTO_TCP_NMMLID = 2000
 
-	IP_MLID = "192.168.86.211"
+	IP_MLID = "192.168.86.253"
 
 	def __init__(self, *args, **kwargs):
 		return super().__init__(*args, **kwargs)

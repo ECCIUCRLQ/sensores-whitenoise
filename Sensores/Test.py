@@ -64,91 +64,97 @@ from struct import *
 
 #AdministradorMemoria.finalizar_memoria()
 
-from Comunicacion import Comunicacion
-from PaquetesHelper import PaquetesHelper
-from TipoComunicacion import TipoComunicacion
-from TipoOperacion import TipoOperacion
+#from Comunicacion import Comunicacion
+#from PaquetesHelper import PaquetesHelper
+#from TipoComunicacion import TipoComunicacion
+#from TipoOperacion import TipoOperacion
 
-from threading import Thread, Event
-from threading import Lock
-from time import sleep
+#from threading import Thread, Event
+#from threading import Lock
+#from time import sleep
 
-from InterfazDistribuida import InterfazDistribuida
-from FileSystem import FileSystem
+#from InterfazDistribuida import InterfazDistribuida
+#from FileSystem import FileSystem
 
-class Test():
+#class Test():
 
-	datos = b'\x00\x02P\x00\x00\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x40\x01\x02\x03\x04\x05\x06\x07\x08\x09\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x40'
+#	datos = b'\x00\x02P\x00\x00\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x40\x01\x02\x03\x04\x05\x06\x07\x08\x09\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x40'
 	
-	def Prueba(self, data):
-		print(data)
+#	def Prueba(self, data):
+#		print(data)
 
-		paquete_helper = PaquetesHelper()
+#		paquete_helper = PaquetesHelper()
 
-		paquete = paquete_helper.desempaquetar(TipoComunicacion.MLID, data)
+#		paquete = paquete_helper.desempaquetar(TipoComunicacion.MLID, data)
 
-		paquete.operacion = TipoOperacion.Ok_KeepAlive.value
-		paquete.ok = paquete.pagina_id
+#		paquete.operacion = TipoOperacion.Ok_KeepAlive.value
+#		paquete.ok = paquete.pagina_id
 
-		respuesta = paquete_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Ok_KeepAlive, paquete)
+#		respuesta = paquete_helper.empaquetar(TipoComunicacion.MLID, TipoOperacion.Ok_KeepAlive, paquete)
 
-		print(respuesta)
+#		print(respuesta)
 
-		return respuesta
+#		return respuesta
 
-	def RecibirDatos(self):
-		com = Comunicacion()
+#	def RecibirDatos(self):
+#		com = Comunicacion()
 
-		com.recibir_paquete_tcp('10.1.137.79', com.PUERTO_TCP_NMMLID, self.Prueba)
+#		com.recibir_paquete_tcp('10.1.137.79', com.PUERTO_TCP_NMMLID, self.Prueba)
 
-		#respuesta = com.enviar_paquete_tcp('10.1.137.79', com.PUERTO_TCP_NMMLID, self.datos)
+#		#respuesta = com.enviar_paquete_tcp('10.1.137.79', com.PUERTO_TCP_NMMLID, self.datos)
 
-		#print(respuesta)
+#		#print(respuesta)
 
-		# com.enviar_broadcast(15000, self.datos)
+#		# com.enviar_broadcast(15000, self.datos)
 
-		# com.recibir_broadcast(10002, self.Prueba)
+#		# com.recibir_broadcast(10002, self.Prueba)
 
-	def Desempaquetar(self):
-		paquetes = PaquetesHelper()
+#	def Desempaquetar(self):
+#		paquetes = PaquetesHelper()
 
-		tipo_comunicacion = TipoComunicacion(0)
-		tipo_operacion = TipoOperacion(0)
-		tam = pack('I', 80)
+#		tipo_comunicacion = TipoComunicacion(0)
+#		tipo_operacion = TipoOperacion(0)
+#		tam = pack('I', 80)
 
-		# | \x00 | \x02| P\x00\x00\x00 | \x01\x02\x03\x04\x05\x06\x07\x08\x09\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x40\x01\x02\x03\x04\x05\x06\x07\x08\x09\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x40
-		datossss = b'\x00\x02P\x00\x00\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x40\x01\x02\x03\x04\x05\x06\x07\x08\x09\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x40'
+#		# | \x00 | \x02| P\x00\x00\x00 | \x01\x02\x03\x04\x05\x06\x07\x08\x09\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x40\x01\x02\x03\x04\x05\x06\x07\x08\x09\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x40
+#		datossss = b'\x00\x02P\x00\x00\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x40\x01\x02\x03\x04\x05\x06\x07\x08\x09\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x40'
 
-		paquete = paquetes.desempaquetar(tipo_comunicacion, self.datos)
+#		paquete = paquetes.desempaquetar(tipo_comunicacion, self.datos)
 
-		datos_nuevos = paquetes.empaquetar(tipo_comunicacion, tipo_operacion, paquete)
+#		datos_nuevos = paquetes.empaquetar(tipo_comunicacion, tipo_operacion, paquete)
 
-		print(self.datos)
+#		print(self.datos)
 
-		print(datos_nuevos)
+#		print(datos_nuevos)
 
-	def IniciarIDNM(self):
-		interfaz_distribuida = InterfazDistribuida()
-
-
-		hilo_in_IDID = Thread(target=interfaz_distribuida.iniciar_interfaz_distribuida, args=("192.168.86.217", ))
-		hilo_bc_IDID.start()
-
-		sleep(1)
-
-		hilo_in_FS = Thread(target=FileSystem.start, args=(800, "192.168.86.217", ))
-		hilo_bc_FS.start()
+#	def IniciarIDNM(self):
+#		interfaz_distribuida = InterfazDistribuida()
 
 
-interfaz_distribuida = InterfazDistribuida()
+#		hilo_in_IDID = Thread(target=interfaz_distribuida.iniciar_interfaz_distribuida, args=("192.168.86.217", ))
+#		hilo_bc_IDID.start()
+
+#		sleep(1)
+
+#		hilo_in_FS = Thread(target=FileSystem.start, args=(800, "192.168.86.217", ))
+#		hilo_bc_FS.start()
 
 
-hilo_in_IDID = Thread(target=interfaz_distribuida.iniciar_interfaz_distribuida, args=("192.168.86.217", ))
-hilo_in_IDID.start()
+#interfaz_distribuida = InterfazDistribuida()
 
-#sleep(1)
 
-#hilo_in_FS = Thread(target=FileSystem.start, args=(800, "192.168.86.217", ))
-#hilo_in_FS.start()
+#hilo_in_IDID = Thread(target=interfaz_distribuida.iniciar_interfaz_distribuida, args=("192.168.86.217", ))
+#hilo_in_IDID.start()
 
-hilo_in_IDID.join()
+##sleep(1)
+
+##hilo_in_FS = Thread(target=FileSystem.start, args=(800, "192.168.86.217", ))
+##hilo_in_FS.start()
+
+#hilo_in_IDID.join()
+
+
+import os
+
+if os.name == 'nt':
+	print("Windows")

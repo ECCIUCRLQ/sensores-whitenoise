@@ -427,7 +427,7 @@ class PaquetesHelper:
 
 		datos = pack('=B', paquete.operacion)
 		datos += paquete.mac
-		datos += pack('=B', paquete.ronda)
+		datos += pack('=B', paquete.ronda_id)
 
 		return datos
 
