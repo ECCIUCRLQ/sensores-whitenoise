@@ -326,8 +326,13 @@ class PaquetesHelper:
 		paquete.operacion = unpack('B', datos[0:1])[0]
 		paquete.filas1 = unpack('B', datos[1:2])[0]
 		paquete.filas2 = unpack('B', datos[2:3])[0]
-		paquete.dump1 = datos[3: 3 + paquete.filas1 * 2]
-		paquete.dump2 = datos[3 + paquete.filas1 * 2: 3 + paquete.filas1 * 2 + paquete.filas2 * 9]
+
+		if paquete.filas1 != 0:
+			paquete.dump1 = datos[3: 3 + paquete.filas1 * 2]
+		if paquete.filas2 != 0:
+			paquete.dump2 = datos[3 + paquete.filas1 * 2: 3 + paquete.filas1 * 2 + paquete.filas2 * 9]
+
+		return paquete
 
 	# OPERACIONES DE EMPAQUETAR
 
@@ -422,7 +427,7 @@ class PaquetesHelper:
 
 		datos = pack('=B', paquete.operacion)
 		datos += paquete.mac
-		datos += pack('=B', paquete.ronda)
+		datos += pack('=B', paquete.ronda_id)
 
 		return datos
 

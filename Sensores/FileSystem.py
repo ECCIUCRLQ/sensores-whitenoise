@@ -16,6 +16,7 @@ class FileSystem:
     keep_trying_bc = True
     hostname = socket.gethostname()
     nodo_ip = ""
+    bc_port = 55555
 
     @classmethod
     def writeData(cls, page_id, size, data):
@@ -121,7 +122,7 @@ class FileSystem:
 
         while cls.keep_trying_bc:
             print("Anunciadome desde: ", cls.nodo_ip)
-            com.enviar_broadcast(cls.nodo_ip, com.PUERTO_BC_NMID, 1, paquete_estoy_aqui_raw)
+            com.enviar_broadcast(cls.bc_port, cls.nodo_ip, com.PUERTO_BC_NMID, 1, paquete_estoy_aqui_raw)
             time.sleep(1)
 
 
@@ -187,4 +188,4 @@ class FileSystem:
             #     break
 
 
-FileSystem.start(800, "192.168.1.12")
+#FileSystem.start(800, "192.168.86.217")

@@ -8,11 +8,11 @@ class Comunicacion:
 	BUFFER_SIZE = 100000
 
 	PUERTO_BC_NMID = 5000
-	PUERTO_BC_IDID = 6666
+	PUERTO_BC_IDID = 6667
 	PUERTO_TCP_IDNM = 3114
 	PUERTO_TCP_NMMLID = 2000
 
-	IP_MLID = "127.0.0.1"
+	IP_MLID = "192.168.86.253"
 
 	def __init__(self, *args, **kwargs):
 		return super().__init__(*args, **kwargs)
@@ -65,7 +65,7 @@ class Comunicacion:
 			data, addr = sock.recvfrom(self.BUFFER_SIZE)
 			metodo(data)
 
-	def enviar_broadcast(self, broadcast_ip, broadcast_port, timeout, message):
+	def enviar_broadcast(self, broadcast_server_port, broadcast_ip, broadcast_port, timeout, message):
 		server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
 		server.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
@@ -73,8 +73,8 @@ class Comunicacion:
 		if timeout != None:
 			server.settimeout(timeout)
 
-		server.bind(('', 44444)) # TODO: Revisar este puerto
-		server.sendto(message, ('', broadcast_port))
+		server.bind(('192.168.86.217', broadcast_server_port)) # TODO: Revisar este puerto
+		server.sendto(message, ('192.168.86.255', broadcast_port))
 
 	def recibir_broadcast(self, broadcast_ip, broadcast_port, metodo):
 		client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
