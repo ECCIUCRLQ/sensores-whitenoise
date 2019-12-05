@@ -307,8 +307,8 @@ class InterfazDistribuida:
 			while True:
 				if self.event.is_set():
 					break
-
-				com.recibir_paquete_tcp(com.IP_MLID, com.PUERTO_TCP_NMMLID, self.analizar_datos_TCP)
+				if self.soy_activa:
+					com.recibir_paquete_tcp(com.IP_MLID, com.PUERTO_TCP_NMMLID, self.analizar_datos_TCP)
 
 	def analizar_datos_TCP(self, data):
 

@@ -33,25 +33,29 @@ class Comunicacion:
 		return data
 
 	def recibir_paquete_tcp(self, tcp_ip, tcp_port, metodo):
-		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP
-		s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-		s.bind((tcp_ip, tcp_port))
-		s.listen()
+		try:
+			s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP
+			s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+			s.bind((tcp_ip, tcp_port))
+			s.listen()
 
-		conn, addr = s.accept()
+			conn, addr = s.accept()
 
-		t = s.getsockname()
+			t = s.getsockname()
 
-		print("Se recibio un paquete desde: ", addr)
+			print("Se recibio un paquete desde: ", addr)
 
-		data = conn.recv(self.BUFFER_SIZE)
+			data = conn.recv(self.BUFFER_SIZE)
 
-		if data != None:
-			respuesta = metodo(data)
-			print(respuesta)
-			conn.send(respuesta)  # echo
+			if data != None:
+				respuesta = metodo(data)
+				print(respuesta)
+				conn.send(respuesta)  # echo
 
-		conn.close()
+			conn.close()
+		except:
+			print("Error de TCP, sigo intentando...")
+			pass
 
 	def enviar_paquete_udp(self, udp_ip, udp_port, message):
 		sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
