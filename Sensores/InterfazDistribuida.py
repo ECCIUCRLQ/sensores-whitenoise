@@ -464,13 +464,13 @@ class InterfazDistribuida:
 		hilo_bc_NMID = Thread(target=self.recibir_comunicaciones_broadcast_NMID, args=(self.tabla_nodos,))
 		hilo_tcp = Thread(target=self.recibir_comunicaciones_TCP, args=(self.tabla_nodos,))
 
-		#hilo_bc_NMID.start()
-		#hilo_tcp.start()
+		hilo_bc_NMID.start()
+		hilo_tcp.start()
 
-		#hilo_tcp.join()
+		hilo_tcp.join()
 		hilo_bc_IDID.join()
 		hilo_in_IDID.join()
-		#hilo_bc_NMID.join()
+		hilo_bc_NMID.join()
 
 	
 
