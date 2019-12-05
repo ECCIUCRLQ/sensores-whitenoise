@@ -119,7 +119,7 @@ class InterfazDistribuida:
 		self.timer_campeonato_on = False
 		self.timer_keep_alive_on = False
 		self.ID_activa_viva = None
-		self.bc_idid_port = 31213
+		self.bc_idid_port = 5555
 
 		return super().__init__(*args, **kwargs)
 
@@ -156,14 +156,14 @@ class InterfazDistribuida:
 					print("No tengo que esperar a una activa y el timer del campeonato se acabo, me declaro activa")
 					self.soy_activa = True
 					self.existe_activa = True
-					self.cambiar_IP()
+					#self.cambiar_IP()
 					self.responder_a_quiero_ser_enviar_soy_activa()
 
 				elif self.esperar_soy_activa == True and self.existe_activa == False and self.timeout_campeonato_termino == True:
 					print("Estoy esperando activa, no existe activa y el timer del campeonato se acabo, me declaro activa")
 					self.soy_activa = True
 					self.existe_activa = True
-					self.cambiar_IP()
+					#self.cambiar_IP()
 					self.responder_a_quiero_ser_enviar_soy_activa()
 
 			else:
@@ -477,4 +477,4 @@ class InterfazDistribuida:
 interfaz_distribuida = InterfazDistribuida()
 
 
-interfaz_distribuida.iniciar_interfaz_distribuida("192.168.86.217")
+interfaz_distribuida.iniciar_interfaz_distribuida("10.164.71.129")
